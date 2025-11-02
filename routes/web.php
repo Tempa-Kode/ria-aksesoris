@@ -12,4 +12,5 @@ Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->
 Route::middleware('auth')->group(function () {
     Route::resource('admin', App\Http\Controllers\AdminController::class);
     Route::resource('karyawan', App\Http\Controllers\KaryawanController::class);
+    Route::resource('customer', App\Http\Controllers\CustomerController::class);
 });

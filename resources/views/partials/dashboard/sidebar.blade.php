@@ -61,8 +61,8 @@
                     <span>Data Karyawan</span>
                 </a>
             </li>
-            <li>
-                <a href="kanban.php">
+            <li class="{{ request()->routeIs("customer.*") ? "active-page" : "" }}">
+                <a href="{{ route("customer.index") }}">
                     <iconify-icon icon="flowbite:users-group-outline" class="menu-icon"></iconify-icon>
                     <span>Data Customer</span>
                 </a>
