@@ -14,7 +14,7 @@
         <div class="dashboard-main-body">
 
             <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-24">
-                <h6 class="fw-semibold mb-0">Data Admin</h6>
+                <h6 class="fw-semibold mb-0">Data Karyawan</h6>
                 <ul class="d-flex align-items-center gap-2">
                     <li class="fw-medium">
                         <a href="{{ route("dashboard") }}" class="d-flex align-items-center gap-1 hover-text-primary">
@@ -23,7 +23,7 @@
                         </a>
                     </li>
                     <li>-</li>
-                    <li class="fw-medium">Data Admin</li>
+                    <li class="fw-medium">Data Karyawan</li>
                 </ul>
             </div>
 
@@ -51,10 +51,10 @@
                             <option>50</option>
                         </select>
                     </div>
-                    <a href="{{ route("admin.create") }}"
+                    <a href="{{ route("karyawan.create") }}"
                         class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
                         <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
-                        Tambah Admin
+                        Tambah Karyawan
                     </a>
                 </div>
                 <div class="card-body p-24">
@@ -72,43 +72,44 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($admins as $index => $admin)
+                                @forelse($karyawans as $index => $karyawan)
                                     <tr>
-                                        <td>{{ $admins->firstItem() + $index }}</td>
+                                        <td>{{ $karyawans->firstItem() + $index }}</td>
                                         <td>
-                                            @if ($admin->foto)
-                                                <img src="{{ asset($admin->foto) }}" alt="{{ $admin->nama }}"
+                                            @if ($karyawan->foto)
+                                                <img src="{{ asset($karyawan->foto) }}" alt="{{ $karyawan->nama }}"
                                                     class="w-40-px h-40-px rounded-circle object-fit-cover">
                                             @else
                                                 <img src="{{ asset("dashboard/assets/images/user.png") }}"
-                                                    alt="{{ $admin->nama }}"
+                                                    alt="{{ $karyawan->nama }}"
                                                     class="w-40-px h-40-px rounded-circle object-fit-cover">
                                             @endif
                                         </td>
                                         <td>
                                             <span
-                                                class="text-md mb-0 fw-normal text-secondary-light">{{ $admin->nama }}</span>
+                                                class="text-md mb-0 fw-normal text-secondary-light">{{ $karyawan->nama }}</span>
                                         </td>
                                         <td>
                                             <span
-                                                class="text-md mb-0 fw-normal text-secondary-light">{{ $admin->username }}</span>
+                                                class="text-md mb-0 fw-normal text-secondary-light">{{ $karyawan->username }}</span>
                                         </td>
                                         <td>
                                             <span
-                                                class="text-md mb-0 fw-normal text-secondary-light">{{ $admin->email }}</span>
+                                                class="text-md mb-0 fw-normal text-secondary-light">{{ $karyawan->email }}</span>
                                         </td>
                                         <td>
                                             <span
-                                                class="text-md mb-0 fw-normal text-secondary-light">{{ $admin->no_hp }}</span>
+                                                class="text-md mb-0 fw-normal text-secondary-light">{{ $karyawan->no_hp }}</span>
                                         </td>
                                         <td class="text-center">
                                             <div class="d-flex align-items-center gap-10 justify-content-center">
-                                                <a href="{{ route("admin.edit", $admin->id) }}"
+                                                <a href="{{ route("karyawan.edit", $karyawan->id) }}"
                                                     class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
                                                     <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
                                                 </a>
-                                                <form action="{{ route("admin.destroy", $admin->id) }}" method="POST"
-                                                    class="delete-form" data-name="{{ $admin->nama }}">
+                                                <form action="{{ route("karyawan.destroy", $karyawan->id) }}"
+                                                    method="POST" class="delete-form"
+                                                    data-name="{{ $karyawan->nama }}">
                                                     @csrf
                                                     @method("DELETE")
                                                     <button type="button"
@@ -122,7 +123,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="7" class="text-center">
-                                            <span class="text-secondary-light">Tidak ada data admin</span>
+                                            <span class="text-secondary-light">Tidak ada data karyawan</span>
                                         </td>
                                     </tr>
                                 @endforelse
@@ -131,10 +132,10 @@
                     </div>
 
                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-24">
-                        <span>Showing {{ $admins->firstItem() ?? 0 }} to {{ $admins->lastItem() ?? 0 }} of
-                            {{ $admins->total() }} entries</span>
+                        <span>Showing {{ $karyawans->firstItem() ?? 0 }} to {{ $karyawans->lastItem() ?? 0 }} of
+                            {{ $karyawans->total() }} entries</span>
                         <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
-                            {{ $admins->links("pagination::bootstrap-4") }}
+                            {{ $karyawans->links("pagination::bootstrap-4") }}
                         </ul>
                     </div>
                 </div>
@@ -150,11 +151,11 @@
             $('.btn-delete').on('click', function(e) {
                 e.preventDefault();
                 const form = $(this).closest('.delete-form');
-                const adminName = form.data('name');
+                const karyawanName = form.data('name');
 
                 Swal.fire({
                     title: 'Apakah Anda yakin?',
-                    text: `Data admin "${adminName}" akan dihapus permanen!`,
+                    text: `Data karyawan "${karyawanName}" akan dihapus permanen!`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',

@@ -11,4 +11,5 @@ Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->
 // Admin Routes
 Route::middleware('auth')->group(function () {
     Route::resource('admin', App\Http\Controllers\AdminController::class);
+    Route::resource('karyawan', App\Http\Controllers\KaryawanController::class);
 });

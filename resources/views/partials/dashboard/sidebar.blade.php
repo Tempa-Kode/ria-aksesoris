@@ -55,8 +55,8 @@
                     <span>Data Admin</span>
                 </a>
             </li>
-            <li>
-                <a href="kanban.php">
+            <li class="{{ request()->routeIs("karyawan.*") ? "active-page" : "" }}">
+                <a href="{{ route("karyawan.index") }}">
                     <iconify-icon icon="flowbite:users-group-outline" class="menu-icon"></iconify-icon>
                     <span>Data Karyawan</span>
                 </a>
