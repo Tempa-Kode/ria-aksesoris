@@ -27,8 +27,10 @@
                         <div
                             class="py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
                             <div>
-                                <h6 class="text-lg text-primary-light fw-semibold mb-2 text-capitalize">{{ Auth::user()->nama }}</h6>
-                                <span class="text-secondary-light fw-medium text-sm text-capitalize">{{ Auth::user()->role }}</span>
+                                <h6 class="text-lg text-primary-light fw-semibold mb-2 text-capitalize">
+                                    {{ Auth::user()->nama }}</h6>
+                                <span
+                                    class="text-secondary-light fw-medium text-sm text-capitalize">{{ Auth::user()->role }}</span>
                             </div>
                             <button type="button" class="hover-text-danger">
                                 <iconify-icon icon="radix-icons:cross-1" class="icon text-xl"></iconify-icon>
@@ -37,7 +39,7 @@
                         <ul class="to-top-list">
                             <li>
                                 <a class="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-primary d-flex align-items-center gap-3"
-                                    href="view-profile.php">
+                                    href="{{ route("profile.index") }}">
                                     <iconify-icon icon="solar:user-linear" class="icon text-xl"></iconify-icon> My
                                     Profile
                                 </a>

@@ -10,6 +10,11 @@ Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->
 
 // Admin Routes
 Route::middleware('auth')->group(function () {
+    // Profile Routes
+    Route::get('profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');
+    Route::put('profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::put('profile/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.password.update');
+
     Route::resource('admin', App\Http\Controllers\AdminController::class);
     Route::resource('karyawan', App\Http\Controllers\KaryawanController::class);
     Route::resource('customer', App\Http\Controllers\CustomerController::class);
