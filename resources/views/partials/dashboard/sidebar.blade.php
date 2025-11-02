@@ -17,8 +17,8 @@
                     <span>Dashboard</span>
                 </a>
             </li>
-            <li>
-                <a href="email.php">
+            <li class="{{ request()->routeIs("kategori.*") ? "active-page" : "" }}">
+                <a href="{{ route("kategori.index") }}">
                     <iconify-icon icon="mage:email" class="menu-icon"></iconify-icon>
                     <span>Data Kategori</span>
                 </a>

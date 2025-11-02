@@ -13,4 +13,5 @@ Route::middleware('auth')->group(function () {
     Route::resource('admin', App\Http\Controllers\AdminController::class);
     Route::resource('karyawan', App\Http\Controllers\KaryawanController::class);
     Route::resource('customer', App\Http\Controllers\CustomerController::class);
+    Route::resource('kategori', App\Http\Controllers\KategoriController::class);
 });
