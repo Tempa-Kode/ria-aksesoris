@@ -23,4 +23,9 @@ class RiwayatStokProduk extends Model
     {
         return $this->belongsTo(Produk::class, 'produk_id', 'id');
     }
+
+    public function jenisProduk() : BelongsTo
+    {
+        return $this->belongsTo(JenisProduk::class, 'jenis_produk_id', 'id');
+    }
 }

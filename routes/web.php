@@ -14,4 +14,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('karyawan', App\Http\Controllers\KaryawanController::class);
     Route::resource('customer', App\Http\Controllers\CustomerController::class);
     Route::resource('kategori', App\Http\Controllers\KategoriController::class);
+
+    // Custom routes HARUS sebelum resource route
+    Route::delete('produk/gambar/{id}', [App\Http\Controllers\ProdukController::class, 'deleteGambar'])->name('produk.gambar.delete');
+    Route::delete('produk/jenis/{id}', [App\Http\Controllers\ProdukController::class, 'deleteJenis'])->name('produk.jenis.delete');
+    Route::post('produk/{id}/stok/tambah', [App\Http\Controllers\ProdukController::class, 'tambahStok'])->name('produk.stok.tambah');
+
+    Route::resource('produk', App\Http\Controllers\ProdukController::class);
 });

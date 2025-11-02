@@ -23,8 +23,8 @@
                     <span>Data Kategori</span>
                 </a>
             </li>
-            <li>
-                <a href="chat-message.php">
+            <li class="{{ request()->routeIs("produk.*") ? "active-page" : "" }}">
+                <a href="{{ route("produk.index") }}">
                     <iconify-icon icon="flowbite:store-outline" class="menu-icon"></iconify-icon>
                     <span>Data Produk</span>
                 </a>
