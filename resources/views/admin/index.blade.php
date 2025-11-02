@@ -42,15 +42,7 @@
 
             <div class="card h-100 p-0 radius-12">
                 <div
-                    class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-between">
-                    <div class="d-flex align-items-center flex-wrap gap-3">
-                        <span class="text-md fw-medium text-secondary-light mb-0">Show</span>
-                        <select class="form-select form-select-sm w-auto ps-12 py-6 radius-12 h-40-px">
-                            <option>10</option>
-                            <option>20</option>
-                            <option>50</option>
-                        </select>
-                    </div>
+                    class="card-header border-bottom bg-base py-16 px-24 d-flex align-items-center flex-wrap gap-3 justify-content-end">
                     <a href="{{ route("admin.create") }}"
                         class="btn btn-primary text-sm btn-sm px-12 py-12 radius-8 d-flex align-items-center gap-2">
                         <iconify-icon icon="ic:baseline-plus" class="icon text-xl line-height-1"></iconify-icon>
@@ -59,7 +51,7 @@
                 </div>
                 <div class="card-body p-24">
                     <div class="table-responsive scroll-sm">
-                        <table class="table bordered-table sm-table mb-0">
+                        <table class="table bordered-table sm-table mb-0" id="dataTable">
                             <thead>
                                 <tr>
                                     <th scope="col">No</th>
@@ -72,9 +64,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($admins as $index => $admin)
+                                @forelse($admins as $admin)
                                     <tr>
-                                        <td>{{ $admins->firstItem() + $index }}</td>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>
                                             @if ($admin->foto)
                                                 <img src="{{ asset($admin->foto) }}" alt="{{ $admin->nama }}"
@@ -128,14 +120,6 @@
                                 @endforelse
                             </tbody>
                         </table>
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mt-24">
-                        <span>Showing {{ $admins->firstItem() ?? 0 }} to {{ $admins->lastItem() ?? 0 }} of
-                            {{ $admins->total() }} entries</span>
-                        <ul class="pagination d-flex flex-wrap align-items-center gap-2 justify-content-center">
-                            {{ $admins->links("pagination::bootstrap-4") }}
-                        </ul>
                     </div>
                 </div>
             </div>

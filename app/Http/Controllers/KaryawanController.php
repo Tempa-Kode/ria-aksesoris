@@ -13,7 +13,7 @@ class KaryawanController extends Controller
      */
     public function index()
     {
-        $karyawans = User::where('role', 'karyawan')->latest()->paginate(10);
+        $karyawans = User::where('role', 'karyawan')->latest()->get();
         return view('karyawan.index', compact('karyawans'));
     }
 
