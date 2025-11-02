@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class Invoice extends Model
+{
+    protected $table = 'invoice';
+
+    protected $fillable = [
+        'kode_invoice',
+        'tanggal',
+        'customer_id',
+        'nama',
+        'no_hp',
+        'alamat',
+        'total_bayar',
+        'status_pembayaran',
+        'status_pengiriman',
+        'resi',
+        'bukti_pembayaran',
+    ];
+
+    public function customer() : BelongsTo
+    {
+        return $this->belongsTo(User::class, 'customer_id', 'id');
+    }
+
+    public function produk() : BelongsTo
+    {
+        return $this->belongsTo(Produk::class, 'produk_id', 'id');
+    }
+}
