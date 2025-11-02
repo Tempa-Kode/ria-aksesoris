@@ -25,25 +25,19 @@
             </li>
             <li>
                 <a href="chat-message.php">
-                    <iconify-icon icon="bi:chat-dots" class="menu-icon"></iconify-icon>
+                    <iconify-icon icon="flowbite:store-outline" class="menu-icon"></iconify-icon>
                     <span>Data Produk</span>
                 </a>
             </li>
             <li>
-                <a href="calendar-main.php">
-                    <iconify-icon icon="solar:calendar-outline" class="menu-icon"></iconify-icon>
-                    <span>Data Customer</span>
-                </a>
-            </li>
-            <li>
                 <a href="kanban.php">
-                    <iconify-icon icon="material-symbols:map-outline" class="menu-icon"></iconify-icon>
+                    <iconify-icon icon="flowbite:cart-outline" class="menu-icon"></iconify-icon>
                     <span>Transaksi/Pesanan</span>
                 </a>
             </li>
             <li>
                 <a href="kanban.php">
-                    <iconify-icon icon="material-symbols:map-outline" class="menu-icon"></iconify-icon>
+                    <iconify-icon icon="flowbite:file-chart-bar-outline" class="menu-icon"></iconify-icon>
                     <span>Laporan Penjualan</span>
                 </a>
             </li>
