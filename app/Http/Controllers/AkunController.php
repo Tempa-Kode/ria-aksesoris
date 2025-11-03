@@ -1,0 +1,114 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\Invoice;
+
+class AkunController extends Controller
+{
+    // Dashboard Akun Saya
+    public function index()
+    {
+        $user = Auth::user();
+
+        $recentOrders = Invoice::where('customer_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->limit(3)
+            ->get();
+
+        return view('akun-saya', compact('recentOrders'));
+    }
+
+    // Halaman Pesanan
+    public function pesanan()
+    {
+        $user = Auth::user();
+
+        $orders = Invoice::where('customer_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('akun-pesanan', compact('orders'));
+    }
+
+    // Detail Pesanan
+    public function pesananDetail($id)
+    {
+        $user = Auth::user();
+
+        // Uncomment jika sudah menggunakan Invoice
+        // $order = Invoice::where('user_id', $user->id)
+        //     ->where('id', $id)
+        //     ->with('items.produk')
+        //     ->firstOrFail();
+
+        // Sementara redirect ke halaman pesanan
+        return redirect()->route('akun.pesanan');
+    }
+
+    // Halaman Alamat
+    public function alamat()
+    {
+        $user = Auth::user();
+
+        return view('akun-alamat', compact('user'));
+    }
+
+    // Update Alamat
+    public function updateAlamat(Request $request)
+    {
+        $request->validate([
+            'alamat' => 'required|string',
+        ]);
+
+        $user = Auth::user();
+        $user->alamat = $request->alamat;
+        $user->save();
+
+        return redirect()->route('akun.alamat')->with('success', 'Alamat berhasil diperbarui');
+    }
+
+    // Halaman Edit Akun
+    public function edit()
+    {
+        $user = Auth::user();
+
+        return view('akun-edit', compact('user'));
+    }
+
+    // Update Akun
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'nama' => 'required|string|max:25',
+            'email' => 'required|email|max:50|unique:users,email,' . $user->id,
+            'no_hp' => 'nullable|string|max:15',
+            'username' => 'nullable|string|max:20|unique:users,username,' . $user->id,
+            'current_password' => 'nullable|required_with:new_password',
+            'new_password' => 'nullable|min:8|confirmed',
+        ]);
+
+        $user->nama = $request->nama;
+        $user->email = $request->email;
+        $user->no_hp = $request->no_hp;
+        $user->username = $request->username;
+
+        // Update password jika diisi
+        if ($request->filled('current_password')) {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return back()->withErrors(['current_password' => 'Password saat ini tidak sesuai']);
+            }
+
+            $user->password = Hash::make($request->new_password);
+        }
+
+        $user->save();
+
+        return redirect()->route('akun.edit')->with('success', 'Akun berhasil diperbarui');
+    }
+}

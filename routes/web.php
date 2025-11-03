@@ -6,7 +6,18 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 Route::get('/login', [App\Http\Controllers\HomeController::class, 'index'])->name('login');
 Route::post('/login', [App\Http\Controllers\AuthController::class, 'login'])->name('auth.login');
 Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'dashboard'])->middleware('auth')->name('dashboard');
-Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->middleware('auth')->name('auth.logout');
+Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->middleware('auth')->name('logout');
+
+// Akun Routes (Customer)
+Route::middleware('auth')->prefix('akun')->name('akun.')->group(function () {
+    Route::get('/', [App\Http\Controllers\AkunController::class, 'index'])->name('saya');
+    Route::get('/pesanan', [App\Http\Controllers\AkunController::class, 'pesanan'])->name('pesanan');
+    Route::get('/pesanan/{id}', [App\Http\Controllers\AkunController::class, 'pesananDetail'])->name('pesanan.detail');
+    Route::get('/alamat', [App\Http\Controllers\AkunController::class, 'alamat'])->name('alamat');
+    Route::post('/alamat', [App\Http\Controllers\AkunController::class, 'updateAlamat'])->name('alamat.update');
+    Route::get('/edit', [App\Http\Controllers\AkunController::class, 'edit'])->name('edit');
+    Route::post('/edit', [App\Http\Controllers\AkunController::class, 'update'])->name('update');
+});
 
 // Admin Routes
 Route::middleware('auth')->group(function () {
