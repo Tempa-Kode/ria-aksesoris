@@ -115,7 +115,7 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="d-flex align-items-center gap-10 justify-content-center">
-                                                <a href="{{ route("produk.show", $produk->id) }}"
+                                                <a href="{{ route("detail-produk", $produk->id) }}"
                                                     class="bg-info-focus text-info-600 bg-hover-info-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                                                     title="Detail">
                                                     <iconify-icon icon="solar:eye-bold"
