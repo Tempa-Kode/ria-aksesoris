@@ -1,4 +1,5 @@
 @extends("template")
+@section('title', 'Beranda - Aksesoris Ria')
 @section("body")
     <div class="tf-product-view-content wrapper-control-shop">
         <div class="canvas-filter-product sidebar-filter handle-canvas left">
