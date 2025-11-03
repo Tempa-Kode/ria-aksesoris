@@ -113,23 +113,9 @@
                                             <fieldset>
                                                 <label>Upload Bukti Transfer <span class="text-danger">*</span></label>
                                                 <input type="file" name="bukti_transfer" id="bukti_transfer"
-                                                    accept="image/*" class="def" required>
+                                                    accept="image/*" class="def form-control" required>
                                                 <p class="caption text-main-2 mt-1">Format: JPG, PNG, JPEG (Max: 2MB)</p>
                                             </fieldset>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="payment-item">
-                                    <label for="cod-method" class="payment-header radio-item collapsed"
-                                        data-bs-toggle="collapse" data-bs-target="#cod-payment" aria-controls="cod-payment"
-                                        aria-expanded="false">
-                                        <input type="radio" name="payment-method" class="tf-check-rounded"
-                                            id="cod-method">
-                                        <span class="body-text-3">Bayar di Tempat (COD)</span>
-                                    </label>
-                                    <div id="cod-payment" class="collapse" data-bs-parent="#payment-box">
-                                        <div class="payment-body">
-                                            <p class="caption text-main-2">Bayar langsung saat barang diterima.</p>
                                         </div>
                                     </div>
                                 </div>

@@ -124,7 +124,7 @@
                                         <td><strong>Status Pembayaran:</strong></td>
                                         <td>
                                             @if ($invoice->status_pembayaran == "pending")
-                                                <span class="badge bg-warning text-dark">Menunggu Pembayaran</span>
+                                                <span class="badge bg-warning text-dark">Menunggu Konfirmasi     Pembayaran</span>
                                             @elseif($invoice->status_pembayaran == "terima")
                                                 <span class="badge bg-success">Terbayar</span>
                                             @else
@@ -210,17 +210,7 @@
                 @if ($invoice->status_pembayaran == "pending")
                     <div class="card mb-4">
                         <div class="card-body">
-                            <h5 class="card-title mb-3">Instruksi Pembayaran</h5>
-                            <div class="alert alert-info">
-                                <p class="mb-2"><strong>Silakan transfer ke salah satu rekening berikut:</strong></p>
-                                <p class="mb-1">🏦 <strong>Bank BCA:</strong> 1234567890</p>
-                                <p class="mb-1">🏦 <strong>Bank Mandiri:</strong> 0987654321</p>
-                                <p class="mb-3">a.n. <strong>Aksesoris Ria</strong></p>
-                                <hr>
-                                <p class="mb-0"><strong>Jumlah yang harus ditransfer:</strong></p>
-                                <h4 class="text-primary mb-0">Rp. {{ number_format($invoice->total_bayar, 0, ",", ".") }}
-                                </h4>
-                            </div>
+                            <h5 class="card-title mb-3">Pembayaran</h5>
 
                             <!-- Upload Payment Proof -->
                             @if (!$invoice->bukti_pembayaran)

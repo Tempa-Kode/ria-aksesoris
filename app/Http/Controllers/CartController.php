@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice;
 use App\Models\ItemTransaksi;
+use App\Models\JenisProduk;
 use App\Models\Produk;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -105,22 +106,46 @@ class CartController extends Controller
                     throw new \Exception("Produk dengan ID {$item['id']} tidak ditemukan");
                 }
 
-                // Check stock
-                if ($produk->stok < $item['quantity']) {
-                    throw new \Exception("Stok produk {$produk->nama} tidak mencukupi");
+                // Check if item has variant/jenis
+                if (isset($item['jenis_id']) && $item['jenis_id']) {
+                    // Check stock from jenis_produk
+                    $jenisProduk = JenisProduk::find($item['jenis_id']);
+
+                    if (!$jenisProduk) {
+                        throw new \Exception("Varian produk tidak ditemukan");
+                    }                    if ($jenisProduk->jumlah_produk < $item['quantity']) {
+                        throw new \Exception("Stok varian {$jenisProduk->nama} dari produk {$produk->nama} tidak mencukupi");
+                    }
+
+                    // Create item transaction
+                    ItemTransaksi::create([
+                        'invoice_id' => $invoice->id,
+                        'produk_id' => $item['id'],
+                        'jenis_produk_id' => $item['jenis_id'],
+                        'jumlah' => $item['quantity'],
+                        'subtotal' => $item['harga'] * $item['quantity'],
+                    ]);
+
+                    // Update jenis produk stock
+                    $jenisProduk->decrement('jumlah_produk', $item['quantity']);
+                } else {
+                    // Check stock from produk (no variant)
+                    if ($produk->stok < $item['quantity']) {
+                        throw new \Exception("Stok produk {$produk->nama} tidak mencukupi");
+                    }
+
+                    // Create item transaction
+                    ItemTransaksi::create([
+                        'invoice_id' => $invoice->id,
+                        'produk_id' => $item['id'],
+                        'jenis_produk_id' => null,
+                        'jumlah' => $item['quantity'],
+                        'subtotal' => $item['harga'] * $item['quantity'],
+                    ]);
+
+                    // Update product stock
+                    $produk->decrement('stok', $item['quantity']);
                 }
-
-                // Create item transaction
-                ItemTransaksi::create([
-                    'invoice_id' => $invoice->id,
-                    'produk_id' => $item['id'],
-                    'jenis_produk_id' => $item['jenis_id'] ?? null,
-                    'jumlah' => $item['quantity'],
-                    'subtotal' => $item['harga'] * $item['quantity'],
-                ]);
-
-                // Update product stock
-                $produk->decrement('stok', $item['quantity']);
             }
 
             DB::commit();

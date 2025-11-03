@@ -154,18 +154,20 @@
                                                     </div>
                                                 </div>
                                             @endif
-                                            <div class="product-box-btn">
-                                                <a href="#shoppingCart" data-bs-toggle="offcanvas"
-                                                    class="tf-btn text-white btn-add-to-cart"
-                                                    data-product-id="{{ $produk->id }}"
-                                                    data-product-nama="{{ $produk->nama }}"
-                                                    data-product-harga="{{ $produk->harga }}"
-                                                    data-product-gambar="{{ $produk->gambarProduk->first() ? asset($produk->gambarProduk->first()->path_gambar) : asset("home/images/no-image.png") }}"
-                                                    data-product-kategori="{{ $produk->kategori->nama }}">
-                                                    Tambah Keranjang
-                                                    <i class="icon-cart-2"></i>
-                                                </a>
-                                            </div>
+                                            @auth
+                                                <div class="product-box-btn">
+                                                    <a href="#shoppingCart" data-bs-toggle="offcanvas"
+                                                        class="tf-btn text-white btn-add-to-cart"
+                                                        data-product-id="{{ $produk->id }}"
+                                                        data-product-nama="{{ $produk->nama }}"
+                                                        data-product-harga="{{ $produk->harga }}"
+                                                        data-product-gambar="{{ $produk->gambarProduk->first() ? asset($produk->gambarProduk->first()->path_gambar) : asset("home/images/no-image.png") }}"
+                                                        data-product-kategori="{{ $produk->kategori->nama }}">
+                                                        Tambah Keranjang
+                                                        <i class="icon-cart-2"></i>
+                                                    </a>
+                                                </div>
+                                            @endauth
                                         </div>
                                     </div>
                                     <div class="infor-bottom">
