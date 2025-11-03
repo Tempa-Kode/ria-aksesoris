@@ -1,6 +1,26 @@
 @extends("template")
-@section('title', 'Beranda - Aksesoris Ria')
+@section("title", "Beranda - Aksesoris Ria")
 @section("body")
+<!-- Breakcrumbs -->
+    <div class="tf-sp-1">
+        <div class="container">
+            <ul class="breakcrumbs">
+                <li>
+                    <a href="index.html" class="body-small link">
+                        Home
+                    </a>
+                </li>
+                <li class="d-flex align-items-center">
+                    <i class="icon icon-arrow-right"></i>
+                </li>
+                <li>
+                    <span class="body-small">Produk</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /Breakcrumbs -->
+
     <div class="tf-product-view-content wrapper-control-shop">
         <div class="canvas-filter-product sidebar-filter handle-canvas left">
             <div class="canvas-wrapper">
@@ -66,30 +86,36 @@
                     </div>
                 </div>
                 <div class="tf-control-view flat-title-tab-product flex-wrap">
-                    <form action="{{ route('home') }}" method="get" class="d-inline-block">
-                        @foreach(request()->except('sort', 'page') as $key => $value)
+                    <form action="{{ route("home") }}" method="get" class="d-inline-block">
+                        @foreach (request()->except("sort", "page") as $key => $value)
                             <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                         @endforeach
 
                         <select name="show" class="form-select" onchange="this.form.submit()">
-                            <option value="5" {{ request('show') == '5' ? 'selected' : '' }}>Show: 5</option>
-                            <option value="10" {{ request('show') == '10' ? 'selected' : '' }}>Show: 10</option>
-                            <option value="15" {{ request('show') == '15' ? 'selected' : '' }}>Show: 15</option>
-                            <option value="20" {{ request('show') == '20' ? 'selected' : '' }}>Show: 20</option>
-                            <option value="50" {{ !request('show') || request('show') == '50' ? 'selected' : '' }}>Show: 50</option>
+                            <option value="5" {{ request("show") == "5" ? "selected" : "" }}>Show: 5</option>
+                            <option value="10" {{ request("show") == "10" ? "selected" : "" }}>Show: 10</option>
+                            <option value="15" {{ request("show") == "15" ? "selected" : "" }}>Show: 15</option>
+                            <option value="20" {{ request("show") == "20" ? "selected" : "" }}>Show: 20</option>
+                            <option value="50" {{ !request("show") || request("show") == "50" ? "selected" : "" }}>
+                                Show: 50</option>
                         </select>
                     </form>
-                    <form action="{{ route('home') }}" method="GET" class="d-inline-block">
-                        @foreach(request()->except('sort', 'page') as $key => $value)
+                    <form action="{{ route("home") }}" method="GET" class="d-inline-block">
+                        @foreach (request()->except("sort", "page") as $key => $value)
                             <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                         @endforeach
 
                         <select name="sort" class="form-select" onchange="this.form.submit()">
-                            <option value="" {{ !request('sort') ? 'selected' : '' }}>Sort by: <i class="icon-arrow-down fs-10"></i></option>
-                            <option value="a-z" {{ request('sort') == 'a-z' ? 'selected' : '' }}>Alphabetically, A-Z</option>
-                            <option value="z-a" {{ request('sort') == 'z-a' ? 'selected' : '' }}>Alphabetically, Z-A</option>
-                            <option value="price-low-high" {{ request('sort') == 'price-low-high' ? 'selected' : '' }}>Price, low to high</option>
-                            <option value="price-high-low" {{ request('sort') == 'price-high-low' ? 'selected' : '' }}>Price, high to low</option>
+                            <option value="" {{ !request("sort") ? "selected" : "" }}>Sort by: <i
+                                    class="icon-arrow-down fs-10"></i></option>
+                            <option value="a-z" {{ request("sort") == "a-z" ? "selected" : "" }}>Alphabetically, A-Z
+                            </option>
+                            <option value="z-a" {{ request("sort") == "z-a" ? "selected" : "" }}>Alphabetically, Z-A
+                            </option>
+                            <option value="price-low-high" {{ request("sort") == "price-low-high" ? "selected" : "" }}>
+                                Price, low to high</option>
+                            <option value="price-high-low" {{ request("sort") == "price-high-low" ? "selected" : "" }}>
+                                Price, high to low</option>
                         </select>
                     </form>
                 </div>
@@ -117,8 +143,7 @@
                         @if ($selectedKategori)
                             <span class="filter-tag">
                                 Kategori: {{ $selectedKategori->nama }}
-                                <a href="{{ route("home", request()->except("kategori", "page")) }}"
-                                    class="remove-filter">
+                                <a href="{{ route("home", request()->except("kategori", "page")) }}" class="remove-filter">
                                     <i class="icon icon-close"></i>
                                 </a>
                             </span>
@@ -138,7 +163,7 @@
                     @forelse ($produk as $item)
                         <div class="card-product" data-condition="Old" data-brand="steelseri" data-rate="5 Star">
                             <div class="card-product-wrapper">
-                                <a href="product-detail.html" class="product-img">
+                                <a href="{{ route("produk.detail", $item->id) }}" class="product-img">
                                     @if ($item->gambarProduk->first())
                                         <img class="img-product lazyload"
                                             src="{{ asset($item->gambarProduk->first()->path_gambar) }}"
@@ -169,14 +194,14 @@
                                 <div class="box-title">
                                     <div>
                                         {{-- <p class="product-tag caption text-main-2 d-none">Headphone</p> --}}
-                                        <a href="product-detail.html"
+                                        <a href="{{ route("produk.detail", $item->id) }}"
                                             class="name-product body-md-2 fw-semibold text-secondary link">
                                             {{ $item->nama }}
                                         </a>
                                     </div>
                                     <p class="price-wrap fw-medium">
                                         <span class="new-price price-text fw-medium">Rp.
-                                            {{ number_format($item->harga, 2) }}</span>
+                                            {{ number_format($item->harga, 0, ",", ".") }}</span>
                                     </p>
                                 </div>
                                 <div class="box-infor-detail">
@@ -283,8 +308,7 @@
                             </li>
                             <li class="br-line type-vertical bg-line h23"></li>
                             <li class="nav-tab-item" role="presentation">
-                                <a href="#category" class="tab-link link fw-semibold"
-                                    data-bs-toggle="tab">Kategori</a>
+                                <a href="#category" class="tab-link link fw-semibold" data-bs-toggle="tab">Kategori</a>
                             </li>
                         </ul>
                     </div>
@@ -308,8 +332,7 @@
                                 <ul class="nav-ul-mb">
                                     @forelse ($kategori as $item)
                                         <li class="nav-mb-item">
-                                            <a href="#"
-                                                class="mb-menu-link"><span>{{ $item->nama }}</span></a>
+                                            <a href="#" class="mb-menu-link"><span>{{ $item->nama }}</span></a>
                                         </li>
                                     @empty
                                         <li class="nav-mb-item">

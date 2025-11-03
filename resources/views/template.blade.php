@@ -15,7 +15,9 @@
     <!-- css -->
     <link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
     <link rel="stylesheet" href="{{ asset("home/css/bootstrap.min.css") }}">
+    <link rel="stylesheet" href="{{ asset("home/css/drift-basic.min.css") }}">
     <link rel="stylesheet" href="{{ asset("home/css/nice-select.css") }}">
+    <link rel="stylesheet" href="{{ asset("home/css/photoswipe.css") }}">
     <link rel="stylesheet" href="{{ asset("home/css/swiper-bundle.min.css") }}">
     <link rel="stylesheet" href="{{ asset("home/css/animate.css") }}">
     <link rel="stylesheet" type="text/css" href="{{ asset("home/css/styles.css") }}">
@@ -155,25 +157,7 @@
         </header>
         <!-- /Header -->
 
-        <!-- Breakcrumbs -->
-        <div class="tf-sp-1">
-            <div class="container">
-                <ul class="breakcrumbs">
-                    <li>
-                        <a href="index.html" class="body-small link">
-                            Home
-                        </a>
-                    </li>
-                    <li class="d-flex align-items-center">
-                        <i class="icon icon-arrow-right"></i>
-                    </li>
-                    <li>
-                        <span class="body-small">Produk</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <!-- /Breakcrumbs -->
+
         <!-- Main Content -->
         <div class="flat-content">
             <div class="container">
@@ -275,6 +259,7 @@
     <script src="{{ asset("home/js/bootstrap-select.min.js") }}"></script>
     <script src="{{ asset("home/js/lazysize.min.js") }}"></script>
     <script src="{{ asset("home/js/count-down.js") }}"></script>
+    <script src="{{ asset("home/js/drift.min.js") }}"></script>
     <script src="{{ asset("home/js/wow.min.js") }}"></script>
     <script src="{{ asset("home/js/multiple-modal.js") }}"></script>
     <script src="{{ asset("home/js/infinityslide.js") }}"></script>
@@ -282,6 +267,7 @@
     <script src="{{ asset("home/js/main.js") }}"></script>
     <script src="{{ asset("home/js/sibforms.js") }}" defer></script>
     <script src="{{ asset("home/js/filter-custom.js") }}"></script>
+    <script type="module" src="{{ asset("home/js/zoom.js") }}"></script>
     <script>
         window.REQUIRED_CODE_ERROR_MESSAGE = 'Please choose a country code';
         window.LOCALE = 'en';

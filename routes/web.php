@@ -8,6 +8,9 @@ Route::post('/login', [App\Http\Controllers\AuthController::class, 'login'])->na
 Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'dashboard'])->middleware('auth')->name('dashboard');
 Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
+// Product Detail Routes
+Route::get('/produk/{id}', [App\Http\Controllers\ProdukDetailController::class, 'show'])->name('produk.detail');
+
 // Akun Routes (Customer)
 Route::middleware('auth')->prefix('akun')->name('akun.')->group(function () {
     Route::get('/', [App\Http\Controllers\AkunController::class, 'index'])->name('saya');
