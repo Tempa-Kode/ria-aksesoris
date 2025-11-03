@@ -65,72 +65,32 @@
                     </div>
                 </div>
                 <div class="tf-control-view flat-title-tab-product flex-wrap">
-                    <div class="tf-my-dropdown tf-control-show nice-select" tabindex="0">
-                        <div class="btn-select">
-                            <i class="icon-menu-dots"></i>
-                            <p class="body-text-3 w-100 current">Show: {{ request("show", 50) }}</p>
-                            <i class="icon-arrow-down fs-10"></i>
-                        </div>
-                        <ul class="list">
-                            <li class="option select-item {{ request("show") == 5 ? "selected" : "" }}">
-                                <a href="{{ route("home", ["show" => 5] + request()->except("show", "page")) }}"
-                                    class="text-value-item">Show: 5</a>
-                            </li>
-                            <li class="option select-item {{ request("show") == 10 ? "selected" : "" }}">
-                                <a href="{{ route("home", ["show" => 10] + request()->except("show", "page")) }}"
-                                    class="text-value-item">Show: 10</a>
-                            </li>
-                            <li class="option select-item {{ request("show") == 15 ? "selected" : "" }}">
-                                <a href="{{ route("home", ["show" => 15] + request()->except("show", "page")) }}"
-                                    class="text-value-item">Show: 15</a>
-                            </li>
-                            <li class="option select-item {{ request("show") == 20 ? "selected" : "" }}">
-                                <a href="{{ route("home", ["show" => 20] + request()->except("show", "page")) }}"
-                                    class="text-value-item">Show: 20</a>
-                            </li>
-                            <li
-                                class="option select-item {{ !request("show") || request("show") == 50 ? "selected" : "" }}">
-                                <a href="{{ route("home", ["show" => 50] + request()->except("show", "page")) }}"
-                                    class="text-value-item">Show: 50</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="tf-dropdown-sort tf-sort type-sort-by" data-bs-toggle="dropdown">
-                        <div class="btn-select w-100">
-                            <i class="icon-sort"></i>
-                            <p class="body-text-3 w-100">Sort by: <span class="text-sort-value">
-                                    @php
-                                        $sortLabels = [
-                                            "best-selling" => "Featured",
-                                            "a-z" => "Alphabetically, A-Z",
-                                            "z-a" => "Alphabetically, Z-A",
-                                            "price-low-high" => "Price, low to high",
-                                            "price-high-low" => "Price, high to low",
-                                        ];
-                                        echo $sortLabels[request("sort", "best-selling")];
-                                    @endphp
-                                </span></p>
-                            <i class="icon-arrow-down fs-10"></i>
-                        </div>
-                        <div class="dropdown-menu">
-                            <div class="select-item {{ request("sort") == "a-z" ? "active" : "" }}">
-                                <a href="{{ route("home", ["sort" => "a-z"] + request()->except("sort", "page")) }}"
-                                    class="text-value-item">Alphabetically, A-Z</a>
-                            </div>
-                            <div class="select-item {{ request("sort") == "z-a" ? "active" : "" }}">
-                                <a href="{{ route("home", ["sort" => "z-a"] + request()->except("sort", "page")) }}"
-                                    class="text-value-item">Alphabetically, Z-A</a>
-                            </div>
-                            <div class="select-item {{ request("sort") == "price-low-high" ? "active" : "" }}">
-                                <a href="{{ route("home", ["sort" => "price-low-high"] + request()->except("sort", "page")) }}"
-                                    class="text-value-item">Price, low to high</a>
-                            </div>
-                            <div class="select-item {{ request("sort") == "price-high-low" ? "active" : "" }}">
-                                <a href="{{ route("home", ["sort" => "price-high-low"] + request()->except("sort", "page")) }}"
-                                    class="text-value-item">Price, high to low</a>
-                            </div>
-                        </div>
-                    </div>
+                    <form action="{{ route('home') }}" method="get" class="d-inline-block">
+                        @foreach(request()->except('sort', 'page') as $key => $value)
+                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                        @endforeach
+
+                        <select name="show" class="form-select" onchange="this.form.submit()">
+                            <option value="5" {{ request('show') == '5' ? 'selected' : '' }}>Show: 5</option>
+                            <option value="10" {{ request('show') == '10' ? 'selected' : '' }}>Show: 10</option>
+                            <option value="15" {{ request('show') == '15' ? 'selected' : '' }}>Show: 15</option>
+                            <option value="20" {{ request('show') == '20' ? 'selected' : '' }}>Show: 20</option>
+                            <option value="50" {{ !request('show') || request('show') == '50' ? 'selected' : '' }}>Show: 50</option>
+                        </select>
+                    </form>
+                    <form action="{{ route('home') }}" method="GET" class="d-inline-block">
+                        @foreach(request()->except('sort', 'page') as $key => $value)
+                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                        @endforeach
+
+                        <select name="sort" class="form-select" onchange="this.form.submit()">
+                            <option value="" {{ !request('sort') ? 'selected' : '' }}>Sort by: <i class="icon-arrow-down fs-10"></i></option>
+                            <option value="a-z" {{ request('sort') == 'a-z' ? 'selected' : '' }}>Alphabetically, A-Z</option>
+                            <option value="z-a" {{ request('sort') == 'z-a' ? 'selected' : '' }}>Alphabetically, Z-A</option>
+                            <option value="price-low-high" {{ request('sort') == 'price-low-high' ? 'selected' : '' }}>Price, low to high</option>
+                            <option value="price-high-low" {{ request('sort') == 'price-high-low' ? 'selected' : '' }}>Price, high to low</option>
+                        </select>
+                    </form>
                 </div>
             </div>
             <div class="meta-filter-shop"
