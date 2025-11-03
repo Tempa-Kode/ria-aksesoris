@@ -6,6 +6,7 @@ use App\Models\Invoice;
 use App\Models\ItemTransaksi;
 use App\Models\JenisProduk;
 use App\Models\Produk;
+use App\Models\RiwayatStokProduk;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -113,9 +114,14 @@ class CartController extends Controller
 
                     if (!$jenisProduk) {
                         throw new \Exception("Varian produk tidak ditemukan");
-                    }                    if ($jenisProduk->jumlah_produk < $item['quantity']) {
+                    }
+
+                    if ($jenisProduk->jumlah_produk < $item['quantity']) {
                         throw new \Exception("Stok varian {$jenisProduk->nama} dari produk {$produk->nama} tidak mencukupi");
                     }
+
+                    // Save stock before update
+                    $stokAwal = $jenisProduk->jumlah_produk;
 
                     // Create item transaction
                     ItemTransaksi::create([
@@ -128,11 +134,25 @@ class CartController extends Controller
 
                     // Update jenis produk stock
                     $jenisProduk->decrement('jumlah_produk', $item['quantity']);
+
+                    // Record stock history for variant
+                    RiwayatStokProduk::create([
+                        'produk_id' => $item['id'],
+                        'jenis_produk_id' => $item['jenis_id'],
+                        'tanggal' => now()->toDateString(),
+                        'stok_awal' => $stokAwal,
+                        'stok_masuk' => 0,
+                        'stok_keluar' => $item['quantity'],
+                        'stok_akhir' => $stokAwal - $item['quantity'],
+                    ]);
                 } else {
                     // Check stock from produk (no variant)
                     if ($produk->stok < $item['quantity']) {
                         throw new \Exception("Stok produk {$produk->nama} tidak mencukupi");
                     }
+
+                    // Save stock before update
+                    $stokAwal = $produk->stok;
 
                     // Create item transaction
                     ItemTransaksi::create([
@@ -145,6 +165,17 @@ class CartController extends Controller
 
                     // Update product stock
                     $produk->decrement('stok', $item['quantity']);
+
+                    // Record stock history for main product
+                    RiwayatStokProduk::create([
+                        'produk_id' => $item['id'],
+                        'jenis_produk_id' => null,
+                        'tanggal' => now()->toDateString(),
+                        'stok_awal' => $stokAwal,
+                        'stok_masuk' => 0,
+                        'stok_keluar' => $item['quantity'],
+                        'stok_akhir' => $stokAwal - $item['quantity'],
+                    ]);
                 }
             }
 
