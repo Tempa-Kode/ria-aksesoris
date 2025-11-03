@@ -23,13 +23,17 @@ class Invoice extends Model
         'bukti_pembayaran',
     ];
 
+    protected $casts = [
+        'tanggal' => 'date',
+    ];
+
     public function customer() : BelongsTo
     {
         return $this->belongsTo(User::class, 'customer_id', 'id');
     }
 
-    public function produk() : BelongsTo
+    public function itemTransaksi()
     {
-        return $this->belongsTo(Produk::class, 'produk_id', 'id');
+        return $this->hasMany(ItemTransaksi::class, 'invoice_id');
     }
 }

@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="{{ asset("home/css/animate.css") }}">
     <link rel="stylesheet" type="text/css" href="{{ asset("home/css/styles.css") }}">
     <link rel="stylesheet" type="text/css" href="{{ asset("home/css/filter-custom.css") }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset("home/css/cart-custom.css") }}">
 
     <!-- Favicon and Touch Icons  -->
     <link rel="shortcut icon" href="{{ asset("home/images/logo/short-logo.svg") }}">
@@ -122,7 +123,8 @@
                                     @endauth
                                     @guest
                                         <li class="nav-account">
-                                            <a href="#log" data-bs-toggle="modal" class="link nav-icon-item link-fill">
+                                            <a href="#log" data-bs-toggle="modal"
+                                                class="link nav-icon-item link-fill">
                                                 <span>
                                                     <svg width="26" height="26" viewBox="0 0 22 23"
                                                         fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -156,7 +158,6 @@
             </div>
         </header>
         <!-- /Header -->
-
 
         <!-- Main Content -->
         <div class="flat-content">
@@ -249,6 +250,9 @@
     <!-- Register -->
     @include("partials.register")
     <!-- /Register -->
+    <!-- Shopping Cart -->
+    @include("partials.shopping-cart")
+    <!-- /Shopping Cart -->
 
     <!-- Javascript -->
     <script src="{{ asset("home/js/bootstrap.min.js") }}"></script>
@@ -268,6 +272,8 @@
     <script src="{{ asset("home/js/sibforms.js") }}" defer></script>
     <script src="{{ asset("home/js/filter-custom.js") }}"></script>
     <script type="module" src="{{ asset("home/js/zoom.js") }}"></script>
+    <script src="{{ asset("home/js/cart.js") }}"></script>
+    @stack("scripts")
     <script>
         window.REQUIRED_CODE_ERROR_MESSAGE = 'Please choose a country code';
         window.LOCALE = 'en';

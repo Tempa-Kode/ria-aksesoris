@@ -11,6 +11,13 @@ Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->
 // Product Detail Routes
 Route::get('/produk/{id}', [App\Http\Controllers\ProdukDetailController::class, 'show'])->name('produk.detail');
 
+// Cart & Checkout Routes
+Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart');
+Route::get('/checkout', [App\Http\Controllers\CartController::class, 'checkout'])->name('checkout');
+Route::post('/checkout/process', [App\Http\Controllers\CartController::class, 'processCheckout'])->name('checkout.process');
+Route::get('/order/confirmation/{id}', [App\Http\Controllers\CartController::class, 'orderConfirmation'])->name('order.confirmation');
+Route::post('/order/payment-proof/{id}', [App\Http\Controllers\CartController::class, 'uploadPaymentProof'])->name('order.payment.proof');
+
 // Akun Routes (Customer)
 Route::middleware('auth')->prefix('akun')->name('akun.')->group(function () {
     Route::get('/', [App\Http\Controllers\AkunController::class, 'index'])->name('saya');
