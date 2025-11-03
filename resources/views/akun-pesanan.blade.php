@@ -27,37 +27,33 @@
                     </div>
                 </div>
                 <div class="col-lg-9">
-                    <div class="my-account-content account-order">
+                    <div class="my-account-content account-dashboard">
                         <h3 class="fw-semibold mb-30">Pesanan Saya</h3>
 
                         @if ($orders->count() > 0)
-                            <div class="table-responsive">
-                                <table class="table table-hover">
+                            <div class="tf-order_history-table">
+                                <table class="table_def">
                                     <thead>
                                         <tr>
-                                            <th>No. Pesanan</th>
-                                            <th>Tanggal</th>
-                                            <th>Status</th>
-                                            <th>Total</th>
-                                            <th>Aksi</th>
+                                            <th class="title-sidebar fw-medium">Order ID</th>
+                                            <th class="title-sidebar fw-medium">Date</th>
+                                            <th class="title-sidebar fw-medium">Status</th>
+                                            <th class="title-sidebar fw-medium">Total</th>
+                                            <th class="title-sidebar fw-medium">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($orders as $order)
-                                            <tr>
-                                                <td>#{{ $order->id }}</td>
-                                                <td>{{ $order->created_at->format("d M Y") }}</td>
-                                                <td>
-                                                    <span class="badge bg-primary">{{ $order->status }}</span>
-                                                </td>
-                                                <td>Rp {{ number_format($order->total, 0, ",", ".") }}</td>
-                                                <td>
-                                                    <a href="{{ route("akun.pesanan.detail", $order->id) }}"
-                                                        class="btn btn-sm btn-outline-primary">
-                                                        Lihat Detail
-                                                    </a>
-                                                </td>
-                                            </tr>
+                                        <tr class="td-order-item">
+                                            <td class="body-text-3">#{{ $order->kode_invoice }}</td>
+                                            <td class="body-text-3">{{ $order->created_at->format("d M Y") }} </td>
+                                            <td class="body-text-3"><span class="badge bg-primary">{{ $order->status_pengiriman ? 'Dikirim' : 'Belum Dikirim' }}</span></td>
+                                            <td class="body-text-3">Rp {{ number_format($order->total_bayar, 0, ",", ".") }}</td>
+                                            <td><a href="{{ route("order.confirmation", $order->id) }}" class="tf-btn btn-small d-inline-flex">
+                                                    <span class="text-white">Detail</span>
+                                                </a>
+                                            </td>
+                                        </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
