@@ -81,10 +81,6 @@
                                 <label>Alamat Lengkap <span class="text-danger">*</span></label>
                                 <textarea name="alamat" rows="4" placeholder="Alamat lengkap untuk pengiriman" required>{{ $customer->alamat ?? "" }}</textarea>
                             </fieldset>
-                            <fieldset>
-                                <label>Catatan Pesanan (Opsional)</label>
-                                <textarea name="catatan" rows="3" placeholder="Catatan untuk pesanan Anda (opsional)"></textarea>
-                            </fieldset>
                         </form>
                     </div>
 
@@ -105,16 +101,21 @@
                                     </label>
                                     <div id="bank-transfer-payment" class="collapse show" data-bs-parent="#payment-box">
                                         <div class="payment-body">
-                                            <div class="alert alert-warning mb-0">
+                                            <div class="alert alert-warning mb-3">
                                                 <p class="mb-2 body-text-3"><strong>Transfer ke:</strong></p>
                                                 <p class="mb-1 body-text-4">Bank BCA: 1234567890</p>
                                                 <p class="mb-1 body-text-4">Bank Mandiri: 0987654321</p>
                                                 <p class="mb-2 body-text-4">a.n. Aksesoris Ria</p>
                                                 <p class="mb-0 caption text-main-2">
-                                                    Silakan transfer sesuai total pembayaran dan upload bukti transfer
-                                                    setelah checkout.
+                                                    Silakan transfer sesuai total pembayaran dan upload bukti transfer.
                                                 </p>
                                             </div>
+                                            <fieldset>
+                                                <label>Upload Bukti Transfer <span class="text-danger">*</span></label>
+                                                <input type="file" name="bukti_transfer" id="bukti_transfer"
+                                                    accept="image/*" class="def" required>
+                                                <p class="caption text-main-2 mt-1">Format: JPG, PNG, JPEG (Max: 2MB)</p>
+                                            </fieldset>
                                         </div>
                                     </div>
                                 </div>
@@ -148,15 +149,6 @@
                         <ul class="list-product" id="checkout-summary">
                             <!-- Items will be dynamically inserted -->
                         </ul>
-                        <div class="">
-                            <p class="body-md-2 fw-semibold sub-type">Kode Diskon</p>
-                            <form class="ip-discount-code style-2">
-                                <input type="text" class="def" placeholder="Kode Anda" disabled>
-                                <button type="submit" class="tf-btn btn-gray-2" disabled>
-                                    <span>Terapkan</span>
-                                </button>
-                            </form>
-                        </div>
                         <ul class="sec-total-price">
                             <li><span class="body-text-3">Subtotal</span><span class="body-text-3"
                                     id="checkout-subtotal">Rp. 0</span></li>
@@ -234,7 +226,26 @@
                     return;
                 }
 
-                const formData = new FormData(form);
+                // Check payment method
+                const paymentMethod = document.querySelector('input[name="payment-method"]:checked');
+                const buktiTransferInput = document.getElementById('bukti_transfer');
+
+                // Validate bukti transfer if bank transfer is selected
+                if (paymentMethod && paymentMethod.id === 'bank-transfer-method') {
+                    if (!buktiTransferInput.files || buktiTransferInput.files.length === 0) {
+                        alert('Silakan upload bukti transfer!');
+                        buktiTransferInput.focus();
+                        return;
+                    }
+
+                    // Validate file size (max 2MB)
+                    const file = buktiTransferInput.files[0];
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert('Ukuran file maksimal 2MB!');
+                        buktiTransferInput.value = '';
+                        return;
+                    }
+                }
 
                 // Get cart from localStorage
                 const cartData = localStorage.getItem('ria_shopping_cart');
@@ -249,22 +260,22 @@
                 this.disabled = true;
                 this.innerHTML = '<span class="text-white">Memproses...</span>';
 
-                // Prepare data
-                const data = {
-                    _token: formData.get('_token'),
-                    nama: formData.get('nama'),
-                    no_hp: formData.get('no_hp'),
-                    alamat: formData.get('alamat'),
-                    catatan: formData.get('catatan'),
-                    cart_data: JSON.stringify(cart)
-                }; // Send to server
+                // Prepare FormData with file upload
+                const formData = new FormData(form);
+                formData.append('cart_data', JSON.stringify(cart));
+
+                // Add bukti transfer if exists
+                if (buktiTransferInput.files && buktiTransferInput.files.length > 0) {
+                    formData.append('bukti_transfer', buktiTransferInput.files[0]);
+                }
+
+                // Send to server
                 fetch('{{ route("checkout.process") }}', {
                         method: 'POST',
                         headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': data._token
+                            'X-CSRF-TOKEN': formData.get('_token')
                         },
-                        body: JSON.stringify(data)
+                        body: formData
                     })
                     .then(response => response.json())
                     .then(data => {
@@ -294,6 +305,18 @@
                         this.disabled = false;
                         this.innerHTML = '<span class="text-white">Buat Pesanan</span>';
                     });
+            });
+
+            // Toggle bukti transfer required based on payment method
+            document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const buktiTransferInput = document.getElementById('bukti_transfer');
+                    if (this.id === 'bank-transfer-method') {
+                        buktiTransferInput.setAttribute('required', 'required');
+                    } else {
+                        buktiTransferInput.removeAttribute('required');
+                    }
+                });
             });
 
             // Initial render - wait for DOM

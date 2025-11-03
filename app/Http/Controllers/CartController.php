@@ -42,6 +42,7 @@ class CartController extends Controller
             'no_hp' => 'required|string|max:15',
             'alamat' => 'required|string',
             'cart_data' => 'required|json',
+            'bukti_transfer' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         try {
@@ -63,6 +64,25 @@ class CartController extends Controller
             // Generate invoice code
             $kodeInvoice = 'INV-' . date('Ymd') . '-' . strtoupper(Str::random(6));
 
+            // Handle bukti transfer upload
+            $buktiPembayaran = null;
+            if ($request->hasFile('bukti_transfer')) {
+                $file = $request->file('bukti_transfer');
+                $filename = 'payment-' . $kodeInvoice . '-' . time() . '.' . $file->getClientOriginalExtension();
+
+                // Create directory if not exists
+                $uploadPath = public_path('uploads/payments');
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0777, true);
+                }
+
+                // Move file to public/uploads/payments
+                $file->move($uploadPath, $filename);
+
+                // Save relative path
+                $buktiPembayaran = 'uploads/payments/' . $filename;
+            }
+
             // Create invoice
             $invoice = Invoice::create([
                 'kode_invoice' => $kodeInvoice,
@@ -72,8 +92,9 @@ class CartController extends Controller
                 'no_hp' => $validated['no_hp'],
                 'alamat' => $validated['alamat'],
                 'total_bayar' => $totalBayar,
-                'status_pembayaran' => 'pending',
+                'status_pembayaran' => $buktiPembayaran ? 'pending' : 'pending',
                 'status_pengiriman' => false,
+                'bukti_pembayaran' => $buktiPembayaran,
             ]);
 
             // Create invoice items and update stock
