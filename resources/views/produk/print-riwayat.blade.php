@@ -166,7 +166,7 @@
 <body>
     <div class="action-buttons">
         <button class="btn btn-primary" onclick="window.print()">🖨️ Print / Save as PDF</button>
-        <a href="{{ route("produk.show", $produk->id) }}" class="btn btn-secondary">← Kembali</a>
+        <a href="{{ url()->previous() }}" class="btn btn-secondary">← Kembali</a>
     </div>
 
     <div class="header">
