@@ -9,9 +9,6 @@ Route::post('/register', [App\Http\Controllers\AuthController::class, 'register'
 Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'dashboard'])->middleware('auth')->name('dashboard');
 Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-// Product Detail Routes
-Route::get('/produk/{id}', [App\Http\Controllers\ProdukDetailController::class, 'show'])->name('produk.detail');
-
 // Cart & Checkout Routes
 Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart');
 Route::get('/checkout', [App\Http\Controllers\CartController::class, 'checkout'])->name('checkout');
@@ -48,8 +45,20 @@ Route::middleware('auth')->group(function () {
     Route::post('produk/{id}/stok/tambah', [App\Http\Controllers\ProdukController::class, 'tambahStok'])->name('produk.stok.tambah');
     Route::get('produk/{id}/riwayat-stok/print', [App\Http\Controllers\ProdukController::class, 'printRiwayatStok'])->name('produk.riwayat-stok.print');
 
+    Route::prefix('produk')->group(function () {
+        Route::get('/', [App\Http\Controllers\ProdukController::class, 'index'])->name('produk.index');
+        Route::get('/tambah', [App\Http\Controllers\ProdukController::class, 'create'])->name('produk.create');
+        Route::post('/', [App\Http\Controllers\ProdukController::class, 'store'])->name('produk.store');
+
+        // Product Detail Routes
+        Route::get('/detail/{id}', [App\Http\Controllers\ProdukDetailController::class, 'show'])->name('produk.detail');
+
+        Route::get('/{id}/edit', [App\Http\Controllers\ProdukController::class, 'edit'])->name('produk.edit');
+        Route::put('/{id}', [App\Http\Controllers\ProdukController::class, 'update'])->name('produk.update');
+        Route::delete('/{id}', [App\Http\Controllers\ProdukController::class, 'destroy'])->name('produk.destroy');
+    });
     Route::get('produk-detail/{id}', [App\Http\Controllers\ProdukController::class, 'show'])->name('detail-produk');
-    Route::resource('produk', App\Http\Controllers\ProdukController::class);
+    // Route::resource('produk', App\Http\Controllers\ProdukController::class);
 
     // Transaksi Routes
     Route::get('transaksi/{id}/invoice', [App\Http\Controllers\TransaksiController::class, 'invoice'])->name('transaksi.invoice');
