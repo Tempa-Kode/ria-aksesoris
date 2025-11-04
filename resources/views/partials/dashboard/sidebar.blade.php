@@ -35,8 +35,8 @@
                     <span>Transaksi/Pesanan</span>
                 </a>
             </li>
-            <li>
-                <a href="kanban.php">
+            <li class="{{ request()->routeIs("laporan.*") ? "active-page" : "" }}">
+                <a href="{{ route("laporan.index") }}">
                     <iconify-icon icon="flowbite:file-chart-bar-outline" class="menu-icon"></iconify-icon>
                     <span>Laporan Penjualan</span>
                 </a>

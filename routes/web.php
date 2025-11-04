@@ -54,4 +54,10 @@ Route::middleware('auth')->group(function () {
     Route::put('transaksi/{id}/validate-payment', [App\Http\Controllers\TransaksiController::class, 'validatePayment'])->name('transaksi.validate-payment');
     Route::put('transaksi/{id}/update-shipping', [App\Http\Controllers\TransaksiController::class, 'updateShipping'])->name('transaksi.update-shipping');
     Route::resource('transaksi', App\Http\Controllers\TransaksiController::class)->only(['index', 'show']);
+
+    // Laporan Routes
+    Route::get('laporan', [App\Http\Controllers\LaporanController::class, 'index'])->name('laporan.index');
+    Route::post('laporan/generate', [App\Http\Controllers\LaporanController::class, 'generate'])->name('laporan.generate');
+    Route::post('laporan/print', [App\Http\Controllers\LaporanController::class, 'print'])->name('laporan.print');
+    Route::post('laporan/pdf', [App\Http\Controllers\LaporanController::class, 'downloadPdf'])->name('laporan.pdf');
 });
