@@ -29,8 +29,8 @@
                     <span>Data Produk</span>
                 </a>
             </li>
-            <li>
-                <a href="kanban.php">
+            <li class="{{ request()->routeIs("transaksi.*") ? "active-page" : "" }}">
+                <a href="{{ route("transaksi.index") }}">
                     <iconify-icon icon="flowbite:cart-outline" class="menu-icon"></iconify-icon>
                     <span>Transaksi/Pesanan</span>
                 </a>

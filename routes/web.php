@@ -48,4 +48,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('produk-detail/{id}', [App\Http\Controllers\ProdukController::class, 'show'])->name('detail-produk');
     Route::resource('produk', App\Http\Controllers\ProdukController::class);
+
+    // Transaksi Routes
+    Route::get('transaksi/{id}/invoice', [App\Http\Controllers\TransaksiController::class, 'invoice'])->name('transaksi.invoice');
+    Route::put('transaksi/{id}/validate-payment', [App\Http\Controllers\TransaksiController::class, 'validatePayment'])->name('transaksi.validate-payment');
+    Route::put('transaksi/{id}/update-shipping', [App\Http\Controllers\TransaksiController::class, 'updateShipping'])->name('transaksi.update-shipping');
+    Route::resource('transaksi', App\Http\Controllers\TransaksiController::class)->only(['index', 'show']);
 });
