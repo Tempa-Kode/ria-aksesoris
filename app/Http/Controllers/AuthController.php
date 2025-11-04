@@ -11,23 +11,30 @@ class AuthController extends Controller
 {
     public function register(Request $request): RedirectResponse
     {
-        $credentials = $request->validate([
-            'username' => ['required', 'unique:users,username'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'no_hp' => ['required', 'unique:users,no_hp'],
-            'password' => ['required', 'confirmed'],
-            'alamat' => ['required'],
+        $validated = $request->validate([
+            'nama' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'no_hp' => ['required', 'string', 'max:20', 'unique:users,no_hp'],
+            'alamat' => ['required', 'string'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
         ]);
 
-        $credentials['password'] = bcrypt($credentials['password']);
-
-        $user = User::create($credentials);
+        $user = User::create([
+            'nama' => $validated['nama'],
+            'username' => $validated['username'],
+            'email' => $validated['email'],
+            'no_hp' => $validated['no_hp'],
+            'alamat' => $validated['alamat'],
+            'password' => bcrypt($validated['password']),
+            'role' => 'customer',
+        ]);
 
         Auth::login($user);
 
         $request->session()->regenerate();
 
-        return redirect()->intended('home');
+        return redirect()->intended('/')->with('success', 'Registrasi berhasil! Selamat datang, ' . $user->nama);
     }
 
     public function login(Request $request): RedirectResponse
