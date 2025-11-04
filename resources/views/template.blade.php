@@ -58,7 +58,8 @@
                         <div class=" col-lg-2 col-6 d-flex align-items-center">
                             <div class="logo-site">
                                 <a href="{{ route('home') }}">
-                                    <img src="{{ asset("home/images/logo/logo.svg") }}" alt="Logo">
+                                    {{-- <img src="{{ asset("home/images/logo/logo.svg") }}" alt="Logo"> --}}
+                                    <h4 class="text-bold">Ria Aksesoris</h4>
                                 </a>
                             </div>
                         </div>
@@ -176,7 +177,8 @@
                         <div class="ft-inner flex-wrap flex-xl-nowrap">
                             <div class="ft-logo">
                                 <a href="{{ route('home') }}" class="logo-site">
-                                    <img src="{{ asset("home/images/logo/logo.svg") }}" alt="Logo">
+                                    {{-- <img src="{{ asset("home/images/logo/logo.svg") }}" alt="Logo"> --}}
+                                    <h4 class="text-bold">Ria Aksesoris</h4>
                                 </a>
                             </div>
                             <ul class="ft-link-wrap w-100 tf-grid-layout md-col-2 lg-col-4">
@@ -192,8 +194,7 @@
                                                     <i class="icon-location"></i>
                                                 </span>
                                                 <a href="#" class="link">
-                                                    8500 Lorem Street
-                                                    Chicago, IL 55030 Dolor sit amet
+                                                    Toko Ria Aksesoris, Jl. Flamboyan Raya No.46/B, Tj. Selamat, Kec. Medan Tuntungan, Kota Medan, Sumatera Utara 20135
                                                 </a>
                                             </li>
                                             <li>
@@ -202,7 +203,7 @@
                                                 </span>
                                                 <a href="#" class="product-title">
                                                     <span class="product-title text-primary">
-                                                        +8(800) 123 4567
+                                                        0813-7097-3874
                                                     </span>
                                                 </a>
                                             </li>
@@ -212,7 +213,7 @@
                                                 </span>
                                                 <a href="#" class="">
                                                     <span class="text-primary">
-                                                        onsus@support.com
+                                                        riahmasaragih23@gmail.com
                                                     </span>
                                                 </a>
                                             </li>

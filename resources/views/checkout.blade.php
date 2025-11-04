@@ -92,20 +92,18 @@
                                     <label for="bank-transfer-method" class="payment-header" data-bs-toggle="collapse"
                                         data-bs-target="#bank-transfer-payment" aria-controls="bank-transfer-payment"
                                         aria-expanded="true">
-                                        <span class="body-md-2 fw-semibold title">Transfer Bank</span>
                                         <input type="radio" name="payment-method" class="d-none tf-check-rounded"
                                             id="bank-transfer-method" checked="">
                                         <p class="select-payment">
-                                            BCA / Mandiri
+                                            Trasnfer Bank
                                         </p>
                                     </label>
                                     <div id="bank-transfer-payment" class="collapse show" data-bs-parent="#payment-box">
                                         <div class="payment-body">
                                             <div class="alert alert-warning mb-3">
                                                 <p class="mb-2 body-text-3"><strong>Transfer ke:</strong></p>
-                                                <p class="mb-1 body-text-4">Bank BCA: 1234567890</p>
-                                                <p class="mb-1 body-text-4">Bank Mandiri: 0987654321</p>
-                                                <p class="mb-2 body-text-4">a.n. Aksesoris Ria</p>
+                                                <p class="mb-1 body-text-4">Bank BRI: 5322 0101 5797 536</p>
+                                                <p class="mb-2 body-text-4">a.n. Riahma Uli Br Siagian</p>
                                                 <p class="mb-0 caption text-main-2">
                                                     Silakan transfer sesuai total pembayaran dan upload bukti transfer.
                                                 </p>
