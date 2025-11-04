@@ -126,11 +126,18 @@
             <div class="card mb-24">
                 <div class="card-header border-bottom d-flex justify-content-between align-items-center">
                     <h6 class="fw-semibold mb-0">Riwayat Stok Produk</h6>
-                    <button type="button" class="btn btn-sm btn-primary radius-8" data-bs-toggle="modal"
-                        data-bs-target="#tambahStokModal">
-                        <iconify-icon icon="ic:baseline-plus" class="icon"></iconify-icon>
-                        Tambah Stok
-                    </button>
+                    <div class="d-flex gap-2">
+                        <a href="{{ route("produk.riwayat-stok.print", $produk->id) }}" target="_blank"
+                            class="btn btn-sm btn-success radius-8">
+                            <iconify-icon icon="basil:printer-outline" class="icon"></iconify-icon>
+                            Cetak PDF
+                        </a>
+                        <button type="button" class="btn btn-sm btn-primary radius-8" data-bs-toggle="modal"
+                            data-bs-target="#tambahStokModal">
+                            <iconify-icon icon="ic:baseline-plus" class="icon"></iconify-icon>
+                            Tambah Stok
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body p-24">
                     <div class="table-responsive">

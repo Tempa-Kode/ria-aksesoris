@@ -433,4 +433,37 @@ class ProdukController extends Controller
             return redirect()->back()->with('error_stok', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Print riwayat stok produk
+     */
+    public function printRiwayatStok(string $id)
+    {
+        $produk = Produk::with(['kategori', 'jenisProduk', 'riwayatStokProduk.jenisProduk'])
+            ->findOrFail($id);
+
+        // Group riwayat stok by date and jenis
+        $riwayatGrouped = $produk->riwayatStokProduk
+            ->sortBy('created_at')
+            ->groupBy(function ($item) {
+                return $item->created_at->format('Y-m-d') . '_' . ($item->jenis_produk_id ?? 'utama');
+            })
+            ->map(function ($group) {
+                $firstItem = $group->sortBy('created_at')->first();
+                return [
+                    'tanggal' => $firstItem->created_at,
+                    'jenis' => $firstItem->jenisProduk ? $firstItem->jenisProduk->nama : 'Produk Utama',
+                    'stok_awal' => $firstItem->stok_awal,
+                    'stok_masuk' => $group->sum('stok_masuk'),
+                    'stok_keluar' => $group->sum('stok_keluar'),
+                    'stok_akhir' => $group->last()->stok_akhir,
+                ];
+            })
+            ->values();
+
+        // Calculate total stok
+        $totalStok = $produk->jumlah_produk + $produk->jenisProduk->sum('jumlah_produk');
+
+        return view('produk.print-riwayat', compact('produk', 'riwayatGrouped', 'totalStok'));
+    }
 }

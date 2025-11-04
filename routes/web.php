@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('produk/gambar/{id}', [App\Http\Controllers\ProdukController::class, 'deleteGambar'])->name('produk.gambar.delete');
     Route::delete('produk/jenis/{id}', [App\Http\Controllers\ProdukController::class, 'deleteJenis'])->name('produk.jenis.delete');
     Route::post('produk/{id}/stok/tambah', [App\Http\Controllers\ProdukController::class, 'tambahStok'])->name('produk.stok.tambah');
+    Route::get('produk/{id}/riwayat-stok/print', [App\Http\Controllers\ProdukController::class, 'printRiwayatStok'])->name('produk.riwayat-stok.print');
 
     Route::get('produk-detail/{id}', [App\Http\Controllers\ProdukController::class, 'show'])->name('detail-produk');
     Route::resource('produk', App\Http\Controllers\ProdukController::class);
