@@ -69,6 +69,40 @@ class HomeController extends Controller
         if(Auth::user()->role !== 'admin' && Auth::user()->role !== 'karyawan') {
             abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
-        return view('dashboard');
+
+        // Statistik Dashboard
+        $totalProduk = \App\Models\Produk::count();
+        $totalCustomer = \App\Models\User::where('role', 'customer')->count();
+        $totalInvoice = \App\Models\Invoice::count();
+        $totalPengguna = \App\Models\User::whereIn('role', ['admin', 'karyawan'])->count();
+
+        // Transaksi Pending
+        $invoicePending = \App\Models\Invoice::where('status_pembayaran', 'pending')->count();
+
+        // Transaksi Bulan Ini
+        $transaksisBulanIni = \App\Models\Invoice::whereMonth('tanggal', date('m'))
+            ->whereYear('tanggal', date('Y'))
+            ->where('status_pembayaran', 'terima')
+            ->count();
+
+        // Pendapatan Bulan Ini
+        $pendapatanBulanIni = \App\Models\Invoice::whereMonth('tanggal', date('m'))
+            ->whereYear('tanggal', date('Y'))
+            ->where('status_pembayaran', 'terima')
+            ->sum('total_bayar');
+
+        // Produk Stok Rendah (kurang dari 10)
+        $produkStokRendah = \App\Models\Produk::where('jumlah_produk', '<', 10)->count();
+
+        return view('dashboard', compact(
+            'totalProduk',
+            'totalCustomer',
+            'totalInvoice',
+            'totalPengguna',
+            'invoicePending',
+            'transaksisBulanIni',
+            'pendapatanBulanIni',
+            'produkStokRendah'
+        ));
     }
 }

@@ -14,15 +14,172 @@
         <div class="dashboard-main-body">
 
             @include("partials.dashboard.breadcrumb")
+            <!-- Statistics Cards -->
+            <div class="row gy-4 mb-24">
+                <!-- Total Produk -->
+                <div class="col-xxl-3 col-sm-6">
+                    <div class="card px-24 py-16 shadow-none radius-8 border h-100 bg-gradient-start-1">
+                        <div class="card-body p-0">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+                                <div>
+                                    <span class="mb-2 fw-medium text-secondary-light text-sm">Total Produk</span>
+                                    <h6 class="fw-semibold mb-1 text-primary-600">{{ $totalProduk }}</h6>
+                                </div>
+                                <div
+                                    class="w-64-px h-64-px radius-16 bg-primary-600 d-flex justify-content-center align-items-center">
+                                    <iconify-icon icon="flowbite:store-outline"
+                                        class="text-white text-32"></iconify-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Total Customer -->
+                <div class="col-xxl-3 col-sm-6">
+                    <div class="card px-24 py-16 shadow-none radius-8 border h-100 bg-gradient-start-2">
+                        <div class="card-body p-0">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+                                <div>
+                                    <span class="mb-2 fw-medium text-secondary-light text-sm">Total Customer</span>
+                                    <h6 class="fw-semibold mb-1 text-success-600">{{ $totalCustomer }}</h6>
+                                    <p class="text-xs mb-0 text-secondary-light">Pelanggan Terdaftar</p>
+                                </div>
+                                <div
+                                    class="w-64-px h-64-px radius-16 bg-success-600 d-flex justify-content-center align-items-center">
+                                    <iconify-icon icon="flowbite:users-group-outline"
+                                        class="text-white text-32"></iconify-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Invoice -->
+                <div class="col-xxl-3 col-sm-6">
+                    <div class="card px-24 py-16 shadow-none radius-8 border h-100 bg-gradient-start-3">
+                        <div class="card-body p-0">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+                                <div>
+                                    <span class="mb-2 fw-medium text-secondary-light text-sm">Total Invoice</span>
+                                    <h6 class="fw-semibold mb-1 text-warning-600">{{ $totalInvoice }}</h6>
+                                    <p class="text-xs mb-0 text-secondary-light">
+                                        @if ($invoicePending > 0)
+                                            <span class="text-warning-600">{{ $invoicePending }} pending</span>
+                                        @else
+                                            <span class="text-success-600">Tidak ada pending</span>
+                                        @endif
+                                    </p>
+                                </div>
+                                <div
+                                    class="w-64-px h-64-px radius-16 bg-warning-600 d-flex justify-content-center align-items-center">
+                                    <iconify-icon icon="flowbite:cart-outline"
+                                        class="text-white text-32"></iconify-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Pengguna -->
+                <div class="col-xxl-3 col-sm-6">
+                    <div class="card px-24 py-16 shadow-none radius-8 border h-100 bg-gradient-start-4">
+                        <div class="card-body p-0">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+                                <div>
+                                    <span class="mb-2 fw-medium text-secondary-light text-sm">Total Pengguna</span>
+                                    <h6 class="fw-semibold mb-1 text-info-600">{{ $totalPengguna }}</h6>
+                                    <p class="text-xs mb-0 text-secondary-light">Admin & Karyawan</p>
+                                </div>
+                                <div
+                                    class="w-64-px h-64-px radius-16 bg-info-600 d-flex justify-content-center align-items-center">
+                                    <iconify-icon icon="solar:user-bold" class="text-white text-32"></iconify-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Info & Quick Actions -->
             <div class="row gy-4">
+                <!-- Detail Login -->
+                <div class="col">
+                    <div class="card h-100 radius-8 border-0">
+                        <div class="card-header border-bottom bg-base py-16 px-24">
+                            <h6 class="text-lg fw-semibold mb-0">Detail Login</h6>
+                        </div>
+                        <div class="card-body p-24">
+                            <div class="d-flex align-items-center gap-3 mb-20">
+                                <img src="{{ Auth::user()->foto ? asset(Auth::user()->foto) : asset("dashboard/assets/images/user.png") }}"
+                                    alt="User" class="rounded-circle"
+                                    style="width: 60px; height: 60px; object-fit: cover;">
+                                <div>
+                                    <h6 class="mb-1 fw-semibold">{{ Auth::user()->nama }}</h6>
+                                    <p class="mb-0 text-sm text-secondary-light">{{ Auth::user()->email }}</p>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-borderless mb-0">
+                                    <tbody>
+                                        <tr>
+                                            <td class="px-0 py-2 text-secondary-light" style="width: 140px;">Username
+                                            </td>
+                                            <td class="px-0 py-2">: {{ Auth::user()->username }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-0 py-2 text-secondary-light">No. HP</td>
+                                            <td class="px-0 py-2">: {{ Auth::user()->no_hp ?? "-" }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-0 py-2 text-secondary-light">Alamat</td>
+                                            <td class="px-0 py-2">: {{ Auth::user()->alamat ?? "-" }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-0 py-2 text-secondary-light">Role</td>
+                                            <td class="px-0 py-2">: <span
+                                                    class="badge bg-primary-100 text-primary-600">{{ ucfirst(Auth::user()->role) }}</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
-        @include('partials.dashboard.footer')
+        @include("partials.dashboard.footer")
     </main>
-    @include('partials.dashboard.scripts')
-    <script src="{{ asset('dashboard/assets/js/homeThreeChart.js') }}"></script>
+    @include("partials.dashboard.scripts")
+    <script src="{{ asset("dashboard/assets/js/homeThreeChart.js") }}"></script>
+
+    <script>
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        // Update time every second
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // Hover scale effect
+        document.querySelectorAll('.hover-scale').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+                this.style.transition = 'transform 0.3s ease';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+    </script>
 </body>
 
 </html>
