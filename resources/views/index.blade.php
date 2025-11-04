@@ -6,7 +6,7 @@
         <div class="container">
             <ul class="breakcrumbs">
                 <li>
-                    <a href="index.html" class="body-small link">
+                    <a href="{{ route('home') }}" class="body-small link">
                         Home
                     </a>
                 </li>
@@ -293,7 +293,7 @@
     <div class="offcanvas offcanvas-start canvas-mb" id="mobileMenu">
         <span class="icon-close btn-close-mb link" data-bs-dismiss="offcanvas"></span>
         <div class="logo-site">
-            <a href="index.html">
+            <a href="{{ route('home') }}">
                 <img src="{{ asset("images/logo/logo.svg") }}" alt="">
             </a>
         </div>

@@ -57,7 +57,7 @@
                     <div class="row">
                         <div class=" col-lg-2 col-6 d-flex align-items-center">
                             <div class="logo-site">
-                                <a href="index.html">
+                                <a href="{{ route('home') }}">
                                     <img src="{{ asset("home/images/logo/logo.svg") }}" alt="Logo">
                                 </a>
                             </div>
@@ -175,7 +175,7 @@
                     <div class="container">
                         <div class="ft-inner flex-wrap flex-xl-nowrap">
                             <div class="ft-logo">
-                                <a href="index.html" class="logo-site">
+                                <a href="{{ route('home') }}" class="logo-site">
                                     <img src="{{ asset("home/images/logo/logo.svg") }}" alt="Logo">
                                 </a>
                             </div>
