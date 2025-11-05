@@ -3,14 +3,14 @@
         <iconify-icon icon="radix-icons:cross-2"></iconify-icon>
     </button>
     <div>
-        <a href="{{ route('dashboard') }}" class="sidebar-logo">
+        <a href="{{ route("dashboard.admin") }}" class="sidebar-logo">
             <h6>Ria Aksesoris</h6>
         </a>
     </div>
     <div class="sidebar-menu-area">
         <ul class="sidebar-menu" id="sidebar-menu">
             <li class="{{ Route::currentRouteName() === "dashboard" ? "active-page" : "" }}">
-                <a href="{{ route("dashboard") }}">
+                <a href="{{ route("dashboard.admin") }}">
                     <iconify-icon icon="solar:home-smile-angle-outline" class="menu-icon"></iconify-icon>
                     <span>Dashboard</span>
                 </a>
@@ -40,25 +40,27 @@
                 </a>
             </li>
 
-            <li class="sidebar-menu-group-title">Data Pengguna</li>
-            <li class="{{ request()->routeIs("admin.*") ? "active-page" : "" }}">
-                <a href="{{ route("admin.index") }}">
-                    <iconify-icon icon="flowbite:users-group-outline" class="menu-icon"></iconify-icon>
-                    <span>Data Admin</span>
-                </a>
-            </li>
-            <li class="{{ request()->routeIs("karyawan.*") ? "active-page" : "" }}">
-                <a href="{{ route("karyawan.index") }}">
-                    <iconify-icon icon="flowbite:users-group-outline" class="menu-icon"></iconify-icon>
-                    <span>Data Karyawan</span>
-                </a>
-            </li>
-            <li class="{{ request()->routeIs("customer.*") ? "active-page" : "" }}">
-                <a href="{{ route("customer.index") }}">
-                    <iconify-icon icon="flowbite:users-group-outline" class="menu-icon"></iconify-icon>
-                    <span>Data Customer</span>
-                </a>
-            </li>
+            @if (Auth::user()->role === "admin")
+                <li class="sidebar-menu-group-title">Data Pengguna</li>
+                <li class="{{ request()->routeIs("admin.*") ? "active-page" : "" }}">
+                    <a href="{{ route("admin.index") }}">
+                        <iconify-icon icon="flowbite:users-group-outline" class="menu-icon"></iconify-icon>
+                        <span>Data Admin</span>
+                    </a>
+                </li>
+                <li class="{{ request()->routeIs("karyawan.*") ? "active-page" : "" }}">
+                    <a href="{{ route("karyawan.index") }}">
+                        <iconify-icon icon="flowbite:users-group-outline" class="menu-icon"></iconify-icon>
+                        <span>Data Karyawan</span>
+                    </a>
+                </li>
+                <li class="{{ request()->routeIs("customer.*") ? "active-page" : "" }}">
+                    <a href="{{ route("customer.index") }}">
+                        <iconify-icon icon="flowbite:users-group-outline" class="menu-icon"></iconify-icon>
+                        <span>Data Customer</span>
+                    </a>
+                </li>
+            @endif
         </ul>
     </div>
 </aside>

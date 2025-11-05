@@ -6,7 +6,7 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 Route::get('/login', [App\Http\Controllers\HomeController::class, 'index'])->name('login');
 Route::post('/login', [App\Http\Controllers\AuthController::class, 'login'])->name('auth.login');
 Route::post('/register', [App\Http\Controllers\AuthController::class, 'register'])->name('register.store');
-Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'dashboard'])->middleware('auth')->name('dashboard');
+Route::get('/dashboard-admin', [App\Http\Controllers\HomeController::class, 'dashboard'])->middleware('auth')->name('dashboard.admin');
 Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 // Cart & Checkout Routes

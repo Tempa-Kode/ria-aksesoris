@@ -17,7 +17,8 @@
                 <h6 class="fw-semibold mb-0">Profil Pengguna</h6>
                 <ul class="d-flex align-items-center gap-2">
                     <li class="fw-medium">
-                        <a href="{{ route("dashboard") }}" class="d-flex align-items-center gap-1 hover-text-primary">
+                        <a href="{{ route("dashboard.admin") }}"
+                            class="d-flex align-items-center gap-1 hover-text-primary">
                             <iconify-icon icon="solar:home-smile-angle-outline" class="icon text-lg"></iconify-icon>
                             Dashboard
                         </a>
@@ -217,7 +218,7 @@
                                             </div>
                                         </div>
                                         <div class="d-flex align-items-center justify-content-center gap-3">
-                                            <a href="{{ route("dashboard") }}"
+                                            <a href="{{ route("dashboard.admin") }}"
                                                 class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8">
                                                 Batal
                                             </a>
@@ -297,7 +298,7 @@
                                             </div>
                                         </div>
                                         <div class="d-flex align-items-center justify-content-center gap-3">
-                                            <a href="{{ route("dashboard") }}"
+                                            <a href="{{ route("dashboard.admin") }}"
                                                 class="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8">
                                                 Batal
                                             </a>

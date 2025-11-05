@@ -47,9 +47,9 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             if (Auth::user()->role === 'admin' || Auth::user()->role === 'karyawan') {
-                return redirect()->intended('dashboard');
+                return redirect()->route('dashboard.admin');
             } elseif (Auth::user()->role === 'customer') {
-                return redirect()->intended('/');
+                return redirect()->route('home');
             } else {
                 Auth::logout();
                 return back()->with('error', 'Peran pengguna tidak dikenali.');

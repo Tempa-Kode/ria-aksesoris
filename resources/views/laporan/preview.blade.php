@@ -16,7 +16,8 @@
                 <h6 class="fw-semibold mb-0">Preview Laporan Penjualan</h6>
                 <ul class="d-flex align-items-center gap-2">
                     <li class="fw-medium">
-                        <a href="{{ route("dashboard") }}" class="d-flex align-items-center gap-1 hover-text-primary">
+                        <a href="{{ route("dashboard.admin") }}"
+                            class="d-flex align-items-center gap-1 hover-text-primary">
                             <iconify-icon icon="solar:home-smile-angle-outline" class="icon text-lg"></iconify-icon>
                             Dashboard
                         </a>
@@ -170,8 +171,7 @@
                                                     <span class="badge bg-success-100 text-success-600 px-20 py-9">Sudah
                                                         Dikirim</span>
                                                 @else
-                                                    <span
-                                                        class="badge bg-warning-100 text-warning-600 px-20 py-9">Belum
+                                                    <span class="badge bg-warning-100 text-warning-600 px-20 py-9">Belum
                                                         Dikirim</span>
                                                 @endif
                                             </td>
