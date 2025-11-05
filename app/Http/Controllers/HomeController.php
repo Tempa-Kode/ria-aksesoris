@@ -94,7 +94,31 @@ class HomeController extends Controller
         // Produk Stok Rendah (kurang dari 10)
         $produkStokRendah = \App\Models\Produk::where('jumlah_produk', '<', 10)->count();
 
-        return view('dashboard', compact(
+        // Data Stok Produk dengan Jenis (Max stok 1000 per jenis) - Hanya yang < 20%
+        $stokProduk = \App\Models\Produk::with(['jenisProduk' => function($query) {
+            $query->orderBy('nama', 'asc');
+        }])
+        ->get()
+        ->flatMap(function($produk) {
+            return $produk->jenisProduk->map(function($jenis) use ($produk) {
+                $maxStok = 1000;
+                $persentase = min(100, ($jenis->jumlah_produk / $maxStok) * 100);
+
+                return [
+                    'nama_produk' => $produk->nama,
+                    'nama_jenis' => $jenis->nama,
+                    'stok' => $jenis->jumlah_produk,
+                    'max_stok' => $maxStok,
+                    'persentase' => round($persentase, 1),
+                    'status_stok' => $persentase >= 10 ? 'warning' : 'danger'
+                ];
+            });
+        })
+        ->filter(function($item) {
+            return $item['persentase'] < 20; // Hanya tampilkan yang < 20%
+        })
+        ->sortBy('persentase')
+        ->values();        return view('dashboard', compact(
             'totalProduk',
             'totalCustomer',
             'totalInvoice',
@@ -102,7 +126,8 @@ class HomeController extends Controller
             'invoicePending',
             'transaksisBulanIni',
             'pendapatanBulanIni',
-            'produkStokRendah'
+            'produkStokRendah',
+            'stokProduk'
         ));
     }
 }
