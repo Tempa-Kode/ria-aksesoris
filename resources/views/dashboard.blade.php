@@ -124,7 +124,6 @@
                                                 <th>Nama Produk</th>
                                                 <th>Jenis Produk</th>
                                                 <th class="text-center" style="width: 120px;">Stok</th>
-                                                <th class="text-center" style="width: 120px;">Max Stok</th>
                                                 <th style="width: 200px;">Persentase</th>
                                                 {{-- <th class="text-center" style="width: 100px;">Status</th> --}}
                                             </tr>
@@ -142,8 +141,6 @@
                                                         <span
                                                             class="fw-semibold">{{ number_format($item["stok"]) }}</span>
                                                     </td>
-                                                    <td class="text-center text-secondary-light">
-                                                        {{ number_format($item["max_stok"]) }}</td>
                                                     <td>
                                                         <div class="d-flex align-items-center gap-2">
                                                             <div class="progress flex-grow-1" style="height: 10px;">
