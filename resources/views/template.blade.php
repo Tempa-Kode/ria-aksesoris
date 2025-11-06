@@ -183,7 +183,9 @@
                             </div>
                             <ul class="ft-link-wrap w-100 tf-grid-layout md-col-2 lg-col-4">
                                 <li class="footer-col-block"></li>
-                                <li class="footer-col-block"></li>
+                                <li class="footer-col-block">
+                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.198201611577!2d98.60524939999999!3d3.5416944!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30312f70243bd9cd%3A0xb3e26ece48ee64a1!2sToko%20Ria%20Aksesoris!5e0!3m2!1sen!2sid!4v1762409956388!5m2!1sen!2sid" class="w-100" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                </li>
                                 <li class="footer-col-block"></li>
                                 <li class="footer-col-block type-sp-2">
                                     <h6 class="ft-heading footer-heading-mobile fw-semibold">Kontak</h6>
