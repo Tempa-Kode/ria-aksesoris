@@ -56,7 +56,7 @@
                                         @endforelse
 
                                         @foreach ($produk->jenisProduk as $jenis)
-                                            <div class="swiper-slide" data-color="gray">
+                                            <div class="swiper-slide" data-color="gray" data-jenis-id="{{ $jenis->id }}">
                                                 <a href="{{ asset($jenis->path_gambar) }}" target="_blank" class="item"
                                                     data-pswp-width="600px" data-pswp-height="800px">
                                                     <img class="tf-image-zoom lazyload"
@@ -83,7 +83,8 @@
                                             @endforeach
 
                                             @foreach ($produk->jenisProduk as $jenis)
-                                                <div class="swiper-slide stagger-item" data-color="gray">
+                                                <div class="swiper-slide stagger-item" data-color="gray"
+                                                    data-jenis-id="{{ $jenis->id }}">
                                                     <div class="item">
                                                         <img class="lazyload" data-src="{{ asset($jenis->path_gambar) }}"
                                                             src="{{ asset($jenis->path_gambar) }}" alt="">
@@ -100,7 +101,7 @@
                     <div class="col-md-6">
                         <!-- Product Infor -->
                         <div class="tf-product-info-wrap bg-white position-relative">
-                            <div class="tf-zoom-main"></div>
+                            {{-- <div class="tf-zoom-main"></div> --}}
                             <div class="tf-product-info-list style-2 justify-content-xl-end">
                                 <div class="tf-product-info-content">
                                     <div class="infor-heading">
@@ -186,4 +187,37 @@
         </div>
     </section>
     <!-- /Product Main -->
+
+    @push("scripts")
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const selectJenis = document.querySelector('.select-color');
+
+                if (selectJenis) {
+                    selectJenis.addEventListener('change', function() {
+                        const jenisId = this.value;
+
+                        // Cari swiper instance
+                        const swiperMain = document.querySelector('#gallery-swiper-started');
+                        if (swiperMain && swiperMain.swiper) {
+                            // Cari slide yang memiliki data-jenis-id yang sesuai
+                            const slides = swiperMain.querySelectorAll('.swiper-slide');
+                            let targetIndex = -1;
+
+                            slides.forEach((slide, index) => {
+                                if (slide.getAttribute('data-jenis-id') === jenisId) {
+                                    targetIndex = index;
+                                }
+                            });
+
+                            // Jika ditemukan, navigasi ke slide tersebut
+                            if (targetIndex !== -1) {
+                                swiperMain.swiper.slideTo(targetIndex);
+                            }
+                        }
+                    });
+                }
+            });
+        </script>
+    @endpush
 @endsection
