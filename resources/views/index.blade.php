@@ -180,15 +180,6 @@
                                             data-src="{{ asset("home/images/no-image.jpg") }}" alt="no-image">
                                     @endif
                                 </a>
-                                <ul class="list-product-btn top-0 end-0">
-                                    <li>
-                                        <a href="#shoppingCart" data-bs-toggle="offcanvas"
-                                            class="box-icon add-to-cart btn-icon-action hover-tooltip tooltip-left">
-                                            <span class="icon icon-cart2"></span>
-                                            <span class="tooltip">Add to Cart</span>
-                                        </a>
-                                    </li>
-                                </ul>
                             </div>
                             <div class="card-product-info">
                                 <div class="box-title">
