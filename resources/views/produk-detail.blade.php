@@ -260,6 +260,39 @@
                         }
                     });
                 }
+
+                // Update gambar keranjang saat jenis dipilih
+                function updateCartImage() {
+                    const btnAddToCart = document.querySelector('.btn-add-to-cart');
+                    if (!btnAddToCart || !selectJenis) return;
+
+                    const selectedJenisId = selectJenis.value;
+
+                    if (selectedJenisId) {
+                        // Cari slide dengan data-jenis-id yang sesuai
+                        const swiperMain = document.querySelector('#gallery-swiper-started');
+                        if (swiperMain) {
+                            const targetSlide = swiperMain.querySelector('.swiper-slide[data-jenis-id="' +
+                                selectedJenisId + '"]');
+                            if (targetSlide) {
+                                const img = targetSlide.querySelector('img');
+                                if (img) {
+                                    const imgSrc = img.getAttribute('src') || img.getAttribute('data-src');
+                                    if (imgSrc) {
+                                        btnAddToCart.setAttribute('data-product-gambar', imgSrc);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Update gambar saat jenis berubah
+                if (selectJenis) {
+                    selectJenis.addEventListener('change', updateCartImage);
+                    // Update saat halaman pertama kali dimuat (jika ada jenis terpilih)
+                    updateCartImage();
+                }
             });
         </script>
     @endpush
