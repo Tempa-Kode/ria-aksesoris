@@ -119,10 +119,10 @@
                                                         <span>{{ $item->produk->nama }}</span>
                                                     </div>
                                                 </td>
-                                                <td>Rp {{ number_format($item->harga, 0, ",", ".") }}</td>
+                                                <td>Rp {{ number_format($item->produk->harga, 0, ",", ".") }}</td>
                                                 <td>{{ $item->jumlah }}</td>
                                                 <td class="fw-semibold">Rp
-                                                    {{ number_format($item->harga * $item->jumlah, 0, ",", ".") }}</td>
+                                                    {{ number_format($item->produk->harga * $item->jumlah, 0, ",", ".") }}</td>
                                             </tr>
                                         @endforeach
                                         <tr class="bg-base">
