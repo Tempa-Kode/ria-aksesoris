@@ -84,7 +84,7 @@
                     <div class="d-flex flex-wrap gap-3">
                         @forelse($produk->gambarProduk as $gambar)
                             <img src="{{ asset($gambar->path_gambar) }}" alt="{{ $produk->nama }}"
-                                class="w-150-px h-150-px rounded object-fit-cover border">
+                                class="w-25 h-150-px rounded object-fit-cover border">
                         @empty
                             <p class="text-secondary-light">Tidak ada gambar</p>
                         @endforelse
