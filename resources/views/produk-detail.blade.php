@@ -197,6 +197,19 @@
             document.addEventListener('DOMContentLoaded', function() {
                 const selectJenis = document.querySelector('.select-color');
 
+                function selectJenisById(id) {
+                    if (!selectJenis) return;
+                    // set value hanya jika option tersebut ada
+                    const option = selectJenis.querySelector('option[value="' + id + '"]');
+                    if (option) {
+                        selectJenis.value = id;
+                        // trigger change agar behavior lain tetap jalan (mis. slideTo sudah ada di listener change)
+                        selectJenis.dispatchEvent(new Event('change', {
+                            bubbles: true
+                        }));
+                    }
+                }
+
                 if (selectJenis) {
                     selectJenis.addEventListener('change', function() {
                         const jenisId = this.value;
@@ -218,6 +231,32 @@
                             if (targetIndex !== -1) {
                                 swiperMain.swiper.slideTo(targetIndex);
                             }
+                        }
+                    });
+                }
+
+                // Klik pada thumbnail (delegated) -> pilih jenis jika slide punya data-jenis-id
+                const thumbsContainer = document.querySelector('.tf-product-media-thumbs');
+                if (thumbsContainer) {
+                    thumbsContainer.addEventListener('click', function(e) {
+                        const slide = e.target.closest('.swiper-slide');
+                        if (!slide) return;
+                        const jenisId = slide.getAttribute('data-jenis-id');
+                        if (jenisId) {
+                            selectJenisById(jenisId);
+                        }
+                    });
+                }
+
+                // Klik pada main slide -> pilih jenis jika slide punya data-jenis-id
+                const mainSwiper = document.querySelector('#gallery-swiper-started');
+                if (mainSwiper) {
+                    mainSwiper.addEventListener('click', function(e) {
+                        const slide = e.target.closest('.swiper-slide');
+                        if (!slide) return;
+                        const jenisId = slide.getAttribute('data-jenis-id');
+                        if (jenisId) {
+                            selectJenisById(jenisId);
                         }
                     });
                 }
