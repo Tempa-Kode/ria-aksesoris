@@ -162,7 +162,7 @@ class ProdukController extends Controller
             'nama' => 'required|string|max:255',
             'harga' => 'required|numeric|min:0',
             'keterangan' => 'nullable|string',
-            // 'jumlah_produk' => 'required|integer|min:0',
+            'jumlah_produk' => 'required|integer|min:0',
             'gambar_produk.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             // Jenis Existing
             'jenis_existing_id.*' => 'nullable|exists:jenis_produk,id',
@@ -184,7 +184,6 @@ class ProdukController extends Controller
                 'nama' => $validated['nama'],
                 'harga' => $validated['harga'],
                 'keterangan' => $validated['keterangan'] ?? null,
-                'jumlah_produk' => $validated['jumlah_produk'],
             ]);
 
             // Upload Gambar Produk Baru

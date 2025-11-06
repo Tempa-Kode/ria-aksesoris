@@ -35,6 +35,16 @@
                 </ul>
             </div>
 
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @elseif (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             <div class="card h-100 p-0 radius-12">
                 <div class="card-header border-bottom bg-base py-16 px-24">
                     <h6 class="text-lg fw-semibold mb-0">Form Edit Produk</h6>
