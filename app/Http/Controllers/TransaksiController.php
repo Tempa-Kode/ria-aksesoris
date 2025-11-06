@@ -64,17 +64,55 @@ class TransaksiController extends Controller
      */
     public function validatePayment(Request $request, string $id)
     {
-        $transaksi = Invoice::findOrFail($id);
+        $transaksi = Invoice::with('itemTransaksi.produk', 'itemTransaksi.jenisProduk')->findOrFail($id);
+
+        $statusLama = $transaksi->status_pembayaran;
 
         $validated = $request->validate([
             'status_pembayaran' => 'required|in:pending,terima,tolak',
         ]);
 
+        $statusBaru = $validated['status_pembayaran'];
+
+        // Jika status diubah menjadi "tolak" dan sebelumnya bukan "tolak"
+        if ($statusBaru === 'tolak' && $statusLama !== 'tolak') {
+            DB::transaction(function () use ($transaksi) {
+                // Kembalikan stok untuk setiap item transaksi
+                foreach ($transaksi->itemTransaksi as $item) {
+                    // Jika item memiliki jenis produk, kembalikan stok ke jenis produk
+                    if ($item->jenis_produk_id && $item->jenisProduk) {
+                        $item->jenisProduk->increment('jumlah_produk', $item->jumlah);
+                    }
+                    // Jika tidak ada jenis produk, kembalikan stok ke produk utama
+                    else if ($item->produk) {
+                        $item->produk->increment('jumlah_produk', $item->jumlah);
+                    }
+                }
+            });
+        }
+
+        // Jika status diubah dari "tolak" ke status lain (terima/pending), kurangi stok lagi
+        if ($statusLama === 'tolak' && $statusBaru !== 'tolak') {
+            DB::transaction(function () use ($transaksi) {
+                // Kurangi stok kembali untuk setiap item transaksi
+                foreach ($transaksi->itemTransaksi as $item) {
+                    // Jika item memiliki jenis produk, kurangi stok dari jenis produk
+                    if ($item->jenis_produk_id && $item->jenisProduk) {
+                        $item->jenisProduk->decrement('jumlah_produk', $item->jumlah);
+                    }
+                    // Jika tidak ada jenis produk, kurangi stok dari produk utama
+                    else if ($item->produk) {
+                        $item->produk->decrement('jumlah_produk', $item->jumlah);
+                    }
+                }
+            });
+        }
+
         $transaksi->update([
-            'status_pembayaran' => $validated['status_pembayaran']
+            'status_pembayaran' => $statusBaru
         ]);
 
-        return redirect()->back()->with('success', 'Status pembayaran berhasil diupdate!');
+        return redirect()->back()->with('success', 'Status pembayaran berhasil diupdate dan stok produk telah disesuaikan!');
     }
 
     /**
