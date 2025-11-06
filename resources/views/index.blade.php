@@ -280,6 +280,10 @@
         </div>
     </div>
 
+    @section('footer')
+        @include('partials.footer')
+    @endsection
+
     <!-- Mobile Menu -->
     <div class="offcanvas offcanvas-start canvas-mb" id="mobileMenu">
         <span class="icon-close btn-close-mb link" data-bs-dismiss="offcanvas"></span>
