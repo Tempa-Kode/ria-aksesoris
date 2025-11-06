@@ -69,11 +69,9 @@
                                         </p>
                                     </div>
                                     <div class="text-end">
-                                        <img src="{{ asset("dashboard/assets/images/logo.png") }}" alt="Logo"
-                                            class="mb-8" style="max-width: 120px;">
                                         <p class="mb-1 text-sm fw-semibold">Ria Aksesoris</p>
-                                        <p class="mb-1 text-sm">Jl. Contoh Alamat No. 123</p>
-                                        <p class="mb-0 text-sm">contact@riaaksesoris.com, +62 812 3456 7890</p>
+                                        <p class="mb-1 text-sm">Jl. Flamboyan Raya No.46/B, Tj. Selamat</p>
+                                        <p class="mb-0 text-sm">riahmasaragih23@gmail.com, 0813-7097-3874</p>
                                     </div>
                                 </div>
                                 <div class="py-28 px-20">
@@ -138,9 +136,9 @@
                                                             <td>{{ $index + 1 }}</td>
                                                             <td>{{ $item->produk->nama }}</td>
                                                             <td>{{ $item->jumlah }}</td>
-                                                            <td>Rp {{ number_format($item->harga, 0, ",", ".") }}</td>
+                                                            <td>Rp {{ number_format($item->produk->harga, 0, ",", ".") }}</td>
                                                             <td class="text-end">Rp
-                                                                {{ number_format($item->harga * $item->jumlah, 0, ",", ".") }}
+                                                                {{ number_format($item->produk->harga * $item->jumlah, 0, ",", ".") }}
                                                             </td>
                                                         </tr>
                                                     @endforeach
