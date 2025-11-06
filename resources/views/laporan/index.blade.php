@@ -93,13 +93,9 @@
                                 </div>
                             </form>
                         </div>
-                    </div>
-
-                    <!-- Quick Period Buttons -->
-                    <div class="card mt-24 radius-12">
                         <div class="card-body p-24">
                             <h6 class="text-md fw-semibold mb-3">Periode Cepat:</h6>
-                            <div class="d-flex flex-wrap gap-2">
+                            <div class="d-flex flex-wrap gap-2 justify-content-around">
                                 <button type="button" class="btn btn-outline-primary btn-sm radius-8"
                                     onclick="setToday()">
                                     Hari Ini
@@ -119,6 +115,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
 
