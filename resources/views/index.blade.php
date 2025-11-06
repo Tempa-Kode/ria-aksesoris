@@ -92,12 +92,12 @@
                         @endforeach
 
                         <select name="show" class="form-select" onchange="this.form.submit()">
-                            <option value="5" {{ request("show") == "5" ? "selected" : "" }}>Show: 5</option>
-                            <option value="10" {{ request("show") == "10" ? "selected" : "" }}>Show: 10</option>
-                            <option value="15" {{ request("show") == "15" ? "selected" : "" }}>Show: 15</option>
-                            <option value="20" {{ request("show") == "20" ? "selected" : "" }}>Show: 20</option>
+                            <option value="5" {{ request("show") == "5" ? "selected" : "" }}>Tampilkan: 5</option>
+                            <option value="10" {{ request("show") == "10" ? "selected" : "" }}>Tampilkan: 10</option>
+                            <option value="15" {{ request("show") == "15" ? "selected" : "" }}>Tampilkan: 15</option>
+                            <option value="20" {{ request("show") == "20" ? "selected" : "" }}>Tampilkan: 20</option>
                             <option value="50" {{ !request("show") || request("show") == "50" ? "selected" : "" }}>
-                                Show: 50</option>
+                                Tampilkan: 50</option>
                         </select>
                     </form>
                     <form action="{{ route("home") }}" method="GET" class="d-inline-block">
@@ -106,16 +106,16 @@
                         @endforeach
 
                         <select name="sort" class="form-select" onchange="this.form.submit()">
-                            <option value="" {{ !request("sort") ? "selected" : "" }}>Sort by: <i
+                            <option value="" {{ !request("sort") ? "selected" : "" }}>Urutkan berdasarkan: <i
                                     class="icon-arrow-down fs-10"></i></option>
-                            <option value="a-z" {{ request("sort") == "a-z" ? "selected" : "" }}>Alphabetically, A-Z
+                            <option value="a-z" {{ request("sort") == "a-z" ? "selected" : "" }}>Nama, A-Z
                             </option>
-                            <option value="z-a" {{ request("sort") == "z-a" ? "selected" : "" }}>Alphabetically, Z-A
+                            <option value="z-a" {{ request("sort") == "z-a" ? "selected" : "" }}>Nama, Z-A
                             </option>
                             <option value="price-low-high" {{ request("sort") == "price-low-high" ? "selected" : "" }}>
-                                Price, low to high</option>
+                                Harga, rendah ke tinggi</option>
                             <option value="price-high-low" {{ request("sort") == "price-high-low" ? "selected" : "" }}>
-                                Price, high to low</option>
+                                Harga, tinggi ke rendah</option>
                         </select>
                     </form>
                 </div>
