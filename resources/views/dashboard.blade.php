@@ -110,12 +110,20 @@
                             <h6 class="text-lg fw-semibold mb-0">
                                 <iconify-icon icon="solar:danger-triangle-bold-duotone"
                                     class="text-danger-600 me-2"></iconify-icon>
-                                Stok Produk Rendah (< 20%) </h6>
-                                    <span class="badge bg-danger-100 text-danger-600">{{ $stokProduk->count() }}
-                                        Item</span>
+                                Peringatan Stok Produk (≤ 5 Unit)
+                            </h6>
+                            <span class="badge bg-danger-100 text-danger-600">{{ $stokProduk->count() }} Item</span>
                         </div>
                         <div class="card-body p-24">
                             @if ($stokProduk->count() > 0)
+                                <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+                                    <iconify-icon icon="solar:info-circle-bold" class="text-warning-600 me-2"
+                                        style="font-size: 20px;"></iconify-icon>
+                                    <div>
+                                        <strong>Perhatian!</strong> Produk-produk berikut memiliki stok ≤ 5 unit. Segera
+                                        lakukan restok!
+                                    </div>
+                                </div>
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-hover align-middle mb-0">
                                         <thead class="bg-base">
@@ -123,9 +131,7 @@
                                                 <th class="text-center" style="width: 50px;">No</th>
                                                 <th>Nama Produk</th>
                                                 <th>Jenis Produk</th>
-                                                <th class="text-center" style="width: 120px;">Stok</th>
-                                                <th style="width: 200px;">Persentase</th>
-                                                {{-- <th class="text-center" style="width: 100px;">Status</th> --}}
+                                                <th class="text-center" style="width: 150px;">Stok Tersisa</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -136,38 +142,12 @@
                                                         <span
                                                             class="fw-semibold text-primary-600">{{ $item["nama_produk"] }}</span>
                                                     </td>
-                                                    <td>{{ $item["nama_jenis"] }}</td>
+                                                    <td>{{ $item["nama_jenis"] ?? 'Produk Utama'}}</td>
                                                     <td class="text-center">
-                                                        <span
-                                                            class="fw-semibold">{{ number_format($item["stok"]) }}</span>
-                                                    </td>
-                                                    <td>
-                                                        <div class="d-flex align-items-center gap-2">
-                                                            <div class="progress flex-grow-1" style="height: 10px;">
-                                                                <div class="progress-bar bg-{{ $item["status_stok"] }}-600"
-                                                                    role="progressbar"
-                                                                    style="width: {{ $item["persentase"] }}%;"
-                                                                    aria-valuenow="{{ $item["persentase"] }}"
-                                                                    aria-valuemin="0" aria-valuemax="100">
-                                                                </div>
-                                                            </div>
-                                                            <span
-                                                                class="text-sm fw-semibold text-{{ $item["status_stok"] }}-600"
-                                                                style="min-width: 45px;">
-                                                                {{ $item["persentase"] }}%
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    {{-- <td class="text-center">
-                                                        <span
-                                                            class="badge bg-{{ $item["status_stok"] }}-100 text-{{ $item["status_stok"] }}-600">
-                                                            @if ($item["persentase"] < 10)
-                                                                Kritis
-                                                            @else
-                                                                Rendah
-                                                            @endif
+                                                        <span class="fw-bold text-danger-600" style="font-size: 18px;">
+                                                            {{ $item["stok"] }}
                                                         </span>
-                                                    </td> --}}
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -175,10 +155,8 @@
                                 </div>
                             @else
                                 <div class="text-center py-5">
-                                    <iconify-icon icon="solar:check-circle-bold-duotone" class="text-success-600"
-                                        style="font-size: 64px;"></iconify-icon>
                                     <p class="text-success-600 fw-semibold mt-3 mb-1">Semua Stok Aman!</p>
-                                    <p class="text-secondary-light mb-0">Tidak ada stok produk yang di bawah 20%</p>
+                                    <p class="text-secondary-light mb-0">Tidak ada produk dengan stok ≤ 5 unit</p>
                                 </div>
                             @endif
                         </div>

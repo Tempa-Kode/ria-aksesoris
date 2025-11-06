@@ -91,34 +91,43 @@ class HomeController extends Controller
             ->where('status_pembayaran', 'terima')
             ->sum('total_bayar');
 
-        // Produk Stok Rendah (kurang dari 10)
-        $produkStokRendah = \App\Models\Produk::where('jumlah_produk', '<', 10)->count();
+        // Produk Stok Rendah (kurang dari 5)
+        $produkStokRendah = \App\Models\Produk::where('jumlah_produk', '<=', 5)->count();
 
-        // Data Stok Produk dengan Jenis (Max stok 1000 per jenis) - Hanya yang < 20%
-        $stokProduk = \App\Models\Produk::with(['jenisProduk' => function($query) {
-            $query->orderBy('nama', 'asc');
+        // Data Stok Produk - Hanya yang stok <= 5
+        $stokProduk = collect();
+
+        // 1. Ambil stok dari produk utama yang <= 5
+        $produkUtama = \App\Models\Produk::where('jumlah_produk', '<=', 5)
+            ->get()
+            ->map(function($produk) {
+                return [
+                    'nama_produk' => $produk->nama,
+                    'nama_jenis' => 'Produk Utama', // Produk utama tidak punya jenis
+                    'stok' => $produk->jumlah_produk
+                ];
+            });
+
+        // 2. Ambil stok dari jenis produk yang <= 5
+        $jenisProdukRendah = \App\Models\Produk::with(['jenisProduk' => function($query) {
+            $query->where('jumlah_produk', '<=', 5)
+                  ->orderBy('jumlah_produk', 'asc');
         }])
         ->get()
         ->flatMap(function($produk) {
             return $produk->jenisProduk->map(function($jenis) use ($produk) {
-                $maxStok = 1000;
-                $persentase = min(100, ($jenis->jumlah_produk / $maxStok) * 100);
-
                 return [
                     'nama_produk' => $produk->nama,
                     'nama_jenis' => $jenis->nama,
-                    'stok' => $jenis->jumlah_produk,
-                    'max_stok' => $maxStok,
-                    'persentase' => round($persentase, 1),
-                    'status_stok' => $persentase >= 10 ? 'warning' : 'danger'
+                    'stok' => $jenis->jumlah_produk
                 ];
             });
-        })
-        ->filter(function($item) {
-            return $item['persentase'] < 20; // Hanya tampilkan yang < 20%
-        })
-        ->sortBy('persentase')
-        ->values();        return view('dashboard', compact(
+        });
+
+        // 3. Gabungkan dan sort berdasarkan stok
+        $stokProduk = $produkUtama->concat($jenisProdukRendah)
+            ->sortBy('stok')
+            ->values();        return view('dashboard', compact(
             'totalProduk',
             'totalCustomer',
             'totalInvoice',
