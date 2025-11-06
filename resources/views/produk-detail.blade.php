@@ -114,6 +114,10 @@
                                         <h5 class="product-info-name fw-semibold">
                                             {{ $produk->nama }}
                                         </h5>
+                                        <span class="body-text-3 caption text-muted">
+                                            <strong class="text-success">{{ $produk->totalTerjual }}</strong>
+                                            Terjual
+                                        </span>
                                     </div>
                                     <div class="infor-center">
                                         <div class="product-info-price">
@@ -222,6 +226,6 @@
     @endpush
 @endsection
 
-@section('footer')
-    @include('partials.footer')
+@section("footer")
+    @include("partials.footer")
 @endsection

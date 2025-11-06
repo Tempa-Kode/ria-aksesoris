@@ -11,7 +11,7 @@ class ProdukDetailController extends Controller
     public function show($id)
     {
         // Ambil produk berdasarkan ID dengan relasi
-        $produk = Produk::with(['kategori', 'gambarProduk', 'jenisProduk'])
+        $produk = Produk::with(['kategori', 'gambarProduk', 'jenisProduk', 'itemTransaksi.invoice'])
             ->findOrFail($id);
 
         // Ambil produk terkait (dari kategori yang sama, kecuali produk ini)

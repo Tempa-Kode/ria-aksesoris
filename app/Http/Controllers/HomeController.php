@@ -14,7 +14,7 @@ class HomeController extends Controller
         $kategori = Kategori::latest()->get();
 
         // Query builder untuk produk
-        $query = Produk::with(['kategori', 'jenisProduk', 'gambarProduk']);
+        $query = Produk::with(['kategori', 'jenisProduk', 'gambarProduk', 'itemTransaksi.invoice']);
 
         // Search/Pencarian
         if ($request->has('search') && $request->search != '') {

@@ -1,12 +1,12 @@
 @extends("template")
 @section("title", "Beranda - Aksesoris Ria")
 @section("body")
-<!-- Breakcrumbs -->
+    <!-- Breakcrumbs -->
     <div class="tf-sp-1">
         <div class="container">
             <ul class="breakcrumbs">
                 <li>
-                    <a href="{{ route('home') }}" class="body-small link">
+                    <a href="{{ route("home") }}" class="body-small link">
                         Home
                     </a>
                 </li>
@@ -194,6 +194,8 @@
                                         <span class="new-price price-text fw-medium">Rp.
                                             {{ number_format($item->harga, 0, ",", ".") }}</span>
                                     </p>
+                                    <p class="text-muted">{{ $item->deskripsi }}</p>
+                                    <p class="caption text-muted">{{ $item->totalTerjual }} Terjual</p>
                                 </div>
                                 <div class="box-infor-detail">
                                     <ul class="list-computer-memory">
@@ -280,15 +282,15 @@
         </div>
     </div>
 
-    @section('footer')
-        @include('partials.footer')
+    @section("footer")
+        @include("partials.footer")
     @endsection
 
     <!-- Mobile Menu -->
     <div class="offcanvas offcanvas-start canvas-mb" id="mobileMenu">
         <span class="icon-close btn-close-mb link" data-bs-dismiss="offcanvas"></span>
         <div class="logo-site">
-            <a href="{{ route('home') }}">
+            <a href="{{ route("home") }}">
                 <img src="{{ asset("images/logo/logo.svg") }}" alt="">
             </a>
         </div>

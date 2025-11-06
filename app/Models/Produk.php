@@ -47,4 +47,14 @@ class Produk extends Model
     {
         return $this->hasMany(ItemTransaksi::class, 'produk_id', 'id');
     }
+
+    // Method untuk mendapatkan total jumlah terjual
+    public function getTotalTerjualAttribute()
+    {
+        return $this->itemTransaksi()
+            ->whereHas('invoice', function($query) {
+                $query->where('status_pembayaran', 'terima');
+            })
+            ->sum('jumlah');
+    }
 }
