@@ -136,8 +136,6 @@
                         <ul class="sec-total-price">
                             <li><span class="body-text-3">Subtotal</span><span class="body-text-3"
                                     id="checkout-subtotal">Rp. 0</span></li>
-                            <li><span class="body-text-3">Ongkir</span><span class="body-text-3"
-                                    id="checkout-shipping">Gratis</span></li>
                             <li><span class="body-md-2 fw-semibold">Total</span><span
                                     class="body-md-2 fw-semibold text-primary" id="checkout-total">Rp. 0</span></li>
                         </ul>

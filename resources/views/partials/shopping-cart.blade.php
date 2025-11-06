@@ -44,10 +44,6 @@
                     aria-valuemax="100">
                     <div class="progress-bar" style="width: 80%;"></div>
                 </div>
-                <p class="body-text-3">
-                    <i class="icon-delivery-2 fs-24"></i>
-                    Gratis ongkir untuk pembelian diatas <span class="fw-bold">Rp. 250.000</span>
-                </p>
             </div>
         </div>
     </div>
