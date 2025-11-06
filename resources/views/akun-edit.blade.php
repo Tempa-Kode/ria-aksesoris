@@ -38,8 +38,45 @@
                             </div>
                         @endif
 
-                        <form action="{{ route("akun.update") }}" method="POST" class="form-edit-account">
+                        <form action="{{ route("akun.update") }}" method="POST" class="form-edit-account"
+                            enctype="multipart/form-data">
                             @csrf
+
+                            {{-- Foto Profil --}}
+                            <div class="mb-4">
+                                <label class="fw-semibold body-md-2 mb-2">Foto Profil</label>
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="profile-photo-preview">
+                                        @if (Auth::user()->foto)
+                                            <img src="{{ asset(Auth::user()->foto) }}" alt="Foto Profil" id="preview-foto"
+                                                class="rounded-circle"
+                                                style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #ddd;">
+                                        @else
+                                            <div id="preview-foto"
+                                                class="rounded-circle d-flex align-items-center justify-content-center"
+                                                style="width: 100px; height: 100px; background-color: #f0f0f0; border: 2px solid #ddd;">
+                                                <svg width="50" height="50" viewBox="0 0 22 23" fill="none">
+                                                    <path
+                                                        d="M10.9998 11.5283C5.20222 11.5283 0.485352 16.2452 0.485352 22.0428C0.485352 22.2952 0.69017 22.5 0.942518 22.5C1.19487 22.5 1.39968 22.2952 1.39968 22.0428C1.39968 16.749 5.70606 12.4426 10.9999 12.4426C16.2937 12.4426 20.6001 16.749 20.6001 22.0428C20.6001 22.2952 20.8049 22.5 21.0572 22.5C21.3096 22.5 21.5144 22.2952 21.5144 22.0428C21.5144 16.2443 16.7975 11.5283 10.9998 11.5283Z"
+                                                        fill="#999" stroke="#999" stroke-width="0.3" />
+                                                    <path
+                                                        d="M10.9999 0.5C8.22767 0.5 5.97119 2.75557 5.97119 5.52866C5.97119 8.30174 8.22771 10.5573 10.9999 10.5573C13.772 10.5573 16.0285 8.30174 16.0285 5.52866C16.0285 2.75557 13.772 0.5 10.9999 0.5ZM10.9999 9.64303C8.73146 9.64303 6.88548 7.79705 6.88548 5.52866C6.88548 3.26027 8.73146 1.41429 10.9999 1.41429C13.2682 1.41429 15.1142 3.26027 15.1142 5.52866C15.1142 7.79705 13.2682 9.64303 10.9999 9.64303Z"
+                                                        fill="#999" stroke="#999" stroke-width="0.3" />
+                                                </svg>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <input type="file" name="foto" id="foto" accept="image/*"
+                                            class="form-control mb-2" onchange="previewImage(event)">
+                                        <small class="text-muted d-block">Format: JPG, JPEG, PNG, GIF. Maksimal 2MB</small>
+                                        @error("foto")
+                                            <span class="text-danger small">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="mb-4">
 
                             <div class="row">
                                 <div class="col-md-6">
@@ -55,8 +92,8 @@
                                 <div class="col-md-6">
                                     <fieldset class="mb-4">
                                         <label class="fw-semibold body-md-2 mb-2">Email *</label>
-                                        <input type="email" name="email" value="{{ old("email", Auth::user()->email) }}"
-                                            required>
+                                        <input type="email" name="email"
+                                            value="{{ old("email", Auth::user()->email) }}" required>
                                         @error("email")
                                             <span class="text-danger small">{{ $message }}</span>
                                         @enderror
@@ -131,4 +168,33 @@
         </div>
     </section>
     <!-- /My Account Edit -->
+
+    @push("scripts")
+        <script>
+            function previewImage(event) {
+                const file = event.target.files[0];
+                const preview = document.getElementById('preview-foto');
+
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // Jika preview adalah img
+                        if (preview.tagName === 'IMG') {
+                            preview.src = e.target.result;
+                        } else {
+                            // Jika preview adalah div, ubah jadi img
+                            const newImg = document.createElement('img');
+                            newImg.id = 'preview-foto';
+                            newImg.src = e.target.result;
+                            newImg.className = 'rounded-circle';
+                            newImg.style.cssText =
+                            'width: 100px; height: 100px; object-fit: cover; border: 2px solid #ddd;';
+                            preview.parentNode.replaceChild(newImg, preview);
+                        }
+                    }
+                    reader.readAsDataURL(file);
+                }
+            }
+        </script>
+    @endpush
 @endsection

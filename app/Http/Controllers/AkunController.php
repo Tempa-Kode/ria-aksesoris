@@ -89,6 +89,7 @@ class AkunController extends Controller
             'email' => 'required|email|max:50|unique:users,email,' . $user->id,
             'no_hp' => 'nullable|string|max:15',
             'username' => 'nullable|string|max:20|unique:users,username,' . $user->id,
+            'foto' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:2048',
             'current_password' => 'nullable|required_with:new_password',
             'new_password' => 'nullable|min:8|confirmed',
         ]);
@@ -97,6 +98,20 @@ class AkunController extends Controller
         $user->email = $request->email;
         $user->no_hp = $request->no_hp;
         $user->username = $request->username;
+
+        // Upload foto profil jika ada
+        if ($request->hasFile('foto')) {
+            // Hapus foto lama jika ada
+            if ($user->foto && file_exists(public_path($user->foto))) {
+                unlink(public_path($user->foto));
+            }
+
+            // Upload foto baru
+            $foto = $request->file('foto');
+            $namaFoto = 'profile_' . $user->id . '_' . time() . '.' . $foto->getClientOriginalExtension();
+            $foto->move(public_path('uploads/profile'), $namaFoto);
+            $user->foto = 'uploads/profile/' . $namaFoto;
+        }
 
         // Update password jika diisi
         if ($request->filled('current_password')) {
