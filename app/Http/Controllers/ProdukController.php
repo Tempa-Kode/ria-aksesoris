@@ -204,9 +204,12 @@ class ProdukController extends Controller
                 foreach ($request->jenis_existing_id as $index => $jenisId) {
                     $jenis = JenisProduk::find($jenisId);
                     if ($jenis) {
+                        $stokLamaJenis = $jenis->jumlah_produk;
+                        $stokBaruJenis = $request->jenis_existing_jumlah[$index] ?? 0;
+
                         $updateData = [
                             'nama' => $request->jenis_existing_nama[$index],
-                            'jumlah_produk' => $request->jenis_existing_jumlah[$index] ?? 0,
+                            'jumlah_produk' => $stokBaruJenis,
                         ];
 
                         // Upload Gambar Baru untuk Jenis Existing (jika ada)
@@ -225,6 +228,20 @@ class ProdukController extends Controller
                         }
 
                         $jenis->update($updateData);
+
+                        // Create Riwayat Stok jika ada perubahan stok jenis
+                        if ($stokLamaJenis != $stokBaruJenis) {
+                            $selisih = $stokBaruJenis - $stokLamaJenis;
+                            RiwayatStokProduk::create([
+                                'produk_id' => $produk->id,
+                                'jenis_produk_id' => $jenisId,
+                                'tanggal' => now(),
+                                'stok_awal' => $stokLamaJenis,
+                                'stok_masuk' => $selisih > 0 ? $selisih : 0,
+                                'stok_keluar' => $selisih < 0 ? abs($selisih) : 0,
+                                'stok_akhir' => $stokBaruJenis,
+                            ]);
+                        }
                     }
                 }
             }
@@ -246,16 +263,29 @@ class ProdukController extends Controller
                             $jenisData['path_gambar'] = 'uploads/jenis-produk/' . $filename;
                         }
 
-                        JenisProduk::create([
+                        $jenisProduk = JenisProduk::create([
                             'produk_id' => $produk->id,
                             ...$jenisData
                         ]);
+
+                        // Create Riwayat Stok untuk Jenis Produk Baru (jika ada stok)
+                        if ($jenisData['jumlah_produk'] > 0) {
+                            RiwayatStokProduk::create([
+                                'produk_id' => $produk->id,
+                                'jenis_produk_id' => $jenisProduk->id,
+                                'tanggal' => now(),
+                                'stok_awal' => 0,
+                                'stok_masuk' => $jenisData['jumlah_produk'],
+                                'stok_keluar' => 0,
+                                'stok_akhir' => $jenisData['jumlah_produk'],
+                            ]);
+                        }
                     }
                 }
             }
 
-            // Create Riwayat Stok jika ada perubahan
-            if ($stokLama != $validated['jumlah_produk']) {
+            // Create Riwayat Stok jika ada perubahan dan jumlah_produk dikirim
+            if (isset($validated['jumlah_produk']) && $stokLama != $validated['jumlah_produk']) {
                 $selisih = $validated['jumlah_produk'] - $stokLama;
                 RiwayatStokProduk::create([
                     'produk_id' => $produk->id,
@@ -266,6 +296,9 @@ class ProdukController extends Controller
                     'stok_keluar' => $selisih < 0 ? abs($selisih) : 0,
                     'stok_akhir' => $validated['jumlah_produk'],
                 ]);
+
+                // Update jumlah produk utama
+                $produk->update(['jumlah_produk' => $validated['jumlah_produk']]);
             }
 
             DB::commit();
