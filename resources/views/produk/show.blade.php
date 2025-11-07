@@ -146,6 +146,7 @@
                             <thead>
                                 <tr>
                                     <th>Tanggal</th>
+                                    <th>Produk</th>
                                     <th>Jenis</th>
                                     <th>Stok Awal</th>
                                     <th>Stok Masuk</th>
@@ -184,6 +185,7 @@
                                     @endphp
                                     <tr>
                                         <td>{{ $firstItem->tanggal }}</td>
+                                        <td>{{ $produk->nama }}</td>
                                         <td>{{ $firstItem->jenis_produk_id ? $firstItem->jenisProduk->nama : "Produk Utama" }}
                                         </td>
                                         <td>{{ $stokAwal }}</td>
