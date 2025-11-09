@@ -17,14 +17,14 @@ class ProdukDetailController extends Controller
         // Ambil produk terkait (dari kategori yang sama, kecuali produk ini)
         $produkTerkait = Produk::with(['kategori', 'gambarProduk', 'jenisProduk'])
             ->where('kategori_id', $produk->kategori_id)
-            ->where('id', '!=', $id)
+            ->where('id_produk', '!=', $id)
             ->where('jumlah_produk', '>', 0)
             ->limit(6)
             ->get();
 
         // Ambil produk serupa (random dari kategori lain atau semua produk)
         $produkSerupa = Produk::with(['kategori', 'gambarProduk', 'jenisProduk'])
-            ->where('id', '!=', $id)
+            ->where('id_produk', '!=', $id)
             ->where('jumlah_produk', '>', 0)
             ->inRandomOrder()
             ->limit(6)

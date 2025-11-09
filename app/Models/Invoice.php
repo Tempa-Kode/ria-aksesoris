@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Invoice extends Model
 {
+    protected $primaryKey = 'id_invoice';
     protected $table = 'invoice';
 
     protected $fillable = [
@@ -29,11 +30,11 @@ class Invoice extends Model
 
     public function customer() : BelongsTo
     {
-        return $this->belongsTo(User::class, 'customer_id', 'id');
+        return $this->belongsTo(User::class, 'customer_id', 'id_user');
     }
 
     public function itemTransaksi()
     {
-        return $this->hasMany(ItemTransaksi::class, 'invoice_id');
+        return $this->hasMany(ItemTransaksi::class, 'invoice_id', 'id_invoice');
     }
 }

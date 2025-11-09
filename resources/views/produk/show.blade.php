@@ -128,7 +128,7 @@
                 <div class="card-header border-bottom d-flex justify-content-between align-items-center">
                     <h6 class="fw-semibold mb-0">Riwayat Stok Produk</h6>
                     <div class="d-flex gap-2">
-                        <a href="{{ route("produk.riwayat-stok.print", $produk->id) }}" target="_blank"
+                        <a href="{{ route("produk.riwayat-stok.print", $produk->id_produk) }}" target="_blank"
                             class="btn btn-sm btn-success radius-8">
                             <iconify-icon icon="basil:printer-outline" class="icon"></iconify-icon>
                             Cetak PDF
@@ -210,7 +210,7 @@
                     <iconify-icon icon="solar:arrow-left-outline" class="icon"></iconify-icon>
                     Kembali
                 </a>
-                <a href="{{ route("produk.edit", $produk->id) }}" class="btn btn-primary px-24 py-12 radius-8">
+                <a href="{{ route("produk.edit", $produk->id_produk) }}" class="btn btn-primary px-24 py-12 radius-8">
                     <iconify-icon icon="lucide:edit" class="icon"></iconify-icon>
                     Edit Produk
                 </a>
@@ -229,7 +229,7 @@
                     <h5 class="modal-title" id="tambahStokModalLabel">Tambah Stok Produk</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route("produk.stok.tambah", $produk->id) }}" method="POST">
+                <form action="{{ route("produk.stok.tambah", $produk->id_produk) }}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-20">
@@ -251,7 +251,7 @@
                             <select class="form-select radius-8" id="jenis_produk_id" name="jenis_produk_id">
                                 <option value="">Produk Utama</option>
                                 @foreach ($produk->jenisProduk as $jenis)
-                                    <option value="{{ $jenis->id }}">{{ $jenis->nama }} (Stok:
+                                    <option value="{{ $jenis->id_jenis_produk }}">{{ $jenis->nama }} (Stok:
                                         {{ $jenis->jumlah_produk }})</option>
                                 @endforeach
                             </select>

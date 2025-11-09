@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Kategori extends Model
 {
+    protected $primaryKey = 'id_kategori';
     protected $table = 'kategori';
 
     protected $fillable = [
@@ -15,6 +16,6 @@ class Kategori extends Model
 
     public function produk() : HasMany
     {
-        return $this->hasMany(Produk::class, 'kategori_id', 'id');
+        return $this->hasMany(Produk::class, 'kategori_id', 'id_kategori');
     }
 }

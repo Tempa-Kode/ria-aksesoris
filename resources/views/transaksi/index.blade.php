@@ -178,13 +178,13 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="d-flex align-items-center gap-10 justify-content-center">
-                                                <a href="{{ route("transaksi.show", $transaksi->id) }}"
+                                                <a href="{{ route("transaksi.show", $transaksi->id_invoice) }}"
                                                     class="bg-info-focus text-info-600 bg-hover-info-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                                                     title="Detail">
                                                     <iconify-icon icon="solar:eye-bold"
                                                         class="menu-icon"></iconify-icon>
                                                 </a>
-                                                <a href="{{ route("transaksi.invoice", $transaksi->id) }}"
+                                                <a href="{{ route("transaksi.invoice", $transaksi->id_invoice) }}"
                                                     class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle"
                                                     title="Download Invoice">
                                                     <iconify-icon icon="solar:download-linear"

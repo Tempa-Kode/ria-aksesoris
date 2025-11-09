@@ -40,7 +40,7 @@
                     <h6 class="text-lg fw-semibold mb-0">Form Edit Karyawan</h6>
                 </div>
                 <div class="card-body p-24">
-                    <form action="{{ route("karyawan.update", $karyawan->id) }}" method="POST"
+                    <form action="{{ route("karyawan.update", $karyawan->id_user) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         @method("PUT")

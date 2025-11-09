@@ -40,7 +40,7 @@
                     <h6 class="text-lg fw-semibold mb-0">Form Edit Kategori</h6>
                 </div>
                 <div class="card-body p-24">
-                    <form action="{{ route("kategori.update", $kategori->id) }}" method="POST">
+                    <form action="{{ route("kategori.update", $kategori->id_kategori) }}" method="POST">
                         @csrf
                         @method("PUT")
                         <div class="row">

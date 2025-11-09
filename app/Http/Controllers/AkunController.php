@@ -14,7 +14,7 @@ class AkunController extends Controller
     {
         $user = Auth::user();
 
-        $recentOrders = Invoice::where('customer_id', $user->id)
+        $recentOrders = Invoice::where('customer_id', $user->id_user)
             ->orderBy('created_at', 'desc')
             ->limit(3)
             ->get();
@@ -27,7 +27,7 @@ class AkunController extends Controller
     {
         $user = Auth::user();
 
-        $orders = Invoice::where('customer_id', $user->id)
+        $orders = Invoice::where('customer_id', $user->id_user)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -40,8 +40,8 @@ class AkunController extends Controller
         $user = Auth::user();
 
         // Uncomment jika sudah menggunakan Invoice
-        // $order = Invoice::where('user_id', $user->id)
-        //     ->where('id', $id)
+        // $order = Invoice::where('customer_id', $user->id_user)
+        //     ->where('id_invoice', $id)
         //     ->with('items.produk')
         //     ->firstOrFail();
 
@@ -86,9 +86,9 @@ class AkunController extends Controller
 
         $request->validate([
             'nama' => 'required|string|max:25',
-            'email' => 'required|email|max:50|unique:users,email,' . $user->id,
+            'email' => 'required|email|max:50|unique:users,email,' . $user->id_user . ',id_user',
             'no_hp' => 'nullable|string|max:15',
-            'username' => 'nullable|string|max:20|unique:users,username,' . $user->id,
+            'username' => 'nullable|string|max:20|unique:users,username,' . $user->id_user . ',id_user',
             'foto' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:2048',
             'current_password' => 'nullable|required_with:new_password',
             'new_password' => 'nullable|min:8|confirmed',
@@ -108,7 +108,7 @@ class AkunController extends Controller
 
             // Upload foto baru
             $foto = $request->file('foto');
-            $namaFoto = 'profile_' . $user->id . '_' . time() . '.' . $foto->getClientOriginalExtension();
+            $namaFoto = 'profile_' . $user->id_user . '_' . time() . '.' . $foto->getClientOriginalExtension();
             $foto->move(public_path('uploads/profile'), $namaFoto);
             $user->foto = 'uploads/profile/' . $namaFoto;
         }

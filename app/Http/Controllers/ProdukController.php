@@ -37,10 +37,8 @@ class ProdukController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all()); // Debug: uncomment untuk melihat data yang dikirim
-
         $validated = $request->validate([
-            'kategori_id' => 'required|exists:kategori,id',
+            'kategori_id' => 'required|exists:kategori,id_kategori',
             'nama' => 'required|string|max:255',
             'harga' => 'required|numeric|min:0',
             'keterangan' => 'nullable|string',
@@ -69,7 +67,7 @@ class ProdukController extends Controller
                     $gambar->move(public_path('uploads/produk'), $filename);
 
                     GambarProduk::create([
-                        'produk_id' => $produk->id,
+                        'produk_id' => $produk->id_produk,
                         'path_gambar' => 'uploads/produk/' . $filename,
                     ]);
                 }
@@ -80,7 +78,7 @@ class ProdukController extends Controller
                 foreach ($request->jenis_nama as $index => $jenisNama) {
                     if (!empty($jenisNama)) {
                         $jenisData = [
-                            'produk_id' => $produk->id,
+                            'produk_id' => $produk->id_produk,
                             'nama' => $jenisNama,
                             'jumlah_produk' => $request->jenis_jumlah[$index] ?? 0,
                         ];
@@ -97,8 +95,8 @@ class ProdukController extends Controller
 
                         // Create Riwayat Stok untuk Jenis Produk
                         RiwayatStokProduk::create([
-                            'produk_id' => $produk->id,
-                            'jenis_produk_id' => $jenisProduk->id,
+                            'produk_id' => $produk->id_produk,
+                            'jenis_produk_id' => $jenisProduk->id_jenis_produk,
                             'tanggal' => now(),
                             'stok_awal' => 0,
                             'stok_masuk' => $jenisData['jumlah_produk'],
@@ -112,7 +110,7 @@ class ProdukController extends Controller
             // Create Riwayat Stok Produk Utama (hanya jika jumlah_produk > 0)
             if ($validated['jumlah_produk'] > 0) {
                 RiwayatStokProduk::create([
-                    'produk_id' => $produk->id,
+                    'produk_id' => $produk->id_produk,
                     'jenis_produk_id' => null,
                     'tanggal' => now(),
                     'stok_awal' => 0,
@@ -158,14 +156,14 @@ class ProdukController extends Controller
         $produk = Produk::findOrFail($id);
 
         $validated = $request->validate([
-            'kategori_id' => 'required|exists:kategori,id',
+            'kategori_id' => 'required|exists:kategori,id_kategori',
             'nama' => 'required|string|max:255',
             'harga' => 'required|numeric|min:0',
             'keterangan' => 'nullable|string',
             'jumlah_produk' => 'nullable|integer|min:0',
             'gambar_produk.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             // Jenis Existing
-            'jenis_existing_id.*' => 'nullable|exists:jenis_produk,id',
+            'jenis_existing_id.*' => 'nullable|exists:jenis_produk,id_jenis_produk',
             'jenis_existing_nama.*' => 'nullable|string|max:255',
             'jenis_existing_jumlah.*' => 'nullable|integer|min:0',
             // Jenis Baru
@@ -193,7 +191,7 @@ class ProdukController extends Controller
                     $gambar->move(public_path('uploads/produk'), $filename);
 
                     GambarProduk::create([
-                        'produk_id' => $produk->id,
+                        'produk_id' => $produk->id_produk,
                         'path_gambar' => 'uploads/produk/' . $filename,
                     ]);
                 }
@@ -233,7 +231,7 @@ class ProdukController extends Controller
                         if ($stokLamaJenis != $stokBaruJenis) {
                             $selisih = $stokBaruJenis - $stokLamaJenis;
                             RiwayatStokProduk::create([
-                                'produk_id' => $produk->id,
+                                'produk_id' => $produk->id_produk,
                                 'jenis_produk_id' => $jenisId,
                                 'tanggal' => now(),
                                 'stok_awal' => $stokLamaJenis,
@@ -264,15 +262,15 @@ class ProdukController extends Controller
                         }
 
                         $jenisProduk = JenisProduk::create([
-                            'produk_id' => $produk->id,
+                            'produk_id' => $produk->id_produk,
                             ...$jenisData
                         ]);
 
                         // Create Riwayat Stok untuk Jenis Produk Baru (jika ada stok)
                         if ($jenisData['jumlah_produk'] > 0) {
                             RiwayatStokProduk::create([
-                                'produk_id' => $produk->id,
-                                'jenis_produk_id' => $jenisProduk->id,
+                                'produk_id' => $produk->id_produk,
+                                'jenis_produk_id' => $jenisProduk->id_jenis_produk,
                                 'tanggal' => now(),
                                 'stok_awal' => 0,
                                 'stok_masuk' => $jenisData['jumlah_produk'],
@@ -288,7 +286,7 @@ class ProdukController extends Controller
             if (isset($validated['jumlah_produk']) && $stokLama != $validated['jumlah_produk']) {
                 $selisih = $validated['jumlah_produk'] - $stokLama;
                 RiwayatStokProduk::create([
-                    'produk_id' => $produk->id,
+                    'produk_id' => $produk->id_produk,
                     'jenis_produk_id' => null,
                     'tanggal' => now(),
                     'stok_awal' => $stokLama,
@@ -389,7 +387,7 @@ class ProdukController extends Controller
 
         $validated = $request->validate([
             'tipe_stok' => 'required|in:masuk,keluar',
-            'jenis_produk_id' => 'nullable|exists:jenis_produk,id',
+            'jenis_produk_id' => 'nullable|exists:jenis_produk,id_jenis_produk',
             'jumlah' => 'required|integer|min:1',
         ]);
 
@@ -418,7 +416,7 @@ class ProdukController extends Controller
 
                 // Catat riwayat stok
                 RiwayatStokProduk::create([
-                    'produk_id' => $produk->id,
+                    'produk_id' => $produk->id_produk,
                     'jenis_produk_id' => $jenisId,
                     'tanggal' => now(),
                     'stok_awal' => $stokAwal,
@@ -443,7 +441,7 @@ class ProdukController extends Controller
 
                 // Catat riwayat stok
                 RiwayatStokProduk::create([
-                    'produk_id' => $produk->id,
+                    'produk_id' => $produk->id_produk,
                     'jenis_produk_id' => null,
                     'tanggal' => now(),
                     'stok_awal' => $stokAwal,

@@ -56,7 +56,7 @@
                                         @endforelse
 
                                         @foreach ($produk->jenisProduk as $jenis)
-                                            <div class="swiper-slide" data-color="gray" data-jenis-id="{{ $jenis->id }}">
+                                            <div class="swiper-slide" data-color="gray" data-jenis-id="{{ $jenis->id_jenis_produk }}">
                                                 <a href="{{ asset($jenis->path_gambar) }}" target="_blank" class="item"
                                                     data-pswp-width="600px" data-pswp-height="800px">
                                                     <img class="tf-image-zoom lazyload"
@@ -84,7 +84,7 @@
 
                                             @foreach ($produk->jenisProduk as $jenis)
                                                 <div class="swiper-slide stagger-item" data-color="gray"
-                                                    data-jenis-id="{{ $jenis->id }}">
+                                                    data-jenis-id="{{ $jenis->id_jenis_produk }}">
                                                     <div class="item">
                                                         <img class="lazyload" data-src="{{ asset($jenis->path_gambar) }}"
                                                             src="{{ asset($jenis->path_gambar) }}" alt="">
@@ -106,7 +106,7 @@
                                 <div class="tf-product-info-content">
                                     <div class="infor-heading">
                                         <p class="caption">Kategori:
-                                            <a href="{{ route("home", ["kategori" => $produk->kategori->id] + request()->except("kategori")) }}"
+                                            <a href="{{ route("home", ["kategori" => $produk->kategori->id_kategori] + request()->except("kategori")) }}"
                                                 class="link text-secondary">
                                                 {{ $produk->kategori->nama }}
                                             </a>
@@ -150,8 +150,8 @@
                                                     <div class="tf-select-color ">
                                                         <select class="select-color">
                                                             @foreach ($produk->jenisProduk as $jenis)
-                                                                <option value="{{ $jenis->id }}"
-                                                                    {{ $jenis->id == $produk->jenisProdukTerpilih ? "selected" : "" }}>
+                                                                <option value="{{ $jenis->id_jenis_produk }}"
+                                                                    {{ $jenis->id_jenis_produk == $produk->jenisProdukTerpilih ? "selected" : "" }}>
                                                                     {{ $jenis->nama }}
                                                                 </option>
                                                             @endforeach
@@ -163,7 +163,7 @@
                                                 <div class="product-box-btn">
                                                     <a href="#shoppingCart" data-bs-toggle="offcanvas"
                                                         class="tf-btn text-white btn-add-to-cart"
-                                                        data-product-id="{{ $produk->id }}"
+                                                        data-product-id="{{ $produk->id_produk }}"
                                                         data-product-nama="{{ $produk->nama }}"
                                                         data-product-harga="{{ $produk->harga }}"
                                                         data-product-gambar="{{ $produk->gambarProduk->first() ? asset($produk->gambarProduk->first()->path_gambar) : asset("home/images/no-image.png") }}"

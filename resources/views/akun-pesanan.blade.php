@@ -49,7 +49,7 @@
                                             <td class="body-text-3">{{ $order->created_at->format("d M Y") }} </td>
                                             <td class="body-text-3"><span class="badge bg-primary">{{ $order->status_pengiriman ? 'Dikirim' : 'Belum Dikirim' }}</span></td>
                                             <td class="body-text-3">Rp {{ number_format($order->total_bayar, 0, ",", ".") }}</td>
-                                            <td><a href="{{ route("order.confirmation", $order->id) }}" class="tf-btn btn-small d-inline-flex">
+                                            <td><a href="{{ route("order.confirmation", $order->id_invoice) }}" class="tf-btn btn-small d-inline-flex">
                                                     <span class="text-white">Detail</span>
                                                 </a>
                                             </td>

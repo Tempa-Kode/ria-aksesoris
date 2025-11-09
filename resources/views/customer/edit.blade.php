@@ -40,7 +40,7 @@
                     <h6 class="text-lg fw-semibold mb-0">Form Edit Customer</h6>
                 </div>
                 <div class="card-body p-24">
-                    <form action="{{ route("customer.update", $customer->id) }}" method="POST"
+                    <form action="{{ route("customer.update", $customer->id_user) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         @method("PUT")
@@ -153,7 +153,7 @@
                                     @if ($customer->foto)
                                         <div class="mb-2">
                                             <img src="{{ asset($customer->foto) }}" alt="{{ $customer->nama }}"
-                                                class="w-100-px h-100-px rounded-circle object-fit-cover">
+                                                class="w-25 rounded-circle object-fit-cover">
                                         </div>
                                     @endif
                                     <input type="file"

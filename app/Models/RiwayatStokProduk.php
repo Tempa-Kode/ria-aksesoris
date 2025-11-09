@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RiwayatStokProduk extends Model
 {
+    protected $primaryKey = 'id_riwayat_stok_produk';
     protected $table = 'riwayat_stok_produk';
 
     protected $fillable = [
@@ -21,11 +22,11 @@ class RiwayatStokProduk extends Model
 
     public function produk() : BelongsTo
     {
-        return $this->belongsTo(Produk::class, 'produk_id', 'id');
+        return $this->belongsTo(Produk::class, 'produk_id', 'id_produk');
     }
 
     public function jenisProduk() : BelongsTo
     {
-        return $this->belongsTo(JenisProduk::class, 'jenis_produk_id', 'id');
+        return $this->belongsTo(JenisProduk::class, 'jenis_produk_id', 'id_jenis_produk');
     }
 }

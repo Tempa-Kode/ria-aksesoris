@@ -39,8 +39,8 @@
                             </li>
                             @forelse ($kategori as $item)
                                 <li>
-                                    <a href="{{ route("home", ["kategori" => $item->id] + request()->except("kategori")) }}"
-                                        class="{{ request("kategori") == $item->id ? "active" : "" }}">
+                                    <a href="{{ route("home", ["kategori" => $item->id_kategori] + request()->except("kategori")) }}"
+                                        class="{{ request("kategori") == $item->id_kategori ? "active" : "" }}">
                                         {{ $item->nama }} <i class="icon-arrow-right"></i>
                                     </a>
                                 </li>
@@ -163,7 +163,7 @@
                     @forelse ($produk as $item)
                         <div class="card-product" data-condition="Old" data-brand="steelseri" data-rate="5 Star">
                             <div class="card-product-wrapper">
-                                <a href="{{ route("produk.detail", $item->id) }}" class="product-img">
+                                <a href="{{ route("produk.detail", $item->id_produk) }}" class="product-img">
                                     @if ($item->gambarProduk->first())
                                         <img class="img-product lazyload"
                                             src="{{ asset($item->gambarProduk->first()->path_gambar) }}"
@@ -185,7 +185,7 @@
                                 <div class="box-title">
                                     <div>
                                         {{-- <p class="product-tag caption text-main-2 d-none">Headphone</p> --}}
-                                        <a href="{{ route("produk.detail", $item->id) }}"
+                                        <a href="{{ route("produk.detail", $item->id_produk) }}"
                                             class="name-product body-md-2 fw-semibold text-secondary link">
                                             {{ $item->nama }}
                                         </a>

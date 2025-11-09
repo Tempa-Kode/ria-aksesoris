@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class JenisProduk extends Model
 {
+    protected $primaryKey = 'id_jenis_produk';
     protected $table = 'jenis_produk';
 
     protected $fillable = [
@@ -18,6 +19,6 @@ class JenisProduk extends Model
 
     public function produk() : BelongsTo
     {
-        return $this->belongsTo(Produk::class, 'produk_id', 'id');
+        return $this->belongsTo(Produk::class, 'produk_id', 'id_produk');
     }
 }

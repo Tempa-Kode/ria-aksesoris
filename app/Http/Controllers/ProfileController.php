@@ -26,8 +26,8 @@ class ProfileController extends Controller
 
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'email' => 'required|email|unique:users,email,' . $user->id,
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id_user . ',id_user',
+            'email' => 'required|email|unique:users,email,' . $user->id_user . ',id_user',
             'no_hp' => 'nullable|string|max:20',
             'alamat' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',

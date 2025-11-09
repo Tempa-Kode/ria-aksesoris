@@ -125,7 +125,7 @@ class CartController extends Controller
 
                     // Create item transaction
                     ItemTransaksi::create([
-                        'invoice_id' => $invoice->id,
+                        'invoice_id' => $invoice->id_invoice,
                         'produk_id' => $item['id'],
                         'jenis_produk_id' => $item['jenis_id'],
                         'jumlah' => $item['quantity'],
@@ -156,7 +156,7 @@ class CartController extends Controller
 
                     // Create item transaction
                     ItemTransaksi::create([
-                        'invoice_id' => $invoice->id,
+                        'invoice_id' => $invoice->id_invoice,
                         'produk_id' => $item['id'],
                         'jenis_produk_id' => null,
                         'jumlah' => $item['quantity'],
@@ -185,9 +185,9 @@ class CartController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Pesanan berhasil dibuat',
-                'invoice_id' => $invoice->id,
+                'invoice_id' => $invoice->id_invoice,
                 'kode_invoice' => $kodeInvoice,
-                'redirect_url' => route('order.confirmation', $invoice->id)
+                'redirect_url' => route('order.confirmation', $invoice->id_invoice)
             ]);
 
         } catch (\Exception $e) {

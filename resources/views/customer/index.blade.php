@@ -96,11 +96,11 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="d-flex align-items-center gap-10 justify-content-center">
-                                                <a href="{{ route("customer.edit", $customer->id) }}"
+                                                <a href="{{ route("customer.edit", $customer->id_user) }}"
                                                     class="bg-success-focus text-success-600 bg-hover-success-200 fw-medium w-40-px h-40-px d-flex justify-content-center align-items-center rounded-circle">
                                                     <iconify-icon icon="lucide:edit" class="menu-icon"></iconify-icon>
                                                 </a>
-                                                <form action="{{ route("customer.destroy", $customer->id) }}"
+                                                <form action="{{ route("customer.destroy", $customer->id_user) }}"
                                                     method="POST" class="delete-form"
                                                     data-name="{{ $customer->nama }}">
                                                     @csrf

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Produk extends Model
 {
+    protected $primaryKey = 'id_produk';
     protected $table = 'produk';
 
     protected $fillable = [
@@ -20,32 +21,32 @@ class Produk extends Model
 
     public function kategori() : BelongsTo
     {
-        return $this->belongsTo(Kategori::class, 'kategori_id', 'id');
+        return $this->belongsTo(Kategori::class, 'kategori_id', 'id_kategori');
     }
 
     public function riwayatStokProduk() : HasMany
     {
-        return $this->hasMany(RiwayatStokProduk::class, 'produk_id', 'id');
+        return $this->hasMany(RiwayatStokProduk::class, 'produk_id', 'id_produk');
     }
 
     public function jenisProduk() : HasMany
     {
-        return $this->hasMany(JenisProduk::class, 'produk_id', 'id');
+        return $this->hasMany(JenisProduk::class, 'produk_id', 'id_produk');
     }
 
     public function gambarProduk() : HasMany
     {
-        return $this->hasMany(GambarProduk::class, 'produk_id', 'id');
+        return $this->hasMany(GambarProduk::class, 'produk_id', 'id_produk');
     }
 
     public function invoice() : HasMany
     {
-        return $this->hasMany(Invoice::class, 'produk_id', 'id');
+        return $this->hasMany(Invoice::class, 'produk_id', 'id_produk');
     }
 
     public function itemTransaksi() : HasMany
     {
-        return $this->hasMany(ItemTransaksi::class, 'produk_id', 'id');
+        return $this->hasMany(ItemTransaksi::class, 'produk_id', 'id_produk');
     }
 
     // Method untuk mendapatkan total jumlah terjual

@@ -103,7 +103,7 @@
                                             <div class="alert alert-warning mb-3">
                                                 <p class="mb-2 body-text-3"><strong>Transfer ke:</strong></p>
                                                 <p class="mb-1 body-text-4">Bank BRI: 5322 0101 5797 536</p>
-                                                <p class="mb-2 body-text-4">a.n. Riahma Uli Br Siagian</p>
+                                                <p class="mb-2 body-text-4">a.n. Riahma Uli Br Saragih</p>
                                                 <p class="mb-2 body-text-4 mt-2">Atau <strong>scan QRIS</strong> berikut:</p>
                                                 <img src="{{ asset('home/images/qris.jpg') }}" alt="qris" class="w-50">
                                                 <p class="mb-0 caption text-main-2">

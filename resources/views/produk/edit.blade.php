@@ -50,7 +50,7 @@
                     <h6 class="text-lg fw-semibold mb-0">Form Edit Produk</h6>
                 </div>
                 <div class="card-body p-24">
-                    <form action="{{ route("produk.update", $produk->id) }}" method="POST"
+                    <form action="{{ route("produk.update", $produk->id_produk) }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         @method("PUT")
@@ -85,8 +85,8 @@
                                         id="kategori_id" name="kategori_id">
                                         <option value="">Pilih Kategori</option>
                                         @foreach ($kategoris as $kategori)
-                                            <option value="{{ $kategori->id }}"
-                                                {{ old("kategori_id", $produk->kategori_id) == $kategori->id ? "selected" : "" }}>
+                                            <option value="{{ $kategori->id_kategori }}"
+                                                {{ old("kategori_id", $produk->kategori_id) == $kategori->id_kategori ? "selected" : "" }}>
                                                 {{ $kategori->nama }}
                                             </option>
                                         @endforeach
@@ -150,12 +150,12 @@
                             <div class="col-12">
                                 <div class="d-flex flex-wrap gap-2 mb-3">
                                     @foreach ($produk->gambarProduk as $gambar)
-                                        <div class="position-relative gambar-item" data-id="{{ $gambar->id }}">
+                                        <div class="position-relative gambar-item" data-id="{{ $gambar->id_gambar_produk }}">
                                             <img src="{{ asset($gambar->path_gambar) }}"
                                                 class="w-25 h-100-px rounded border">
                                             <button type="button"
                                                 class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 hapus-gambar-existing"
-                                                data-id="{{ $gambar->id }}">
+                                                data-id="{{ $gambar->id_gambar_produk }}">
                                                 <iconify-icon icon="mingcute:delete-2-line"></iconify-icon>
                                             </button>
                                         </div>
@@ -187,19 +187,19 @@
                             </div>
                             <div class="col-12">
                                 @foreach ($produk->jenisProduk as $jenis)
-                                    <div class="card mb-3 jenis-existing-item" data-id="{{ $jenis->id }}">
+                                    <div class="card mb-3 jenis-existing-item" data-id="{{ $jenis->id_jenis_produk }}">
                                         <div class="card-body p-20">
                                             <div class="d-flex justify-content-between align-items-center mb-3">
                                                 <h6 class="fw-semibold mb-0">Edit Jenis Produk</h6>
                                                 <button type="button"
                                                     class="btn btn-sm btn-danger radius-8 hapus-jenis-existing"
-                                                    data-id="{{ $jenis->id }}">
+                                                    data-id="{{ $jenis->id_jenis_produk }}">
                                                     <iconify-icon icon="mingcute:delete-2-line"></iconify-icon> Hapus
                                                 </button>
                                             </div>
                                             <div class="row">
                                                 <input type="hidden" name="jenis_existing_id[]"
-                                                    value="{{ $jenis->id }}">
+                                                    value="{{ $jenis->id_jenis_produk }}">
                                                 <div class="col-sm-4">
                                                     <div class="mb-20">
                                                         <label
@@ -228,7 +228,7 @@
                                                             Baru (Opsional)</label>
                                                         <input type="file"
                                                             class="form-control radius-8 jenis-existing-gambar"
-                                                            name="jenis_existing_gambar_{{ $jenis->id }}"
+                                                            name="jenis_existing_gambar_{{ $jenis->id_jenis_produk }}"
                                                             accept="image/*">
                                                         <small class="text-secondary-light">Kosongkan jika tidak ingin
                                                             mengubah gambar</small>
@@ -244,7 +244,7 @@
                                                                 class="w-25 h-100-px rounded border d-block">
                                                         </div>
                                                     @endif
-                                                    <div class="preview-existing-{{ $jenis->id }}"></div>
+                                                    <div class="preview-existing-{{ $jenis->id_jenis_produk }}"></div>
                                                 </div>
                                             </div>
                                         </div>

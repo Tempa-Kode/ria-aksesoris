@@ -37,7 +37,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex flex-wrap align-items-center justify-content-end gap-2">
-                        <a href="{{ route("transaksi.show", $transaksi->id) }}"
+                        <a href="{{ route("transaksi.show", $transaksi->id_invoice) }}"
                             class="btn btn-sm btn-secondary radius-8 d-inline-flex align-items-center gap-1">
                             <iconify-icon icon="solar:arrow-left-outline" class="text-xl"></iconify-icon>
                             Kembali

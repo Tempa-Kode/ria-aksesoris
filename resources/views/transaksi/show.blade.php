@@ -174,7 +174,7 @@
                                 </div>
                             @endif
 
-                            <form action="{{ route("transaksi.validate-payment", $transaksi->id) }}" method="POST">
+                            <form action="{{ route("transaksi.validate-payment", $transaksi->id_invoice) }}" method="POST">
                                 @csrf
                                 @method("PUT")
                                 <div class="mb-3">
@@ -222,7 +222,7 @@
                                 @endif
                             </div>
 
-                            <form action="{{ route("transaksi.update-shipping", $transaksi->id) }}" method="POST">
+                            <form action="{{ route("transaksi.update-shipping", $transaksi->id_invoice) }}" method="POST">
                                 @csrf
                                 @method("PUT")
                                 <div class="mb-3">
@@ -258,7 +258,7 @@
                     <iconify-icon icon="solar:arrow-left-outline" class="icon"></iconify-icon>
                     Kembali
                 </a>
-                <a href="{{ route("transaksi.invoice", $transaksi->id) }}"
+                <a href="{{ route("transaksi.invoice", $transaksi->id_invoice) }}"
                     class="btn btn-success px-24 py-12 radius-8">
                     <iconify-icon icon="solar:download-linear" class="icon"></iconify-icon>
                     Download Invoice

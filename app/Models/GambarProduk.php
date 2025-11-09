@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class GambarProduk extends Model
 {
+    protected $primaryKey = 'id_gambar_produk';
     protected $table = 'gambar_produk';
 
     protected $fillable = [
@@ -16,6 +17,6 @@ class GambarProduk extends Model
 
     public function produk() : BelongsTo
     {
-        return $this->belongsTo(Produk::class, 'produk_id', 'id');
+        return $this->belongsTo(Produk::class, 'produk_id', 'id_produk');
     }
 }
