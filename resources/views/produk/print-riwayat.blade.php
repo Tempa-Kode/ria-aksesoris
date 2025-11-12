@@ -258,10 +258,10 @@
                         <td>{{ $riwayat["jenis"] }}</td>
                         <td style="text-align: center;">{{ $riwayat["stok_awal"] }}</td>
                         <td style="text-align: center; color: #16a34a;">
-                            {{ $riwayat["stok_masuk"] > 0 ? "+" . $riwayat["stok_masuk"] : "-" }}
+                            {{ $riwayat["produk_masuk"] > 0 ? "+" . $riwayat["produk_masuk"] : "-" }}
                         </td>
                         <td style="text-align: center; color: #dc2626;">
-                            {{ $riwayat["stok_keluar"] > 0 ? "-" . $riwayat["stok_keluar"] : "-" }}
+                            {{ $riwayat["produk_keluar"] > 0 ? "-" . $riwayat["produk_keluar"] : "-" }}
                         </td>
                         <td style="text-align: center; font-weight: bold;">{{ $riwayat["stok_akhir"] }}</td>
                     </tr>

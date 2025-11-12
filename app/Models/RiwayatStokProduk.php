@@ -15,8 +15,8 @@ class RiwayatStokProduk extends Model
         'jenis_produk_id',
         'tanggal',
         'stok_awal',
-        'stok_masuk',
-        'stok_keluar',
+        'produk_masuk',
+        'produk_keluar',
         'stok_akhir',
     ];
 

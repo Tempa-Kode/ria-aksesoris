@@ -149,8 +149,8 @@
                                     <th>Produk</th>
                                     <th>Jenis</th>
                                     <th>Stok Awal</th>
-                                    <th>Stok Masuk</th>
-                                    <th>Stok Keluar</th>
+                                    <th>Produk Masuk</th>
+                                    <th>Produk Keluar</th>
                                     <th>Stok Akhir</th>
                                 </tr>
                             </thead>
@@ -175,8 +175,8 @@
                                         $firstItem = $sortedItems->first(); // Transaksi pertama (tertua)
                                         $lastItem = $sortedItems->last(); // Transaksi terakhir (terbaru)
 
-                                        $totalMasuk = $sortedItems->sum("stok_masuk");
-                                        $totalKeluar = $sortedItems->sum("stok_keluar");
+                                        $totalMasuk = $sortedItems->sum("produk_masuk");
+                                        $totalKeluar = $sortedItems->sum("produk_keluar");
 
                                         // Stok awal dari transaksi pertama
                                         $stokAwal = $firstItem->stok_awal;
@@ -238,8 +238,8 @@
                             </label>
                             <select class="form-select radius-8" id="tipe_stok" name="tipe_stok" required>
                                 <option value="">Pilih Tipe</option>
-                                <option value="masuk">Stok Masuk</option>
-                                <option value="keluar">Stok Keluar</option>
+                                <option value="masuk">Produk Masuk</option>
+                                <option value="keluar">Produk Keluar</option>
                             </select>
                         </div>
 

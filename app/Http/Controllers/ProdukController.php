@@ -99,8 +99,8 @@ class ProdukController extends Controller
                             'jenis_produk_id' => $jenisProduk->id_jenis_produk,
                             'tanggal' => now(),
                             'stok_awal' => 0,
-                            'stok_masuk' => $jenisData['jumlah_produk'],
-                            'stok_keluar' => 0,
+                            'produk_masuk' => $jenisData['jumlah_produk'],
+                            'produk_keluar' => 0,
                             'stok_akhir' => $jenisData['jumlah_produk'],
                         ]);
                     }
@@ -114,8 +114,8 @@ class ProdukController extends Controller
                     'jenis_produk_id' => null,
                     'tanggal' => now(),
                     'stok_awal' => 0,
-                    'stok_masuk' => $validated['jumlah_produk'],
-                    'stok_keluar' => 0,
+                    'produk_masuk' => $validated['jumlah_produk'],
+                    'produk_keluar' => 0,
                     'stok_akhir' => $validated['jumlah_produk'],
                 ]);
             }
@@ -235,8 +235,8 @@ class ProdukController extends Controller
                                 'jenis_produk_id' => $jenisId,
                                 'tanggal' => now(),
                                 'stok_awal' => $stokLamaJenis,
-                                'stok_masuk' => $selisih > 0 ? $selisih : 0,
-                                'stok_keluar' => $selisih < 0 ? abs($selisih) : 0,
+                                'produk_masuk' => $selisih > 0 ? $selisih : 0,
+                                'produk_keluar' => $selisih < 0 ? abs($selisih) : 0,
                                 'stok_akhir' => $stokBaruJenis,
                             ]);
                         }
@@ -273,8 +273,8 @@ class ProdukController extends Controller
                                 'jenis_produk_id' => $jenisProduk->id_jenis_produk,
                                 'tanggal' => now(),
                                 'stok_awal' => 0,
-                                'stok_masuk' => $jenisData['jumlah_produk'],
-                                'stok_keluar' => 0,
+                                'produk_masuk' => $jenisData['jumlah_produk'],
+                                'produk_keluar' => 0,
                                 'stok_akhir' => $jenisData['jumlah_produk'],
                             ]);
                         }
@@ -290,8 +290,8 @@ class ProdukController extends Controller
                     'jenis_produk_id' => null,
                     'tanggal' => now(),
                     'stok_awal' => $stokLama,
-                    'stok_masuk' => $selisih > 0 ? $selisih : 0,
-                    'stok_keluar' => $selisih < 0 ? abs($selisih) : 0,
+                    'produk_masuk' => $selisih > 0 ? $selisih : 0,
+                    'produk_keluar' => $selisih < 0 ? abs($selisih) : 0,
                     'stok_akhir' => $validated['jumlah_produk'],
                 ]);
 
@@ -420,8 +420,8 @@ class ProdukController extends Controller
                     'jenis_produk_id' => $jenisId,
                     'tanggal' => now(),
                     'stok_awal' => $stokAwal,
-                    'stok_masuk' => $tipe === 'masuk' ? $jumlah : 0,
-                    'stok_keluar' => $tipe === 'keluar' ? $jumlah : 0,
+                    'produk_masuk' => $tipe === 'masuk' ? $jumlah : 0,
+                    'produk_keluar' => $tipe === 'keluar' ? $jumlah : 0,
                     'stok_akhir' => $stokAkhir,
                 ]);
             } else {
@@ -445,8 +445,8 @@ class ProdukController extends Controller
                     'jenis_produk_id' => null,
                     'tanggal' => now(),
                     'stok_awal' => $stokAwal,
-                    'stok_masuk' => $tipe === 'masuk' ? $jumlah : 0,
-                    'stok_keluar' => $tipe === 'keluar' ? $jumlah : 0,
+                    'produk_masuk' => $tipe === 'masuk' ? $jumlah : 0,
+                    'produk_keluar' => $tipe === 'keluar' ? $jumlah : 0,
                     'stok_akhir' => $stokAkhir,
                 ]);
             }
@@ -484,8 +484,8 @@ class ProdukController extends Controller
                     'tanggal' => $firstItem->created_at,
                     'jenis' => $firstItem->jenisProduk ? $firstItem->jenisProduk->nama : 'Produk Utama',
                     'stok_awal' => $firstItem->stok_awal,
-                    'stok_masuk' => $group->sum('stok_masuk'),
-                    'stok_keluar' => $group->sum('stok_keluar'),
+                    'produk_masuk' => $group->sum('produk_masuk'),
+                    'produk_keluar' => $group->sum('produk_keluar'),
                     'stok_akhir' => $group->last()->stok_akhir,
                 ];
             })

@@ -141,8 +141,8 @@ class CartController extends Controller
                         'jenis_produk_id' => $item['jenis_id'],
                         'tanggal' => now()->toDateString(),
                         'stok_awal' => $stokAwal,
-                        'stok_masuk' => 0,
-                        'stok_keluar' => $item['quantity'],
+                        'produk_masuk' => 0,
+                        'produk_keluar' => $item['quantity'],
                         'stok_akhir' => $stokAwal - $item['quantity'],
                     ]);
                 } else {
@@ -172,8 +172,8 @@ class CartController extends Controller
                         'jenis_produk_id' => null,
                         'tanggal' => now()->toDateString(),
                         'stok_awal' => $stokAwal,
-                        'stok_masuk' => 0,
-                        'stok_keluar' => $item['quantity'],
+                        'produk_masuk' => 0,
+                        'produk_keluar' => $item['quantity'],
                         'stok_akhir' => $stokAwal - $item['quantity'],
                     ]);
                 }
