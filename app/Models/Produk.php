@@ -17,7 +17,20 @@ class Produk extends Model
         'harga',
         'keterangan',
         'jumlah_produk',
+        'gambar_1',
+        'gambar_2',
+        'gambar_3',
     ];
+
+    // Helper untuk akses array gambar
+    public function getGambarListAttribute()
+    {
+        $list = [];
+        if ($this->gambar_1) $list[] = $this->gambar_1;
+        if ($this->gambar_2) $list[] = $this->gambar_2;
+        if ($this->gambar_3) $list[] = $this->gambar_3;
+        return $list;
+    }
 
     public function kategori() : BelongsTo
     {
@@ -34,10 +47,10 @@ class Produk extends Model
         return $this->hasMany(JenisProduk::class, 'produk_id', 'id_produk');
     }
 
-    public function gambarProduk() : HasMany
-    {
-        return $this->hasMany(GambarProduk::class, 'produk_id', 'id_produk');
-    }
+    // public function gambarProduk() : HasMany
+    // {
+    //     return $this->hasMany(GambarProduk::class, 'produk_id', 'id_produk');
+    // }
 
     public function invoice() : HasMany
     {

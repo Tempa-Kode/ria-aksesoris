@@ -116,9 +116,8 @@
                                                             $gambar = null;
                                                             if ($item->jenisProduk && $item->jenisProduk->path_gambar) {
                                                                 $gambar = $item->jenisProduk->path_gambar;
-                                                            } elseif ($item->produk->gambarProduk->first()) {
-                                                                $gambar = $item->produk->gambarProduk->first()
-                                                                    ->path_gambar;
+                                                            } elseif ($item->produk->gambar_1) {
+                                                                $gambar = $item->produk->gambar_1;
                                                             }
                                                         @endphp
 

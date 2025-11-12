@@ -41,19 +41,29 @@
                             <div class="thumbs-slider">
                                 <div class="swiper tf-product-media-main" id="gallery-swiper-started">
                                     <div class="swiper-wrapper">
-                                        @forelse ($produk->gambarProduk as $gambar)
-                                            <div class="swiper-slide" data-color="gray">
-                                                <a href="{{ asset($gambar->path_gambar) }}" target="_blank" class="item"
-                                                    data-pswp-width="600px" data-pswp-height="800px">
-                                                    <img class="tf-image-zoom lazyload"
-                                                        src="{{ asset($gambar->path_gambar) }}"
-                                                        data-zoom="{{ asset($gambar->path_gambar) }}"
-                                                        data-src="{{ asset($gambar->path_gambar) }}" alt="">
-                                                </a>
+                                        @php
+                                            $hasProductImage = false;
+                                        @endphp
+                                        @for ($i = 1; $i <= 3; $i++)
+                                            @if ($produk->{"gambar_{$i}"})
+                                                @php $hasProductImage = true; @endphp
+                                                <div class="swiper-slide" data-color="gray">
+                                                    <a href="{{ asset($produk->{"gambar_{$i}"}) }}" target="_blank"
+                                                        class="item" data-pswp-width="600px" data-pswp-height="800px">
+                                                        <img class="tf-image-zoom lazyload"
+                                                            src="{{ asset($produk->{"gambar_{$i}"}) }}"
+                                                            data-zoom="{{ asset($produk->{"gambar_{$i}"}) }}"
+                                                            data-src="{{ asset($produk->{"gambar_{$i}"}) }}" alt="">
+                                                    </a>
+                                                </div>
+                                            @endif
+                                        @endfor
+
+                                        @if (!$hasProductImage)
+                                            <div class="swiper-slide">
+                                                <p>No images available</p>
                                             </div>
-                                        @empty
-                                            <p>No images available</p>
-                                        @endforelse
+                                        @endif
 
                                         @foreach ($produk->jenisProduk as $jenis)
                                             <div class="swiper-slide" data-color="gray"
@@ -74,14 +84,17 @@
                                     <div class="swiper tf-product-media-thumbs other-image-zoom"
                                         data-direction="horizontal">
                                         <div class="swiper-wrapper stagger-wrap">
-                                            @foreach ($produk->gambarProduk as $gambar)
-                                                <div class="swiper-slide stagger-item" data-color="gray">
-                                                    <div class="item">
-                                                        <img class="lazyload" data-src="{{ asset($gambar->path_gambar) }}"
-                                                            src="{{ asset($gambar->path_gambar) }}" alt="">
+                                            @for ($i = 1; $i <= 3; $i++)
+                                                @if ($produk->{"gambar_{$i}"})
+                                                    <div class="swiper-slide stagger-item" data-color="gray">
+                                                        <div class="item">
+                                                            <img class="lazyload"
+                                                                data-src="{{ asset($produk->{"gambar_{$i}"}) }}"
+                                                                src="{{ asset($produk->{"gambar_{$i}"}) }}" alt="">
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            @endforeach
+                                                @endif
+                                            @endfor
 
                                             @foreach ($produk->jenisProduk as $jenis)
                                                 <div class="swiper-slide stagger-item" data-color="gray"
@@ -167,7 +180,7 @@
                                                         data-product-id="{{ $produk->id_produk }}"
                                                         data-product-nama="{{ $produk->nama }}"
                                                         data-product-harga="{{ $produk->harga }}"
-                                                        data-product-gambar="{{ $produk->gambarProduk->first() ? asset($produk->gambarProduk->first()->path_gambar) : asset("home/images/no-image.png") }}"
+                                                        data-product-gambar="{{ $produk->gambar_1 ? asset($produk->gambar_1) : asset("home/images/no-image.png") }}"
                                                         data-product-kategori="{{ $produk->kategori->nama }}">
                                                         Tambah Keranjang
                                                         <i class="icon-cart-2"></i>

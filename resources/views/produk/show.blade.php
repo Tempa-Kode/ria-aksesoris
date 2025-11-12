@@ -82,12 +82,24 @@
                 </div>
                 <div class="card-body p-24">
                     <div class="d-flex flex-wrap gap-3">
-                        @forelse($produk->gambarProduk as $gambar)
-                            <img src="{{ asset($gambar->path_gambar) }}" alt="{{ $produk->nama }}"
-                                class="w-25 h-150-px rounded object-fit-cover border">
-                        @empty
+                        @php
+                            $hasImage = false;
+                        @endphp
+                        @for ($i = 1; $i <= 3; $i++)
+                            @if ($produk->{"gambar_{$i}"})
+                                @php $hasImage = true; @endphp
+                                <div class="position-relative">
+                                    <img src="{{ asset($produk->{"gambar_{$i}"}) }}" alt="{{ $produk->nama }}"
+                                        class="w-25 h-150-px rounded object-fit-cover border">
+                                    <span
+                                        class="position-absolute top-0 start-0 m-2 badge bg-primary">{{ $i }}</span>
+                                </div>
+                            @endif
+                        @endfor
+
+                        @if (!$hasImage)
                             <p class="text-secondary-light">Tidak ada gambar</p>
-                        @endforelse
+                        @endif
                     </div>
                 </div>
             </div>

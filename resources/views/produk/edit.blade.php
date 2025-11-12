@@ -35,13 +35,13 @@
                 </ul>
             </div>
 
-            @if (session('error'))
+            @if (session("error"))
                 <div class="alert alert-danger">
-                    {{ session('error') }}
+                    {{ session("error") }}
                 </div>
-            @elseif (session('success'))
+            @elseif (session("success"))
                 <div class="alert alert-success">
-                    {{ session('success') }}
+                    {{ session("success") }}
                 </div>
             @endif
 
@@ -142,41 +142,53 @@
                             </div>
                         </div>
 
-                        <!-- Gambar Produk Existing -->
+                        <!-- Gambar Produk -->
                         <div class="row mb-4">
                             <div class="col-12">
-                                <h6 class="fw-semibold mb-3 text-primary-600">Gambar Produk Saat Ini</h6>
+                                <h6 class="fw-semibold mb-3 text-primary-600">Gambar Produk (Maksimal 3 Gambar)</h6>
                             </div>
-                            <div class="col-12">
-                                <div class="d-flex flex-wrap gap-2 mb-3">
-                                    @foreach ($produk->gambarProduk as $gambar)
-                                        <div class="position-relative gambar-item" data-id="{{ $gambar->id_gambar_produk }}">
-                                            <img src="{{ asset($gambar->path_gambar) }}"
-                                                class="w-25 h-100-px rounded border">
-                                            <button type="button"
-                                                class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 hapus-gambar-existing"
-                                                data-id="{{ $gambar->id_gambar_produk }}">
-                                                <iconify-icon icon="mingcute:delete-2-line"></iconify-icon>
-                                            </button>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Upload Gambar Baru -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h6 class="fw-semibold mb-3 text-primary-600">Tambah Gambar Baru</h6>
-                            </div>
-                            <div class="col-sm-12">
-                                <div class="mb-20">
-                                    <input type="file" class="form-control radius-8" id="gambar_produk"
-                                        name="gambar_produk[]" accept="image/*" multiple>
-                                    <small class="text-secondary-light">Format: JPG, JPEG, PNG. Max: 2MB per
-                                        file</small>
+                            @for ($i = 1; $i <= 3; $i++)
+                                <div class="col-sm-4">
+                                    <div class="mb-20">
+                                        <label for="gambar_{{ $i }}"
+                                            class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                            Gambar {{ $i }}
+                                        </label>
+
+                                        @if ($produk->{"gambar_{$i}"})
+                                            <div class="mb-2 position-relative">
+                                                <img src="{{ asset($produk->{"gambar_{$i}"}) }}" class="img-thumbnail"
+                                                    style="max-width: 200px; max-height: 200px;"
+                                                    id="current_gambar_{{ $i }}">
+                                                <div class="form-check mt-2">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        name="hapus_gambar_{{ $i }}" value="1"
+                                                        id="hapus_gambar_{{ $i }}"
+                                                        onchange="toggleImagePreview({{ $i }})">
+                                                    <label class="form-check-label text-danger"
+                                                        for="hapus_gambar_{{ $i }}">
+                                                        Hapus gambar ini
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        @endif
+
+                                        <input type="file"
+                                            class="form-control radius-8 @error("gambar_{$i}") is-invalid @enderror"
+                                            id="gambar_{{ $i }}" name="gambar_{{ $i }}"
+                                            accept="image/*"
+                                            onchange="previewImage(this, 'preview_gambar_{{ $i }}')">
+                                        @error("gambar_{$i}")
+                                            <div class="text-danger-600 mt-2">{{ $message }}</div>
+                                        @enderror
+                                        <div id="preview_gambar_{{ $i }}" class="mt-2"></div>
+                                    </div>
                                 </div>
-                                <div id="preview-gambar" class="d-flex flex-wrap gap-2"></div>
+                            @endfor
+
+                            <div class="col-12">
+                                <small class="text-secondary-light">Format: JPG, JPEG, PNG. Max: 2MB per file</small>
                             </div>
                         </div>
 
@@ -187,7 +199,8 @@
                             </div>
                             <div class="col-12">
                                 @foreach ($produk->jenisProduk as $jenis)
-                                    <div class="card mb-3 jenis-existing-item" data-id="{{ $jenis->id_jenis_produk }}">
+                                    <div class="card mb-3 jenis-existing-item"
+                                        data-id="{{ $jenis->id_jenis_produk }}">
                                         <div class="card-body p-20">
                                             <div class="d-flex justify-content-between align-items-center mb-3">
                                                 <h6 class="fw-semibold mb-0">Edit Jenis Produk</h6>
@@ -286,55 +299,39 @@
     @include("partials.dashboard.scripts")
 
     <script>
+        // Preview Gambar (untuk 3 gambar produk)
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            preview.innerHTML = '';
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `
+                        <label class="form-label fw-semibold text-primary-light text-sm mb-2">Preview:</label>
+                        <img src="${e.target.result}" class="img-thumbnail d-block" style="max-width: 200px; max-height: 200px;">
+                    `;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Toggle tampilan gambar saat checkbox hapus dicentang
+        function toggleImagePreview(index) {
+            const checkbox = document.getElementById('hapus_gambar_' + index);
+            const currentImage = document.getElementById('current_gambar_' + index);
+
+            if (checkbox.checked) {
+                currentImage.style.opacity = '0.3';
+                currentImage.style.filter = 'grayscale(100%)';
+            } else {
+                currentImage.style.opacity = '1';
+                currentImage.style.filter = 'none';
+            }
+        }
+
         $(document).ready(function() {
             let jenisIndex = 0;
-
-            // Preview Gambar Baru
-            $('#gambar_produk').on('change', function(e) {
-                $('#preview-gambar').html('');
-                const files = e.target.files;
-                for (let i = 0; i < files.length; i++) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        $('#preview-gambar').append(`
-                            <img src="${e.target.result}" class="w-25 h-100-px rounded border">
-                        `);
-                    }
-                    reader.readAsDataURL(files[i]);
-                }
-            });
-
-            // Hapus Gambar Existing
-            $('.hapus-gambar-existing').on('click', function() {
-                const id = $(this).data('id');
-                const item = $(this).closest('.gambar-item');
-
-                Swal.fire({
-                    title: 'Hapus gambar?',
-                    text: "Gambar akan dihapus permanen!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Ya, Hapus!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: `/produk/gambar/${id}`,
-                            type: 'DELETE',
-                            data: {
-                                _token: '{{ csrf_token() }}'
-                            },
-                            success: function() {
-                                item.remove();
-                                Swal.fire('Terhapus!', 'Gambar berhasil dihapus.',
-                                    'success');
-                            }
-                        });
-                    }
-                });
-            });
 
             // Hapus Jenis Existing
             $('.hapus-jenis-existing').on('click', function() {

@@ -152,24 +152,58 @@
                         <!-- Gambar Produk -->
                         <div class="row mb-4">
                             <div class="col-12">
-                                <h6 class="fw-semibold mb-3 text-primary-600">Gambar Produk</h6>
+                                <h6 class="fw-semibold mb-3 text-primary-600">Gambar Produk (Maksimal 3 Gambar)</h6>
                             </div>
-                            <div class="col-sm-12">
+                            <div class="col-sm-4">
                                 <div class="mb-20">
-                                    <label for="gambar_produk"
+                                    <label for="gambar_1"
                                         class="form-label fw-semibold text-primary-light text-sm mb-8">
-                                        Upload Gambar (Multiple)
+                                        Gambar 1
                                     </label>
                                     <input type="file"
-                                        class="form-control radius-8 @error("gambar_produk.*") is-invalid @enderror"
-                                        id="gambar_produk" name="gambar_produk[]" accept="image/*" multiple>
-                                    @error("gambar_produk.*")
+                                        class="form-control radius-8 @error("gambar_1") is-invalid @enderror"
+                                        id="gambar_1" name="gambar_1" accept="image/*"
+                                        onchange="previewImage(this, 'preview_gambar_1')">
+                                    @error("gambar_1")
                                         <div class="text-danger-600 mt-2">{{ $message }}</div>
                                     @enderror
-                                    <small class="text-secondary-light">Format: JPG, JPEG, PNG. Max: 2MB per
-                                        file</small>
+                                    <div id="preview_gambar_1" class="mt-2"></div>
                                 </div>
-                                <div id="preview-gambar" class="d-flex flex-wrap gap-2"></div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="mb-20">
+                                    <label for="gambar_2"
+                                        class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                        Gambar 2
+                                    </label>
+                                    <input type="file"
+                                        class="form-control radius-8 @error("gambar_2") is-invalid @enderror"
+                                        id="gambar_2" name="gambar_2" accept="image/*"
+                                        onchange="previewImage(this, 'preview_gambar_2')">
+                                    @error("gambar_2")
+                                        <div class="text-danger-600 mt-2">{{ $message }}</div>
+                                    @enderror
+                                    <div id="preview_gambar_2" class="mt-2"></div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="mb-20">
+                                    <label for="gambar_3"
+                                        class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                        Gambar 3
+                                    </label>
+                                    <input type="file"
+                                        class="form-control radius-8 @error("gambar_3") is-invalid @enderror"
+                                        id="gambar_3" name="gambar_3" accept="image/*"
+                                        onchange="previewImage(this, 'preview_gambar_3')">
+                                    @error("gambar_3")
+                                        <div class="text-danger-600 mt-2">{{ $message }}</div>
+                                    @enderror
+                                    <div id="preview_gambar_3" class="mt-2"></div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <small class="text-secondary-light">Format: JPG, JPEG, PNG. Max: 2MB per file</small>
                             </div>
                         </div>
 
@@ -208,26 +242,24 @@
     @include("partials.dashboard.scripts")
 
     <script>
+        // Preview Gambar (untuk 3 gambar produk)
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            preview.innerHTML = '';
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `
+                        <img src="${e.target.result}" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                    `;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
         $(document).ready(function() {
             let jenisIndex = 0;
-
-            // Preview Gambar Produk
-            $('#gambar_produk').on('change', function(e) {
-                $('#preview-gambar').html('');
-                const files = e.target.files;
-
-                for (let i = 0; i < files.length; i++) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        $('#preview-gambar').append(`
-                            <div class="position-relative">
-                                <img src="${e.target.result}" class="w-25 h-100-px rounded border">
-                            </div>
-                        `);
-                    }
-                    reader.readAsDataURL(files[i]);
-                }
-            });
 
             // Tambah Jenis Produk
             $('#tambah-jenis').on('click', function() {

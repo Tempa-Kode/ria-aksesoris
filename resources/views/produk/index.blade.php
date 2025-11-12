@@ -104,9 +104,8 @@
                                                 class="text-md mb-0 fw-normal text-secondary-light">{{ $totalStok }}</span>
                                         </td>
                                         <td>
-                                            @if ($produk->gambarProduk->first())
-                                                <img src="{{ asset($produk->gambarProduk->first()->path_gambar) }}"
-                                                    alt="{{ $produk->nama }}"
+                                            @if ($produk->gambar_1)
+                                                <img src="{{ asset($produk->gambar_1) }}" alt="{{ $produk->nama }}"
                                                     class="w-60-px h-60-px rounded object-fit-cover">
                                             @else
                                                 <img src="{{ asset("dashboard/assets/images/product.png") }}"

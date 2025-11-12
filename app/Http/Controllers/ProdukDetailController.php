@@ -11,11 +11,11 @@ class ProdukDetailController extends Controller
     public function show($id)
     {
         // Ambil produk berdasarkan ID dengan relasi
-        $produk = Produk::with(['kategori', 'gambarProduk', 'jenisProduk', 'itemTransaksi.invoice'])
+        $produk = Produk::with(['kategori', 'jenisProduk', 'itemTransaksi.invoice'])
             ->findOrFail($id);
 
         // Ambil produk terkait (dari kategori yang sama, kecuali produk ini)
-        $produkTerkait = Produk::with(['kategori', 'gambarProduk', 'jenisProduk'])
+        $produkTerkait = Produk::with(['kategori', 'jenisProduk'])
             ->where('kategori_id', $produk->kategori_id)
             ->where('id_produk', '!=', $id)
             ->where('jumlah_produk', '>', 0)
@@ -23,7 +23,7 @@ class ProdukDetailController extends Controller
             ->get();
 
         // Ambil produk serupa (random dari kategori lain atau semua produk)
-        $produkSerupa = Produk::with(['kategori', 'gambarProduk', 'jenisProduk'])
+        $produkSerupa = Produk::with(['kategori', 'jenisProduk'])
             ->where('id_produk', '!=', $id)
             ->where('jumlah_produk', '>', 0)
             ->inRandomOrder()

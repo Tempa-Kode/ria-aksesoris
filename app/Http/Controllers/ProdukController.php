@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Produk;
 use App\Models\Kategori;
 use App\Models\JenisProduk;
-use App\Models\GambarProduk;
 use App\Models\RiwayatStokProduk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +16,7 @@ class ProdukController extends Controller
      */
     public function index()
     {
-        $produks = Produk::with(['kategori', 'gambarProduk', 'jenisProduk'])
+        $produks = Produk::with(['kategori', 'jenisProduk'])
             ->latest()
             ->get();
         return view('produk.index', compact('produks'));
@@ -43,7 +42,9 @@ class ProdukController extends Controller
             'harga' => 'required|numeric|min:0',
             'keterangan' => 'nullable|string',
             'jumlah_produk' => 'nullable|integer|min:0',
-            'gambar_produk.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar_1' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar_2' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar_3' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'jenis_nama.*' => 'nullable|string|max:255',
             'jenis_gambar.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'jenis_jumlah.*' => 'nullable|integer|min:0',
@@ -51,27 +52,27 @@ class ProdukController extends Controller
 
         DB::beginTransaction();
         try {
-            // Create Produk
-            $produk = Produk::create([
+            // Prepare produk data
+            $produkData = [
                 'kategori_id' => $validated['kategori_id'],
                 'nama' => $validated['nama'],
                 'harga' => $validated['harga'],
                 'keterangan' => $validated['keterangan'] ?? null,
                 'jumlah_produk' => $validated['jumlah_produk'] ?? null,
-            ]);
+            ];
 
-            // Upload Gambar Produk
-            if ($request->hasFile('gambar_produk')) {
-                foreach ($request->file('gambar_produk') as $gambar) {
-                    $filename = time() . '_' . uniqid() . '.' . $gambar->getClientOriginalExtension();
+            // Upload Gambar Produk (maksimal 3)
+            for ($i = 1; $i <= 3; $i++) {
+                if ($request->hasFile('gambar_' . $i)) {
+                    $gambar = $request->file('gambar_' . $i);
+                    $filename = time() . '_' . $i . '_' . uniqid() . '.' . $gambar->getClientOriginalExtension();
                     $gambar->move(public_path('uploads/produk'), $filename);
-
-                    GambarProduk::create([
-                        'produk_id' => $produk->id_produk,
-                        'path_gambar' => 'uploads/produk/' . $filename,
-                    ]);
+                    $produkData['gambar_' . $i] = 'uploads/produk/' . $filename;
                 }
             }
+
+            // Create Produk
+            $produk = Produk::create($produkData);
 
             // Create Jenis Produk
             if ($request->has('jenis_nama')) {
@@ -133,7 +134,7 @@ class ProdukController extends Controller
      */
     public function show(string $id)
     {
-        $produk = Produk::with(['kategori', 'gambarProduk', 'jenisProduk', 'riwayatStokProduk'])
+        $produk = Produk::with(['kategori', 'jenisProduk', 'riwayatStokProduk'])
             ->findOrFail($id);
         return view('produk.show', compact('produk'));
     }
@@ -143,7 +144,7 @@ class ProdukController extends Controller
      */
     public function edit(string $id)
     {
-        $produk = Produk::with(['gambarProduk', 'jenisProduk'])->findOrFail($id);
+        $produk = Produk::with(['jenisProduk'])->findOrFail($id);
         $kategoris = Kategori::all();
         return view('produk.edit', compact('produk', 'kategoris'));
     }
@@ -161,7 +162,12 @@ class ProdukController extends Controller
             'harga' => 'required|numeric|min:0',
             'keterangan' => 'nullable|string',
             'jumlah_produk' => 'nullable|integer|min:0',
-            'gambar_produk.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar_1' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar_2' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar_3' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'hapus_gambar_1' => 'nullable|boolean',
+            'hapus_gambar_2' => 'nullable|boolean',
+            'hapus_gambar_3' => 'nullable|boolean',
             // Jenis Existing
             'jenis_existing_id.*' => 'nullable|exists:jenis_produk,id_jenis_produk',
             'jenis_existing_nama.*' => 'nullable|string|max:255',
@@ -176,26 +182,40 @@ class ProdukController extends Controller
         try {
             $stokLama = $produk->jumlah_produk;
 
-            // Update Produk
-            $produk->update([
+            // Prepare update data
+            $updateData = [
                 'kategori_id' => $validated['kategori_id'],
                 'nama' => $validated['nama'],
                 'harga' => $validated['harga'],
                 'keterangan' => $validated['keterangan'] ?? null,
-            ]);
+            ];
 
-            // Upload Gambar Produk Baru
-            if ($request->hasFile('gambar_produk')) {
-                foreach ($request->file('gambar_produk') as $gambar) {
-                    $filename = time() . '_' . uniqid() . '.' . $gambar->getClientOriginalExtension();
+            // Handle gambar produk (3 gambar)
+            for ($i = 1; $i <= 3; $i++) {
+                // Hapus gambar jika diminta
+                if ($request->input("hapus_gambar_{$i}")) {
+                    if ($produk->{"gambar_{$i}"} && file_exists(public_path($produk->{"gambar_{$i}"}))) {
+                        unlink(public_path($produk->{"gambar_{$i}"}));
+                    }
+                    $updateData["gambar_{$i}"] = null;
+                }
+                
+                // Upload gambar baru jika ada
+                if ($request->hasFile("gambar_{$i}")) {
+                    // Hapus gambar lama jika ada
+                    if ($produk->{"gambar_{$i}"} && file_exists(public_path($produk->{"gambar_{$i}"}))) {
+                        unlink(public_path($produk->{"gambar_{$i}"}));
+                    }
+                    
+                    $gambar = $request->file("gambar_{$i}");
+                    $filename = time() . "_{$i}_" . uniqid() . '.' . $gambar->getClientOriginalExtension();
                     $gambar->move(public_path('uploads/produk'), $filename);
-
-                    GambarProduk::create([
-                        'produk_id' => $produk->id_produk,
-                        'path_gambar' => 'uploads/produk/' . $filename,
-                    ]);
+                    $updateData["gambar_{$i}"] = 'uploads/produk/' . $filename;
                 }
             }
+
+            // Update Produk
+            $produk->update($updateData);
 
             // Update Jenis Produk Existing
             if ($request->has('jenis_existing_id')) {
@@ -316,12 +336,11 @@ class ProdukController extends Controller
 
         DB::beginTransaction();
         try {
-            // Delete Gambar Produk
-            foreach ($produk->gambarProduk as $gambar) {
-                if (file_exists(public_path($gambar->path_gambar))) {
-                    unlink(public_path($gambar->path_gambar));
+            // Delete Gambar Produk (3 gambar)
+            for ($i = 1; $i <= 3; $i++) {
+                if ($produk->{"gambar_{$i}"} && file_exists(public_path($produk->{"gambar_{$i}"}))) {
+                    unlink(public_path($produk->{"gambar_{$i}"}));
                 }
-                $gambar->delete();
             }
 
             // Delete Gambar Jenis Produk
@@ -346,21 +365,7 @@ class ProdukController extends Controller
         }
     }
 
-    /**
-     * Delete gambar produk
-     */
-    public function deleteGambar($id)
-    {
-        $gambar = GambarProduk::findOrFail($id);
 
-        if (file_exists(public_path($gambar->path_gambar))) {
-            unlink(public_path($gambar->path_gambar));
-        }
-
-        $gambar->delete();
-
-        return response()->json(['success' => true]);
-    }
 
     /**
      * Delete jenis produk

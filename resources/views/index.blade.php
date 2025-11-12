@@ -164,14 +164,12 @@
                         <div class="card-product" data-condition="Old" data-brand="steelseri" data-rate="5 Star">
                             <div class="card-product-wrapper">
                                 <a href="{{ route("produk.detail", $item->id_produk) }}" class="product-img">
-                                    @if ($item->gambarProduk->first())
-                                        <img class="img-product lazyload"
-                                            src="{{ asset($item->gambarProduk->first()->path_gambar) }}"
-                                            data-src="{{ asset($item->gambarProduk->first()->path_gambar) }}"
-                                            alt="image-product">
+                                    @if ($item->gambar_1)
+                                        <img class="img-product lazyload" src="{{ asset($item->gambar_1) }}"
+                                            data-src="{{ asset($item->gambar_1) }}" alt="image-product">
                                         <img class="img-hover lazyload"
-                                            src="{{ asset($item->gambarProduk->first()->path_gambar) }}"
-                                            data-src="{{ asset($item->gambarProduk->first()->path_gambar) }}"
+                                            src="{{ asset($item->gambar_2 ?? $item->gambar_1) }}"
+                                            data-src="{{ asset($item->gambar_2 ?? $item->gambar_1) }}"
                                             alt="image-product">
                                     @else
                                         <img class="img-product lazyload" src="{{ asset("home/images/no-image.jpg") }}"

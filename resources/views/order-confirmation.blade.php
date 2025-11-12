@@ -124,7 +124,8 @@
                                         <td><strong>Status Pembayaran:</strong></td>
                                         <td>
                                             @if ($invoice->status_pembayaran == "pending")
-                                                <span class="badge bg-warning text-dark">Menunggu Konfirmasi     Pembayaran</span>
+                                                <span class="badge bg-warning text-dark">Menunggu Konfirmasi
+                                                    Pembayaran</span>
                                             @elseif($invoice->status_pembayaran == "terima")
                                                 <span class="badge bg-success">Terbayar</span>
                                             @else
@@ -170,8 +171,8 @@
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    @if ($item->produk->gambarProduk->first())
-                                                        <img src="{{ asset($item->produk->gambarProduk->first()->path_gambar) }}"
+                                                    @if ($item->produk->gambar_1)
+                                                        <img src="{{ asset($item->produk->gambar_1) }}"
                                                             alt="{{ $item->produk->nama }}"
                                                             style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
                                                     @endif
