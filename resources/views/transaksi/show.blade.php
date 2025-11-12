@@ -111,18 +111,36 @@
                                             <tr>
                                                 <td>
                                                     <div class="d-flex align-items-center gap-2">
-                                                        @if ($item->produk->gambarProduk->first())
-                                                            <img src="{{ asset($item->produk->gambarProduk->first()->path_gambar) }}"
+                                                        @php
+                                                            // Tentukan gambar yang akan ditampilkan
+                                                            $gambar = null;
+                                                            if ($item->jenisProduk && $item->jenisProduk->path_gambar) {
+                                                                $gambar = $item->jenisProduk->path_gambar;
+                                                            } elseif ($item->produk->gambarProduk->first()) {
+                                                                $gambar = $item->produk->gambarProduk->first()
+                                                                    ->path_gambar;
+                                                            }
+                                                        @endphp
+
+                                                        @if ($gambar)
+                                                            <img src="{{ asset($gambar) }}"
                                                                 alt="{{ $item->produk->nama }}"
                                                                 class="w-40-px h-40-px rounded object-fit-cover">
                                                         @endif
-                                                        <span>{{ $item->produk->nama }}</span>
+
+                                                        <div>
+                                                            <span class="d-block">{{ $item->produk->nama }}</span>
+                                                            @if ($item->jenisProduk)
+                                                                <small class="text-muted d-block">Jenis:
+                                                                    {{ $item->jenisProduk->nama }}</small>
+                                                            @endif
+                                                        </div>
                                                     </div>
                                                 </td>
                                                 <td>Rp {{ number_format($item->produk->harga, 0, ",", ".") }}</td>
                                                 <td>{{ $item->jumlah }}</td>
                                                 <td class="fw-semibold">Rp
-                                                    {{ number_format($item->produk->harga * $item->jumlah, 0, ",", ".") }}</td>
+                                                    {{ number_format($item->subtotal, 0, ",", ".") }}</td>
                                             </tr>
                                         @endforeach
                                         <tr class="bg-base">
@@ -174,7 +192,8 @@
                                 </div>
                             @endif
 
-                            <form action="{{ route("transaksi.validate-payment", $transaksi->id_invoice) }}" method="POST">
+                            <form action="{{ route("transaksi.validate-payment", $transaksi->id_invoice) }}"
+                                method="POST">
                                 @csrf
                                 @method("PUT")
                                 <div class="mb-3">
@@ -222,7 +241,8 @@
                                 @endif
                             </div>
 
-                            <form action="{{ route("transaksi.update-shipping", $transaksi->id_invoice) }}" method="POST">
+                            <form action="{{ route("transaksi.update-shipping", $transaksi->id_invoice) }}"
+                                method="POST">
                                 @csrf
                                 @method("PUT")
                                 <div class="mb-3">

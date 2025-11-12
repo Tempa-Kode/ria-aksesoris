@@ -56,7 +56,8 @@
                                         @endforelse
 
                                         @foreach ($produk->jenisProduk as $jenis)
-                                            <div class="swiper-slide" data-color="gray" data-jenis-id="{{ $jenis->id_jenis_produk }}">
+                                            <div class="swiper-slide" data-color="gray"
+                                                data-jenis-id="{{ $jenis->id_jenis_produk }}">
                                                 <a href="{{ asset($jenis->path_gambar) }}" target="_blank" class="item"
                                                     data-pswp-width="600px" data-pswp-height="800px">
                                                     <img class="tf-image-zoom lazyload"
@@ -142,7 +143,7 @@
                                                     </button>
                                                 </div>
                                             </div>
-                                            @if ($produk->jenisProduk)
+                                            @if ($produk->jenisProduk->isNotEmpty())
                                                 <div class="product-color">
                                                     <p class=" title body-text-3">
                                                         Jenis
@@ -264,7 +265,25 @@
                 // Update gambar keranjang saat jenis dipilih
                 function updateCartImage() {
                     const btnAddToCart = document.querySelector('.btn-add-to-cart');
-                    if (!btnAddToCart || !selectJenis) return;
+                    if (!btnAddToCart) return;
+
+                    // Jika tidak ada select jenis, gunakan gambar pertama produk
+                    if (!selectJenis) {
+                        const swiperMain = document.querySelector('#gallery-swiper-started');
+                        if (swiperMain) {
+                            const firstSlide = swiperMain.querySelector('.swiper-slide:not([data-jenis-id])');
+                            if (firstSlide) {
+                                const img = firstSlide.querySelector('img');
+                                if (img) {
+                                    const imgSrc = img.getAttribute('src') || img.getAttribute('data-src');
+                                    if (imgSrc) {
+                                        btnAddToCart.setAttribute('data-product-gambar', imgSrc);
+                                    }
+                                }
+                            }
+                        }
+                        return;
+                    }
 
                     const selectedJenisId = selectJenis.value;
 
@@ -290,9 +309,10 @@
                 // Update gambar saat jenis berubah
                 if (selectJenis) {
                     selectJenis.addEventListener('change', updateCartImage);
-                    // Update saat halaman pertama kali dimuat (jika ada jenis terpilih)
-                    updateCartImage();
                 }
+
+                // Update saat halaman pertama kali dimuat (baik ada jenis atau tidak)
+                updateCartImage();
             });
         </script>
     @endpush

@@ -147,12 +147,12 @@ class CartController extends Controller
                     ]);
                 } else {
                     // Check stock from produk (no variant)
-                    if ($produk->stok < $item['quantity']) {
+                    if ($produk->jumlah_produk < $item['quantity']) {
                         throw new \Exception("Stok produk {$produk->nama} tidak mencukupi");
                     }
 
                     // Save stock before update
-                    $stokAwal = $produk->stok;
+                    $stokAwal = $produk->jumlah_produk;
 
                     // Create item transaction
                     ItemTransaksi::create([
@@ -164,7 +164,7 @@ class CartController extends Controller
                     ]);
 
                     // Update product stock
-                    $produk->decrement('stok', $item['quantity']);
+                    $produk->decrement('jumlah_produk', $item['quantity']);
 
                     // Record stock history for main product
                     RiwayatStokProduk::create([

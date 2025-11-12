@@ -134,11 +134,19 @@
                                                     @foreach ($transaksi->itemTransaksi as $index => $item)
                                                         <tr>
                                                             <td>{{ $index + 1 }}</td>
-                                                            <td>{{ $item->produk->nama }}</td>
+                                                            <td>
+                                                                {{ $item->produk->nama }}
+                                                                @if ($item->jenisProduk)
+                                                                    <br><small
+                                                                        class="text-muted">({{ $item->jenisProduk->nama }})</small>
+                                                                @endif
+                                                            </td>
                                                             <td>{{ $item->jumlah }}</td>
-                                                            <td>Rp {{ number_format($item->produk->harga, 0, ",", ".") }}</td>
+                                                            <td>Rp
+                                                                {{ number_format($item->produk->harga, 0, ",", ".") }}
+                                                            </td>
                                                             <td class="text-end">Rp
-                                                                {{ number_format($item->produk->harga * $item->jumlah, 0, ",", ".") }}
+                                                                {{ number_format($item->subtotal, 0, ",", ".") }}
                                                             </td>
                                                         </tr>
                                                     @endforeach

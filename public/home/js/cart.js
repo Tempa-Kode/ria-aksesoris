@@ -302,7 +302,7 @@ class ShoppingCart {
 
         // Get jenis if exists
         const jenisSelect = document.querySelector(".select-color");
-        if (jenisSelect) {
+        if (jenisSelect && jenisSelect.value) {
             const selectedOption =
                 jenisSelect.options[jenisSelect.selectedIndex];
             productData.jenis_id = parseInt(jenisSelect.value);
