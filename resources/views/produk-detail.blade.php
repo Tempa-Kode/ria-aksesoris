@@ -132,6 +132,27 @@
                                             <strong class="text-success">{{ $produk->totalTerjual }}</strong>
                                             Terjual
                                         </span>
+                                        @php
+                                            // Tentukan stok awal yang ditampilkan: jenis terpilih -> jumlah pada jenis, jika tidak ada -> jumlah produk utama
+                                            $initialStock = $produk->jumlah_produk ?? 0;
+                                            if ($produk->jenisProduk->isNotEmpty()) {
+                                                $selectedJenisId =
+                                                    $produk->jenisProdukTerpilih ??
+                                                    $produk->jenisProduk->first()->id_jenis_produk;
+                                                $selectedJenis = $produk->jenisProduk->firstWhere(
+                                                    "id_jenis_produk",
+                                                    $selectedJenisId,
+                                                );
+                                                if ($selectedJenis) {
+                                                    $initialStock = $selectedJenis->jumlah_produk ?? $initialStock;
+                                                }
+                                            }
+                                        @endphp
+
+                                        <p class="body-text-3 caption text-muted">
+                                            Sisa Stok: <strong id="product-stock"
+                                                class="text-primary">{{ $initialStock }}</strong>
+                                        </p>
                                     </div>
                                     <div class="infor-center">
                                         <div class="product-info-price">
@@ -165,6 +186,7 @@
                                                         <select class="select-color">
                                                             @foreach ($produk->jenisProduk as $jenis)
                                                                 <option value="{{ $jenis->id_jenis_produk }}"
+                                                                    data-jumlah="{{ $jenis->jumlah_produk ?? 0 }}"
                                                                     {{ $jenis->id_jenis_produk == $produk->jenisProdukTerpilih ? "selected" : "" }}>
                                                                     {{ $jenis->nama }}
                                                                 </option>
@@ -181,6 +203,7 @@
                                                         data-product-nama="{{ $produk->nama }}"
                                                         data-product-harga="{{ $produk->harga }}"
                                                         data-product-gambar="{{ $produk->gambar_1 ? asset($produk->gambar_1) : asset("home/images/no-image.png") }}"
+                                                        data-product-stok="{{ $initialStock }}"
                                                         data-product-kategori="{{ $produk->kategori->nama }}">
                                                         Tambah Keranjang
                                                         <i class="icon-cart-2"></i>
@@ -213,11 +236,9 @@
 
                 function selectJenisById(id) {
                     if (!selectJenis) return;
-                    // set value hanya jika option tersebut ada
                     const option = selectJenis.querySelector('option[value="' + id + '"]');
                     if (option) {
                         selectJenis.value = id;
-                        // trigger change agar behavior lain tetap jalan (mis. slideTo sudah ada di listener change)
                         selectJenis.dispatchEvent(new Event('change', {
                             bubbles: true
                         }));
@@ -227,21 +248,15 @@
                 if (selectJenis) {
                     selectJenis.addEventListener('change', function() {
                         const jenisId = this.value;
-
-                        // Cari swiper instance
                         const swiperMain = document.querySelector('#gallery-swiper-started');
                         if (swiperMain && swiperMain.swiper) {
-                            // Cari slide yang memiliki data-jenis-id yang sesuai
                             const slides = swiperMain.querySelectorAll('.swiper-slide');
                             let targetIndex = -1;
-
                             slides.forEach((slide, index) => {
                                 if (slide.getAttribute('data-jenis-id') === jenisId) {
                                     targetIndex = index;
                                 }
                             });
-
-                            // Jika ditemukan, navigasi ke slide tersebut
                             if (targetIndex !== -1) {
                                 swiperMain.swiper.slideTo(targetIndex);
                             }
@@ -249,7 +264,6 @@
                     });
                 }
 
-                // Klik pada thumbnail (delegated) -> pilih jenis jika slide punya data-jenis-id
                 const thumbsContainer = document.querySelector('.tf-product-media-thumbs');
                 if (thumbsContainer) {
                     thumbsContainer.addEventListener('click', function(e) {
@@ -262,7 +276,6 @@
                     });
                 }
 
-                // Klik pada main slide -> pilih jenis jika slide punya data-jenis-id
                 const mainSwiper = document.querySelector('#gallery-swiper-started');
                 if (mainSwiper) {
                     mainSwiper.addEventListener('click', function(e) {
@@ -275,12 +288,39 @@
                     });
                 }
 
-                // Update gambar keranjang saat jenis dipilih
+                function updateStockDisplay(stock) {
+                    const el = document.getElementById('product-stock');
+                    const value = typeof stock !== 'undefined' && stock !== null ? stock : 0;
+                    if (el) el.textContent = value;
+                    const btn = document.querySelector('.btn-add-to-cart');
+                    if (btn) btn.setAttribute('data-product-stok', value);
+                    // Enable/disable add-to-cart berdasarkan stok
+                    const qtyInput = document.querySelector('.quantity-product');
+                    const btnIncrease = document.querySelector('.btn-increase');
+                    const btnDecrease = document.querySelector('.btn-decrease');
+                    const intVal = parseInt(value, 10) || 0;
+
+                    if (intVal <= 0) {
+                        if (btn) btn.classList.add('disabled');
+                        if (btn) btn.setAttribute('aria-disabled', 'true');
+                        if (qtyInput) qtyInput.value = 0;
+                    } else {
+                        if (btn) btn.classList.remove('disabled');
+                        if (btn) btn.removeAttribute('aria-disabled');
+                        if (qtyInput && (parseInt(qtyInput.value, 10) || 0) < 1) qtyInput.value = 1;
+                        // Jika kuantitas saat ini melebihi stok baru, sesuaikan dan beri peringatan
+                        if (qtyInput && (parseInt(qtyInput.value, 10) > intVal)) {
+                            alert('Jumlah yang Anda pilih melebihi sisa stok. Jumlah disesuaikan.');
+                            qtyInput.value = intVal;
+                        }
+                    }
+                }
+
                 function updateCartImage() {
                     const btnAddToCart = document.querySelector('.btn-add-to-cart');
                     if (!btnAddToCart) return;
 
-                    // Jika tidak ada select jenis, gunakan gambar pertama produk
+                    // If no jenis select, use first non-jenis slide image and keep product stock
                     if (!selectJenis) {
                         const swiperMain = document.querySelector('#gallery-swiper-started');
                         if (swiperMain) {
@@ -295,13 +335,22 @@
                                 }
                             }
                         }
+                        const stok = btnAddToCart.getAttribute('data-product-stok') || 0;
+                        updateStockDisplay(stok);
                         return;
                     }
 
                     const selectedJenisId = selectJenis.value;
+                    let stokToSet = null;
 
                     if (selectedJenisId) {
-                        // Cari slide dengan data-jenis-id yang sesuai
+                        // prefer data from option (we added data-jumlah)
+                        const opt = selectJenis.querySelector('option[value="' + selectedJenisId + '"]');
+                        if (opt) {
+                            stokToSet = opt.dataset.jumlah ?? opt.getAttribute('data-jumlah');
+                        }
+
+                        // Cari slide gambar jenis dan set gambar keranjang
                         const swiperMain = document.querySelector('#gallery-swiper-started');
                         if (swiperMain) {
                             const targetSlide = swiperMain.querySelector('.swiper-slide[data-jenis-id="' +
@@ -317,15 +366,109 @@
                             }
                         }
                     }
+
+                    if (stokToSet === null) stokToSet = btnAddToCart.getAttribute('data-product-stok') || 0;
+                    updateStockDisplay(stokToSet);
                 }
 
-                // Update gambar saat jenis berubah
                 if (selectJenis) {
                     selectJenis.addEventListener('change', updateCartImage);
                 }
 
-                // Update saat halaman pertama kali dimuat (baik ada jenis atau tidak)
+                // Initial update
                 updateCartImage();
+
+                // --- Quantity & stock validation ---
+                const qtyInput = document.querySelector('.quantity-product');
+                const btnIncrease = document.querySelector('.btn-increase');
+                const btnDecrease = document.querySelector('.btn-decrease');
+                const btnAddToCart = document.querySelector('.btn-add-to-cart');
+
+                function getCurrentStock() {
+                    if (btnAddToCart) {
+                        const v = btnAddToCart.getAttribute('data-product-stok');
+                        const n = parseInt(v, 10);
+                        return isNaN(n) ? 0 : n;
+                    }
+                    const el = document.getElementById('product-stock');
+                    const n = el ? parseInt(el.textContent, 10) : 0;
+                    return isNaN(n) ? 0 : n;
+                }
+
+                function sanitizeQtyInput() {
+                    if (!qtyInput) return 1;
+                    let val = parseInt(qtyInput.value, 10);
+                    if (isNaN(val) || val < 0) val = 0;
+                    qtyInput.value = val;
+                    return val;
+                }
+
+                if (btnIncrease) {
+                    btnIncrease.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        let qty = sanitizeQtyInput();
+                        const stock = getCurrentStock();
+                        if (qty < stock) {
+                            qty++;
+                            qtyInput.value = qty;
+                        } else {
+                            alert('Stok tidak cukup. Sisa stok: ' + stock);
+                        }
+                    });
+                }
+
+                if (btnDecrease) {
+                    btnDecrease.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        let qty = sanitizeQtyInput();
+                        if (qty > 1) {
+                            qty--;
+                            qtyInput.value = qty;
+                        }
+                    });
+                }
+
+                if (qtyInput) {
+                    qtyInput.addEventListener('input', function() {
+                        // allow user to type, but clamp
+                        let qty = sanitizeQtyInput();
+                        const stock = getCurrentStock();
+                        if (qty > stock) {
+                            alert('Jumlah yang Anda masukkan melebihi stok.');
+                            qtyInput.value = stock;
+                        }
+                    });
+                }
+
+                if (btnAddToCart) {
+                    btnAddToCart.addEventListener('click', function(e) {
+                        const stock = getCurrentStock();
+                        let qty = sanitizeQtyInput();
+                        // If stock is zero or requested qty > stock, prevent adding
+                        if (stock <= 0) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            alert('Stok habis. Tidak dapat menambahkan ke keranjang.');
+                            return false;
+                        }
+                        if (qty < 1) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            alert('Jumlah minimal adalah 1.');
+                            qtyInput.value = 1;
+                            return false;
+                        }
+                        if (qty > stock) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            alert('Stok tidak cukup. Sisa stok: ' + stock);
+                            qtyInput.value = stock;
+                            return false;
+                        }
+                        // ok
+                        return true;
+                    });
+                }
             });
         </script>
     @endpush
