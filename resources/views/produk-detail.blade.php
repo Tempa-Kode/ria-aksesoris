@@ -209,6 +209,18 @@
                                                         <i class="icon-cart-2"></i>
                                                     </a>
                                                 </div>
+                                                {{-- Tombol Langsung Checkout --}}
+                                                <div class="product-box-btn ms-2">
+                                                    <button type="button" class="tf-btn text-white btn-checkout-now"
+                                                        data-product-id="{{ $produk->id_produk }}"
+                                                        data-product-nama="{{ $produk->nama }}"
+                                                        data-product-harga="{{ $produk->harga }}"
+                                                        data-product-gambar="{{ $produk->gambar_1 ? asset($produk->gambar_1) : asset("home/images/no-image.png") }}"
+                                                        data-product-stok="{{ $initialStock }}"
+                                                        data-product-kategori="{{ $produk->kategori->nama }}">
+                                                        Beli
+                                                    </button>
+                                                </div>
                                             @endauth
                                         </div>
                                     </div>
@@ -292,21 +304,27 @@
                     const el = document.getElementById('product-stock');
                     const value = typeof stock !== 'undefined' && stock !== null ? stock : 0;
                     if (el) el.textContent = value;
-                    const btn = document.querySelector('.btn-add-to-cart');
-                    if (btn) btn.setAttribute('data-product-stok', value);
-                    // Enable/disable add-to-cart berdasarkan stok
+                    const btnAdd = document.querySelector('.btn-add-to-cart');
+                    const btnCheckout = document.querySelector('.btn-checkout-now');
+                    if (btnAdd) btnAdd.setAttribute('data-product-stok', value);
+                    if (btnCheckout) btnCheckout.setAttribute('data-product-stok', value);
+                    // Enable/disable buttons berdasarkan stok
                     const qtyInput = document.querySelector('.quantity-product');
                     const btnIncrease = document.querySelector('.btn-increase');
                     const btnDecrease = document.querySelector('.btn-decrease');
                     const intVal = parseInt(value, 10) || 0;
 
                     if (intVal <= 0) {
-                        if (btn) btn.classList.add('disabled');
-                        if (btn) btn.setAttribute('aria-disabled', 'true');
+                        if (btnAdd) btnAdd.classList.add('disabled');
+                        if (btnAdd) btnAdd.setAttribute('aria-disabled', 'true');
+                        if (btnCheckout) btnCheckout.classList.add('disabled');
+                        if (btnCheckout) btnCheckout.setAttribute('aria-disabled', 'true');
                         if (qtyInput) qtyInput.value = 0;
                     } else {
-                        if (btn) btn.classList.remove('disabled');
-                        if (btn) btn.removeAttribute('aria-disabled');
+                        if (btnAdd) btnAdd.classList.remove('disabled');
+                        if (btnAdd) btnAdd.removeAttribute('aria-disabled');
+                        if (btnCheckout) btnCheckout.classList.remove('disabled');
+                        if (btnCheckout) btnCheckout.removeAttribute('aria-disabled');
                         if (qtyInput && (parseInt(qtyInput.value, 10) || 0) < 1) qtyInput.value = 1;
                         // Jika kuantitas saat ini melebihi stok baru, sesuaikan dan beri peringatan
                         if (qtyInput && (parseInt(qtyInput.value, 10) > intVal)) {
@@ -350,7 +368,7 @@
                             stokToSet = opt.dataset.jumlah ?? opt.getAttribute('data-jumlah');
                         }
 
-                        // Cari slide gambar jenis dan set gambar keranjang
+                        // Cari slide gambar jenis dan set gambar keranjang & checkout
                         const swiperMain = document.querySelector('#gallery-swiper-started');
                         if (swiperMain) {
                             const targetSlide = swiperMain.querySelector('.swiper-slide[data-jenis-id="' +
@@ -360,14 +378,17 @@
                                 if (img) {
                                     const imgSrc = img.getAttribute('src') || img.getAttribute('data-src');
                                     if (imgSrc) {
-                                        btnAddToCart.setAttribute('data-product-gambar', imgSrc);
+                                        if (btnAddToCart) btnAddToCart.setAttribute('data-product-gambar', imgSrc);
+                                        const btnCheckout = document.querySelector('.btn-checkout-now');
+                                        if (btnCheckout) btnCheckout.setAttribute('data-product-gambar', imgSrc);
                                     }
                                 }
                             }
                         }
                     }
 
-                    if (stokToSet === null) stokToSet = btnAddToCart.getAttribute('data-product-stok') || 0;
+                    if (stokToSet === null) stokToSet = (btnAddToCart && btnAddToCart.getAttribute(
+                        'data-product-stok')) || 0;
                     updateStockDisplay(stokToSet);
                 }
 
@@ -383,6 +404,7 @@
                 const btnIncrease = document.querySelector('.btn-increase');
                 const btnDecrease = document.querySelector('.btn-decrease');
                 const btnAddToCart = document.querySelector('.btn-add-to-cart');
+                const btnCheckoutNow = document.querySelector('.btn-checkout-now');
 
                 function getCurrentStock() {
                     if (btnAddToCart) {
@@ -403,39 +425,20 @@
                     return val;
                 }
 
-                if (btnIncrease) {
-                    btnIncrease.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        let qty = sanitizeQtyInput();
-                        const stock = getCurrentStock();
-                        if (qty < stock) {
-                            qty++;
-                            qtyInput.value = qty;
-                        } else {
-                            alert('Stok tidak cukup. Sisa stok: ' + stock);
-                        }
-                    });
-                }
-
-                if (btnDecrease) {
-                    btnDecrease.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        let qty = sanitizeQtyInput();
-                        if (qty > 1) {
-                            qty--;
-                            qtyInput.value = qty;
-                        }
-                    });
-                }
-
+                // NOTE: the theme already binds handlers for .btn-increase / .btn-decrease
+                // in `public/home/js/main.js`. To avoid duplicate increments we don't
+                // re-bind click handlers here. Instead validate the final quantity
+                // after changes (on 'change' event) and clamp to stock.
                 if (qtyInput) {
-                    qtyInput.addEventListener('input', function() {
-                        // allow user to type, but clamp
+                    qtyInput.addEventListener('change', function() {
                         let qty = sanitizeQtyInput();
                         const stock = getCurrentStock();
                         if (qty > stock) {
                             alert('Jumlah yang Anda masukkan melebihi stok.');
                             qtyInput.value = stock;
+                        }
+                        if (qty < 1 && stock > 0) {
+                            qtyInput.value = 1;
                         }
                     });
                 }
@@ -466,6 +469,47 @@
                             return false;
                         }
                         // ok
+                        return true;
+                    });
+                }
+                // Checkout sekarang: validasi lalu redirect ke halaman checkout dengan param
+                if (btnCheckoutNow) {
+                    btnCheckoutNow.addEventListener('click', function(e) {
+                        const stock = getCurrentStock();
+                        let qty = sanitizeQtyInput();
+                        if (stock <= 0) {
+                            alert('Stok habis. Tidak dapat melakukan checkout.');
+                            return false;
+                        }
+                        if (qty < 1) {
+                            alert('Jumlah minimal adalah 1.');
+                            if (qtyInput) qtyInput.value = 1;
+                            return false;
+                        }
+                        if (qty > stock) {
+                            alert('Stok tidak cukup. Sisa stok: ' + stock);
+                            if (qtyInput) qtyInput.value = stock;
+                            return false;
+                        }
+
+                        // Trigger existing Add to Cart behavior (which populates cart),
+                        // then redirect user to the real checkout page which reads from cart.
+                        const addBtn = document.querySelector('.btn-add-to-cart');
+                        if (addBtn) {
+                            // Ensure addBtn has the current qty set (some implementations read qty from page)
+                            addBtn.setAttribute('data-product-qty', qty);
+                            // Trigger click to reuse existing add-to-cart logic
+                            addBtn.click();
+
+                            // Wait briefly for add-to-cart to complete, then redirect to checkout
+                            setTimeout(function() {
+                                window.location.href = '{{ route("checkout") }}';
+                            }, 700);
+                            return true;
+                        }
+
+                        // Fallback: if add-to-cart button not found, just redirect to checkout
+                        window.location.href = '{{ route("checkout") }}';
                         return true;
                     });
                 }
