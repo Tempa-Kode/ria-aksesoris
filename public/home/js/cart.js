@@ -399,7 +399,7 @@ class ShoppingCart {
             jenis_nama: null,
         };
 
-        console(`productData: ${JSON.stringify(productData)}`);
+        console.log(`productData: ${JSON.stringify(productData)}`);
 
         // Get quantity from input
         const quantityInput = document.querySelector(".quantity-product");
