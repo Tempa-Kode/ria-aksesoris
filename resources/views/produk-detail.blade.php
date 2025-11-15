@@ -1,13 +1,13 @@
-@extends("template")
-@section("title", $produk->nama . " - Aksesoris Ria")
+@extends('template')
+@section('title', $produk->nama . ' - Aksesoris Ria')
 
-@section("body")
+@section('body')
     <!-- Breakcrumbs -->
     <div class="tf-sp-1">
         <div class="container">
             <ul class="breakcrumbs">
                 <li>
-                    <a href="{{ route("home") }}" class="body-small link">
+                    <a href="{{ route('home') }}" class="body-small link">
                         Home
                     </a>
                 </li>
@@ -15,7 +15,7 @@
                     <i class="icon-arrow-right"></i>
                 </li>
                 <li>
-                    <a href="{{ route("home", ["kategori" => $produk->kategori_id]) }}" class="body-small link">
+                    <a href="{{ route('home', ['kategori' => $produk->kategori_id]) }}" class="body-small link">
                         {{ $produk->kategori->nama }}
                     </a>
                 </li>
@@ -120,7 +120,7 @@
                                 <div class="tf-product-info-content">
                                     <div class="infor-heading">
                                         <p class="caption">Kategori:
-                                            <a href="{{ route("home", ["kategori" => $produk->kategori->id_kategori] + request()->except("kategori")) }}"
+                                            <a href="{{ route('home', ['kategori' => $produk->kategori->id_kategori] + request()->except('kategori')) }}"
                                                 class="link text-secondary">
                                                 {{ $produk->kategori->nama }}
                                             </a>
@@ -140,7 +140,7 @@
                                                     $produk->jenisProdukTerpilih ??
                                                     $produk->jenisProduk->first()->id_jenis_produk;
                                                 $selectedJenis = $produk->jenisProduk->firstWhere(
-                                                    "id_jenis_produk",
+                                                    'id_jenis_produk',
                                                     $selectedJenisId,
                                                 );
                                                 if ($selectedJenis) {
@@ -156,7 +156,7 @@
                                     </div>
                                     <div class="infor-center">
                                         <div class="product-info-price">
-                                            <h4 class="text-primary">Rp. {{ number_format($produk->harga, 0, ",", ".") }}
+                                            <h4 class="text-primary">Rp. {{ number_format($produk->harga, 0, ',', '.') }}
                                             </h4>
                                         </div>
                                     </div>
@@ -187,7 +187,7 @@
                                                             @foreach ($produk->jenisProduk as $jenis)
                                                                 <option value="{{ $jenis->id_jenis_produk }}"
                                                                     data-jumlah="{{ $jenis->jumlah_produk ?? 0 }}"
-                                                                    {{ $jenis->id_jenis_produk == $produk->jenisProdukTerpilih ? "selected" : "" }}>
+                                                                    {{ $jenis->id_jenis_produk == $produk->jenisProdukTerpilih ? 'selected' : '' }}>
                                                                     {{ $jenis->nama }}
                                                                 </option>
                                                             @endforeach
@@ -202,7 +202,7 @@
                                                         data-product-id="{{ $produk->id_produk }}"
                                                         data-product-nama="{{ $produk->nama }}"
                                                         data-product-harga="{{ $produk->harga }}"
-                                                        data-product-gambar="{{ $produk->gambar_1 ? asset($produk->gambar_1) : asset("home/images/no-image.png") }}"
+                                                        data-product-gambar="{{ $produk->gambar_1 ? asset($produk->gambar_1) : asset('home/images/no-image.png') }}"
                                                         data-product-stok="{{ $initialStock }}"
                                                         data-product-kategori="{{ $produk->kategori->nama }}">
                                                         Tambah Keranjang
@@ -215,7 +215,7 @@
                                                         data-product-id="{{ $produk->id_produk }}"
                                                         data-product-nama="{{ $produk->nama }}"
                                                         data-product-harga="{{ $produk->harga }}"
-                                                        data-product-gambar="{{ $produk->gambar_1 ? asset($produk->gambar_1) : asset("home/images/no-image.png") }}"
+                                                        data-product-gambar="{{ $produk->gambar_1 ? asset($produk->gambar_1) : asset('home/images/no-image.png') }}"
                                                         data-product-stok="{{ $initialStock }}"
                                                         data-product-kategori="{{ $produk->kategori->nama }}">
                                                         Beli
@@ -241,7 +241,7 @@
     </section>
     <!-- /Product Main -->
 
-    @push("scripts")
+    @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const selectJenis = document.querySelector('.select-color');
@@ -313,6 +313,7 @@
                     const btnIncrease = document.querySelector('.btn-increase');
                     const btnDecrease = document.querySelector('.btn-decrease');
                     const intVal = parseInt(value, 10) || 0;
+                    const currentQty = qtyInput ? parseInt(qtyInput.value, 10) || 0 : 0;
 
                     if (intVal <= 0) {
                         if (btnAdd) btnAdd.classList.add('disabled');
@@ -320,16 +321,68 @@
                         if (btnCheckout) btnCheckout.classList.add('disabled');
                         if (btnCheckout) btnCheckout.setAttribute('aria-disabled', 'true');
                         if (qtyInput) qtyInput.value = 0;
+                        // Update button states based on current quantity (even if stock is 0)
+                        updateQuantityButtons(currentQty, intVal);
                     } else {
                         if (btnAdd) btnAdd.classList.remove('disabled');
                         if (btnAdd) btnAdd.removeAttribute('aria-disabled');
                         if (btnCheckout) btnCheckout.classList.remove('disabled');
                         if (btnCheckout) btnCheckout.removeAttribute('aria-disabled');
-                        if (qtyInput && (parseInt(qtyInput.value, 10) || 0) < 1) qtyInput.value = 1;
+                        if (qtyInput && currentQty < 1) qtyInput.value = 1;
+
                         // Jika kuantitas saat ini melebihi stok baru, sesuaikan dan beri peringatan
-                        if (qtyInput && (parseInt(qtyInput.value, 10) > intVal)) {
+                        if (qtyInput && currentQty > intVal) {
                             alert('Jumlah yang Anda pilih melebihi sisa stok. Jumlah disesuaikan.');
                             qtyInput.value = intVal;
+                            updateQuantityButtons(intVal, intVal);
+                        } else {
+                            // Always update button states when stock changes
+                            updateQuantityButtons(currentQty, intVal);
+                        }
+                    }
+                }
+
+                function updateQuantityButtons(currentQty, maxStock) {
+                    const btnIncrease = document.querySelector('.btn-increase');
+                    const btnDecrease = document.querySelector('.btn-decrease');
+
+                    // Update increase button
+                    if (btnIncrease) {
+                        if (currentQty >= maxStock || maxStock <= 0) {
+                            btnIncrease.disabled = true;
+                            btnIncrease.setAttribute('disabled', 'disabled');
+                            btnIncrease.classList.add('disabled');
+                            btnIncrease.style.opacity = '0.5';
+                            btnIncrease.style.cursor = 'not-allowed';
+                            btnIncrease.style.pointerEvents = 'none';
+                        } else {
+                            btnIncrease.disabled = false;
+                            btnIncrease.removeAttribute('disabled');
+                            btnIncrease.classList.remove('disabled');
+                            btnIncrease.style.opacity = '1';
+                            btnIncrease.style.cursor = 'pointer';
+                            btnIncrease.style.pointerEvents = 'auto';
+                        }
+                    }
+
+                    // Update decrease button
+                    if (btnDecrease) {
+                        // Only disable if quantity is 1 or less, AND stock is available
+                        // If stock is 0, we should still allow decrease to 0 (though it shouldn't happen)
+                        if (currentQty <= 1) {
+                            btnDecrease.disabled = true;
+                            btnDecrease.setAttribute('disabled', 'disabled');
+                            btnDecrease.classList.add('disabled');
+                            btnDecrease.style.opacity = '0.5';
+                            btnDecrease.style.cursor = 'not-allowed';
+                            btnDecrease.style.pointerEvents = 'none';
+                        } else {
+                            btnDecrease.disabled = false;
+                            btnDecrease.removeAttribute('disabled');
+                            btnDecrease.classList.remove('disabled');
+                            btnDecrease.style.opacity = '1';
+                            btnDecrease.style.cursor = 'pointer';
+                            btnDecrease.style.pointerEvents = 'auto';
                         }
                     }
                 }
@@ -396,15 +449,20 @@
                     selectJenis.addEventListener('change', updateCartImage);
                 }
 
-                // Initial update
-                updateCartImage();
-
                 // --- Quantity & stock validation ---
                 const qtyInput = document.querySelector('.quantity-product');
                 const btnIncrease = document.querySelector('.btn-increase');
                 const btnDecrease = document.querySelector('.btn-decrease');
                 const btnAddToCart = document.querySelector('.btn-add-to-cart');
                 const btnCheckoutNow = document.querySelector('.btn-checkout-now');
+
+                // Initial update
+                updateCartImage();
+
+                // Initial button state update
+                const initialStock = getCurrentStock();
+                const initialQty = qtyInput ? parseInt(qtyInput.value, 10) || 1 : 1;
+                updateQuantityButtons(initialQty, initialStock);
 
                 function getCurrentStock() {
                     if (btnAddToCart) {
@@ -425,22 +483,121 @@
                     return val;
                 }
 
-                // NOTE: the theme already binds handlers for .btn-increase / .btn-decrease
-                // in `public/home/js/main.js`. To avoid duplicate increments we don't
-                // re-bind click handlers here. Instead validate the final quantity
-                // after changes (on 'change' event) and clamp to stock.
-                if (qtyInput) {
-                    qtyInput.addEventListener('change', function() {
-                        let qty = sanitizeQtyInput();
+                // Intercept increase/decrease button clicks to validate stock
+                // Use capture phase to run before theme's handlers
+                if (btnIncrease) {
+                    btnIncrease.addEventListener('click', function(e) {
+                        // Check disabled state first
+                        if (this.disabled || this.classList.contains('disabled')) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            e.stopImmediatePropagation();
+                            return false;
+                        }
+
                         const stock = getCurrentStock();
-                        if (qty > stock) {
-                            alert('Jumlah yang Anda masukkan melebihi stok.');
+                        const currentQty = parseInt(qtyInput.value, 10) || 0;
+
+                        // Validate stock before allowing increment
+                        if (currentQty >= stock || stock <= 0) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            e.stopImmediatePropagation();
+
+                            // Store current value before alert
+                            const savedValue = qtyInput.value;
+
+                            alert('Stok tidak mencukupi. Sisa stok: ' + stock);
+
+                            // Immediately restore value after alert (theme handler might have changed it)
+                            qtyInput.value = savedValue;
+
+                            // Also set again after a short delay to ensure it sticks
+                            setTimeout(function() {
+                                if (parseInt(qtyInput.value, 10) > stock) {
+                                    qtyInput.value = stock;
+                                }
+                                updateQuantityButtons(parseInt(qtyInput.value, 10) || stock, stock);
+                            }, 10);
+
+                            updateQuantityButtons(currentQty, stock);
+                            return false;
+                        }
+
+                        // Update button state after increase (theme handler will change quantity)
+                        setTimeout(function() {
+                            const newQty = parseInt(qtyInput.value, 10) || 1;
+                            const stock = getCurrentStock();
+                            updateQuantityButtons(newQty, stock);
+                        }, 50);
+                    }, true); // Use capture phase - runs before other handlers
+                }
+
+                if (btnDecrease) {
+                    btnDecrease.addEventListener('click', function(e) {
+                        if (this.disabled || this.classList.contains('disabled')) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            e.stopImmediatePropagation();
+                            return false;
+                        }
+
+                        // Update button state after decrease (theme handler will change quantity)
+                        setTimeout(function() {
+                            const currentQty = parseInt(qtyInput.value, 10) || 1;
+                            const stock = getCurrentStock();
+                            updateQuantityButtons(currentQty, stock);
+                        }, 50);
+                    }, true); // Use capture phase
+                }
+
+                // Validate quantity after any changes (backup validation in case theme handler still runs)
+                if (qtyInput) {
+                    const validateQuantity = () => {
+                        let qty = parseInt(qtyInput.value, 10) || 0;
+                        const stock = getCurrentStock();
+
+                        // Clamp quantity to stock if exceeds
+                        if (qty > stock && stock > 0) {
                             qtyInput.value = stock;
+                            qty = stock;
                         }
                         if (qty < 1 && stock > 0) {
                             qtyInput.value = 1;
+                            qty = 1;
                         }
+
+                        // Update button states
+                        updateQuantityButtons(qty, stock);
+                    };
+
+                    // Validate on change event
+                    qtyInput.addEventListener('change', function() {
+                        validateQuantity();
                     });
+
+                    // Also validate on input event
+                    qtyInput.addEventListener('input', function() {
+                        validateQuantity();
+                    });
+
+                    // Additional validation with a short delay to catch any programmatic changes
+                    let lastCheckedValue = qtyInput.value;
+                    setInterval(function() {
+                        const currentValue = qtyInput.value;
+                        if (currentValue !== lastCheckedValue) {
+                            lastCheckedValue = currentValue;
+                            const stock = getCurrentStock();
+                            const qty = parseInt(currentValue, 10) || 0;
+                            if (qty > stock && stock > 0) {
+                                qtyInput.value = stock;
+                                updateQuantityButtons(stock, stock);
+                            } else {
+                                // Always update button states when quantity changes
+                                updateQuantityButtons(qty, stock);
+                            }
+                        }
+                    }, 100);
                 }
 
                 if (btnAddToCart) {
@@ -503,13 +660,13 @@
 
                             // Wait briefly for add-to-cart to complete, then redirect to checkout
                             setTimeout(function() {
-                                window.location.href = '{{ route("checkout") }}';
+                                window.location.href = '{{ route('checkout') }}';
                             }, 700);
                             return true;
                         }
 
                         // Fallback: if add-to-cart button not found, just redirect to checkout
-                        window.location.href = '{{ route("checkout") }}';
+                        window.location.href = '{{ route('checkout') }}';
                         return true;
                     });
                 }
@@ -518,6 +675,6 @@
     @endpush
 @endsection
 
-@section("footer")
-    @include("partials.footer")
+@section('footer')
+    @include('partials.footer')
 @endsection

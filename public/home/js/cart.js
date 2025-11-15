@@ -36,20 +36,46 @@ class ShoppingCart {
                 item.id === product.id && item.jenis_id === product.jenis_id
         );
 
+        // Validasi stok sebelum menambahkan
+        const stok = product.stok || 0;
+        const quantityToAdd = product.quantity || 1;
+
         if (existingItemIndex > -1) {
             // Update quantity if item exists
-            cart[existingItemIndex].quantity += product.quantity;
+            const newQuantity = cart[existingItemIndex].quantity + quantityToAdd;
+            if (newQuantity > stok) {
+                this.showNotification(
+                    `Stok tidak mencukupi. Sisa stok: ${stok}`,
+                    "error"
+                );
+                return false;
+            }
+            cart[existingItemIndex].quantity = newQuantity;
+            // Update stok jika ada perubahan
+            if (product.stok !== undefined) {
+                cart[existingItemIndex].stok = product.stok;
+            }
         } else {
+            // Validasi stok untuk item baru
+            if (quantityToAdd > stok) {
+                this.showNotification(
+                    `Stok tidak mencukupi. Sisa stok: ${stok}`,
+                    "error"
+                );
+                return false;
+            }
             // Add new item
             cart.push({
                 id: product.id,
                 nama: product.nama,
                 harga: product.harga,
-                quantity: product.quantity,
+                quantity: quantityToAdd,
                 gambar: product.gambar,
                 kategori: product.kategori,
                 jenis_id: product.jenis_id || null,
                 jenis_nama: product.jenis_nama || null,
+                // stok: stok,
+                stok: product.stok,
             });
         }
 
@@ -58,6 +84,7 @@ class ShoppingCart {
             "Produk berhasil ditambahkan ke keranjang!",
             "success"
         );
+        return true;
     }
 
     // Update item quantity
@@ -70,11 +97,31 @@ class ShoppingCart {
         if (itemIndex > -1) {
             if (quantity <= 0) {
                 this.removeFromCart(productId, jenisId);
-            } else {
-                cart[itemIndex].quantity = quantity;
-                this.saveCart(cart);
+                return false;
             }
+
+            // Validasi stok
+            const item = cart[itemIndex];
+            const stok = item.stok || 0;
+
+            if (quantity > stok) {
+
+                this.showNotification(
+                    `Stok tidak mencukupi. Sisa stok: ${stok}`,
+                    "error"
+                );
+                // Kembalikan ke stok maksimal jika melebihi
+                cart[itemIndex].quantity = stok;
+                this.saveCart(cart);
+                alert(`Stok tidak mencukupi. Sisa stok: ${stok}`);
+                return false;
+            }
+
+            cart[itemIndex].quantity = quantity;
+            this.saveCart(cart);
+            return true;
         }
+        return false;
     }
 
     // Remove item from cart
@@ -156,42 +203,43 @@ class ShoppingCart {
                     <div class="card-product style-row row-small-2 align-items-center">
                         <div class="card-product-wrapper">
                             <a href="/produk/${item.id}" class="product-img">
-                                <img class="lazyload" src="${
-                                    item.gambar
-                                }" alt="${item.nama}">
+                                <img class="lazyload" src="${item.gambar
+                        }" alt="${item.nama}">
                             </a>
                         </div>
                         <div class="card-product-info">
                             <div class="box-title">
-                                <a href="/produk/${
-                                    item.id
-                                }" class="name-product body-md-2 fw-semibold text-secondary link">
+                                <a href="/produk/${item.id
+                        }" class="name-product body-md-2 fw-semibold text-secondary link">
                                     ${item.nama}
                                 </a>
-                                ${
-                                    item.jenis_nama
-                                        ? `<p class="body-text-3 text-secondary mb-1">${item.jenis_nama}</p>`
-                                        : ""
-                                }
+                                ${item.jenis_nama
+                            ? `<p class="body-text-3 text-secondary mb-1">${item.jenis_nama}</p>`
+                            : ""
+                        }
                                 <p class="price-wrap fw-medium">
                                     <span class="new-price price-text fw-medium">Rp. ${this.formatPrice(
-                                        item.harga
-                                    )}</span>
+                            item.harga
+                        )}</span>
                                 </p>
                                 <div class="wg-quantity mt-2">
                                     <button class="btn-quantity btn-decrease-cart"
                                         data-id="${item.id}"
-                                        data-jenis="${item.jenis_id || ""}">
+                                        data-jenis="${item.jenis_id || ""}"
+                                        ${item.quantity <= 1 ? 'disabled style="opacity: 0.5; cursor: not-allowed; pointer-events: none;"' : ''}>
                                         <i class="icon-minus"></i>
                                     </button>
                                     <input class="quantity-product" type="text"
                                         value="${item.quantity}"
                                         data-id="${item.id}"
                                         data-jenis="${item.jenis_id || ""}"
+                                        data-stok="${item.stok || 0}"
                                         readonly>
                                     <button class="btn-quantity btn-increase-cart"
                                         data-id="${item.id}"
-                                        data-jenis="${item.jenis_id || ""}">
+                                        data-jenis="${item.jenis_id || ""}"
+                                        data-stok="${item.stok || 0}"
+                                        ${item.quantity >= (item.stok || 0) ? 'disabled style="opacity: 0.5; cursor: not-allowed; pointer-events: none;"' : ''}>
                                         <i class="icon-plus"></i>
                                     </button>
                                 </div>
@@ -218,6 +266,8 @@ class ShoppingCart {
 
             // Attach event listeners to new elements
             this.attachCartItemEvents();
+            // Update button states
+            this.updateButtonStates();
         }
     }
 
@@ -228,46 +278,100 @@ class ShoppingCart {
 
     // Attach event listeners to cart items
     attachCartItemEvents() {
-        // Remove buttons
-        document.querySelectorAll(".remove-cart").forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-                const id = parseInt(btn.dataset.id);
-                const jenisId = btn.dataset.jenis
-                    ? parseInt(btn.dataset.jenis)
+        // Use event delegation to handle dynamically created elements
+        const cartContainer = document.querySelector("#shoppingCart .product-list-wrap");
+        if (!cartContainer) return;
+
+        // Remove existing listeners by cloning container (cleaner approach)
+        if (this._cartEventAttached) {
+            return; // Already attached via delegation
+        }
+
+        // Use event delegation on the container
+        cartContainer.addEventListener("click", (e) => {
+            const target = e.target.closest(".remove-cart, .btn-increase-cart, .btn-decrease-cart");
+            if (!target) return;
+
+            // Handle remove button
+            if (target.classList.contains("remove-cart")) {
+                e.preventDefault();
+                const id = parseInt(target.dataset.id);
+                const jenisId = target.dataset.jenis
+                    ? parseInt(target.dataset.jenis)
                     : null;
                 this.removeFromCart(id, jenisId);
-            });
-        });
+                return;
+            }
 
-        // Increase quantity
-        document.querySelectorAll(".btn-increase-cart").forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-                const id = parseInt(btn.dataset.id);
-                const jenisId = btn.dataset.jenis
-                    ? parseInt(btn.dataset.jenis)
-                    : null;
-                const input =
-                    btn.parentElement.querySelector(".quantity-product");
-                const currentQty = parseInt(input.value);
-                this.updateQuantity(id, jenisId, currentQty + 1);
-            });
-        });
+            // Handle increase button
+            if (target.classList.contains("btn-increase-cart")) {
+                e.preventDefault();
+                e.stopPropagation();
 
-        // Decrease quantity
-        document.querySelectorAll(".btn-decrease-cart").forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-                const id = parseInt(btn.dataset.id);
-                const jenisId = btn.dataset.jenis
-                    ? parseInt(btn.dataset.jenis)
-                    : null;
-                const input =
-                    btn.parentElement.querySelector(".quantity-product");
-                const currentQty = parseInt(input.value);
-                if (currentQty > 1) {
-                    this.updateQuantity(id, jenisId, currentQty - 1);
+                // Check disabled state (both attribute and class)
+                if (target.disabled || target.classList.contains('disabled') || target.hasAttribute('disabled')) {
+                    this.showNotification(
+                        `Stok tidak mencukupi. Tidak dapat menambah jumlah.`,
+                        "error"
+                    );
+                    return false;
                 }
-            });
+
+                const id = parseInt(target.dataset.id);
+                const jenisId = target.dataset.jenis
+                    ? parseInt(target.dataset.jenis)
+                    : null;
+                const input = target.parentElement.querySelector(".quantity-product");
+                const currentQty = parseInt(input.value) || 0;
+                const stok = parseInt(target.dataset.stok) || 0;
+
+                if (currentQty >= stok || stok <= 0) {
+                    this.showNotification(
+                        `Stok tidak mencukupi. Sisa stok: ${stok}`,
+                        "error"
+                    );
+                    // Update button state
+                    this.updateButtonStates();
+                    return false;
+                }
+
+                const success = this.updateQuantity(id, jenisId, currentQty + 1);
+                if (success) {
+                    // Update button state setelah update
+                    this.updateButtonStates();
+                }
+                return false;
+            }
+
+            // Handle decrease button
+            if (target.classList.contains("btn-decrease-cart")) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Check disabled state (both attribute and class)
+                if (target.disabled || target.classList.contains('disabled') || target.hasAttribute('disabled')) {
+                    return false;
+                }
+
+                const id = parseInt(target.dataset.id);
+                const jenisId = target.dataset.jenis
+                    ? parseInt(target.dataset.jenis)
+                    : null;
+                const input = target.parentElement.querySelector(".quantity-product");
+                const currentQty = parseInt(input.value) || 0;
+
+                if (currentQty > 1) {
+                    const success = this.updateQuantity(id, jenisId, currentQty - 1);
+                    if (success) {
+                        // Update button state setelah update
+                        this.updateButtonStates();
+                    }
+                }
+                return false;
+            }
         });
+
+        this._cartEventAttached = true;
     }
 
     // Attach global event listeners
@@ -289,10 +393,13 @@ class ShoppingCart {
             harga: parseInt(btn.dataset.productHarga),
             gambar: btn.dataset.productGambar,
             kategori: btn.dataset.productKategori,
+            stok : parseInt(btn.dataset.productStok) || 0,
             quantity: 1,
             jenis_id: null,
             jenis_nama: null,
         };
+
+        console(`productData: ${JSON.stringify(productData)}`);
 
         // Get quantity from input
         const quantityInput = document.querySelector(".quantity-product");
@@ -312,18 +419,79 @@ class ShoppingCart {
         this.addToCart(productData);
     }
 
+    // Update button states based on stock
+    updateButtonStates() {
+        const cart = this.getCart();
+
+        // Update buttons in offcanvas cart
+        document.querySelectorAll(".btn-increase-cart").forEach((btn) => {
+            const id = parseInt(btn.dataset.id);
+            const jenisId = btn.dataset.jenis
+                ? parseInt(btn.dataset.jenis)
+                : null;
+            const input = btn.parentElement.querySelector(".quantity-product");
+            const currentQty = parseInt(input.value) || 0;
+            const stok = parseInt(btn.dataset.stok) || 0;
+
+            const item = cart.find(
+                (item) => item.id === id && item.jenis_id === jenisId
+            );
+
+            if (item) {
+                const itemStok = item.stok || 0;
+                if (currentQty >= itemStok || itemStok <= 0) {
+                    btn.disabled = true;
+                    btn.setAttribute('disabled', 'disabled');
+                    btn.classList.add("disabled");
+                    btn.style.opacity = '0.5';
+                    btn.style.cursor = 'not-allowed';
+                    btn.style.pointerEvents = 'none';
+                } else {
+                    btn.disabled = false;
+                    btn.removeAttribute('disabled');
+                    btn.classList.remove("disabled");
+                    btn.style.opacity = '1';
+                    btn.style.cursor = 'pointer';
+                    btn.style.pointerEvents = 'auto';
+                }
+            }
+        });
+
+        document.querySelectorAll(".btn-decrease-cart").forEach((btn) => {
+            const input = btn.parentElement.querySelector(".quantity-product");
+            const currentQty = parseInt(input.value) || 0;
+
+            if (currentQty <= 1) {
+                btn.disabled = true;
+                btn.setAttribute('disabled', 'disabled');
+                btn.classList.add("disabled");
+                btn.style.opacity = '0.5';
+                btn.style.cursor = 'not-allowed';
+                btn.style.pointerEvents = 'none';
+            } else {
+                btn.disabled = false;
+                btn.removeAttribute('disabled');
+                btn.classList.remove("disabled");
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+                btn.style.pointerEvents = 'auto';
+            }
+        });
+    }
+
     // Show notification
     showNotification(message, type = "success") {
         // Create notification element
         const notification = document.createElement("div");
         notification.className = `cart-notification alert alert-${type}`;
+        const bgColor = type === "success" ? "#28a745" : type === "error" ? "#dc3545" : "#17a2b8";
         notification.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 9999;
             padding: 15px 20px;
-            background: ${type === "success" ? "#28a745" : "#17a2b8"};
+            background: ${bgColor};
             color: white;
             border-radius: 5px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -354,7 +522,7 @@ class ShoppingCart {
     }
 }
 
-// Add CSS animations
+// Add CSS animations and disabled button styles
 const style = document.createElement("style");
 style.textContent = `
     @keyframes slideIn {
@@ -376,6 +544,21 @@ style.textContent = `
             transform: translateX(100%);
             opacity: 0;
         }
+    }
+    /* Prevent clicks on disabled cart buttons */
+    .btn-increase-cart[disabled],
+    .btn-decrease-cart[disabled],
+    .btn-increase-cart.disabled,
+    .btn-decrease-cart.disabled {
+        pointer-events: none !important;
+        opacity: 0.5 !important;
+        cursor: not-allowed !important;
+    }
+    .btn-increase-cart[disabled] *,
+    .btn-decrease-cart[disabled] *,
+    .btn-increase-cart.disabled *,
+    .btn-decrease-cart.disabled * {
+        pointer-events: none !important;
     }
 `;
 document.head.appendChild(style);

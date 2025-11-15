@@ -1,12 +1,12 @@
-@extends("template")
-@section("title", "Keranjang Belanja - Aksesoris Ria")
+@extends('template')
+@section('title', 'Keranjang Belanja - Aksesoris Ria')
 
-@section("body")
+@section('body')
     <!-- Breakcrumbs -->
     <div class="tf-sp-3 pb-0">
         <div class="container">
             <ul class="breakcrumbs">
-                <li><a href="{{ route("home") }}" class="body-small link">Home</a></li>
+                <li><a href="{{ route('home') }}" class="body-small link">Home</a></li>
                 <li class="d-flex align-items-center">
                     <i class="icon icon-arrow-right"></i>
                 </li>
@@ -26,13 +26,13 @@
                         <span class="icon">
                             <i class="icon-shop-cart-1"></i>
                         </span>
-                        <a href="{{ route("cart") }}" class="text-secondary body-text-3">Keranjang Belanja</a>
+                        <a href="{{ route('cart') }}" class="text-secondary body-text-3">Keranjang Belanja</a>
                     </div>
                     <div class="step-payment">
                         <span class="icon">
                             <i class="icon-shop-cart-2"></i>
                         </span>
-                        <a href="{{ route("checkout") }}" class="link-secondary body-text-3">Checkout</a>
+                        <a href="{{ route('checkout') }}" class="link-secondary body-text-3">Checkout</a>
                     </div>
                     <div class="step-payment">
                         <span class="icon">
@@ -55,7 +55,7 @@
                 </svg>
                 <h4 class="mt-4">Keranjang Belanja Kosong</h4>
                 <p class="text-secondary">Mari temukan produk yang sempurna untuk Anda</p>
-                <a href="{{ route("home") }}" class="tf-btn mt-3">
+                <a href="{{ route('home') }}" class="tf-btn mt-3">
                     <span class="text-white">Belanja Sekarang</span>
                 </a>
             </div>
@@ -86,10 +86,10 @@
                 </form>
 
                 <div class="box-btn">
-                    <a href="{{ route("home") }}" class="tf-btn btn-gray">
+                    <a href="{{ route('home') }}" class="tf-btn btn-gray">
                         <span class="text-white">Lanjut Belanja</span>
                     </a>
-                    <a href="{{ route("checkout") }}" class="tf-btn">
+                    <a href="{{ route('checkout') }}" class="tf-btn">
                         <span class="text-white">Lanjut ke Checkout</span>
                     </a>
                 </div>
@@ -99,11 +99,120 @@
     </div>
     <!-- /Shopping Cart -->
 
-    @push("scripts")
+    <style>
+        /* Ensure disabled buttons cannot be clicked */
+        .btn-quantity.btn-increase[disabled],
+        .btn-quantity.btn-decrease[disabled],
+        .btn-quantity.btn-increase.disabled,
+        .btn-quantity.btn-decrease.disabled {
+            pointer-events: none !important;
+            opacity: 0.5 !important;
+            cursor: not-allowed !important;
+        }
+
+        .btn-quantity.btn-increase[disabled] i,
+        .btn-quantity.btn-decrease[disabled] i,
+        .btn-quantity.btn-increase.disabled i,
+        .btn-quantity.btn-decrease.disabled i {
+            pointer-events: none !important;
+        }
+    </style>
+
+    @push('scripts')
         <script>
             // Format price helper
             function formatPrice(price) {
                 return new Intl.NumberFormat('id-ID').format(price);
+            }
+
+            // Update button states based on quantity and stock
+            function updateCartButtonStates() {
+                const cartItems = document.querySelectorAll('.tf-cart-item');
+                cartItems.forEach(row => {
+                    const decreaseBtn = row.querySelector('.btn-decrease');
+                    const increaseBtn = row.querySelector('.btn-increase');
+                    const qtyInput = row.querySelector('.quantity-product');
+
+                    if (!qtyInput || !decreaseBtn || !increaseBtn) return;
+
+                    const currentQty = parseInt(qtyInput.value, 10) || 0;
+                    let stok = parseInt(qtyInput.getAttribute('data-stok'), 10) || 0;
+
+                    // Always try to get latest stok from cart data to ensure accuracy
+                    const cartData = localStorage.getItem('ria_shopping_cart');
+                    if (cartData) {
+                        try {
+                            const cart = JSON.parse(cartData);
+                            const productId = parseInt(qtyInput.getAttribute('data-id'));
+                            const jenisId = qtyInput.getAttribute('data-jenis');
+                            const jenisIdNum = jenisId && jenisId !== '' ? parseInt(jenisId) : null;
+
+                            const item = cart.find(item =>
+                                item.id === productId && item.jenis_id === jenisIdNum
+                            );
+                            if (item) {
+                                // Always update stok from cart data if available
+                                if (item.stok !== undefined && item.stok !== null && item.stok !== '') {
+                                    const latestStok = parseInt(item.stok);
+                                    if (!isNaN(latestStok)) {
+                                        // Always update data-stok attribute with latest value
+                                        qtyInput.setAttribute('data-stok', latestStok);
+                                        increaseBtn.setAttribute('data-stok', latestStok);
+                                        decreaseBtn.setAttribute('data-stok', latestStok);
+                                        stok = latestStok;
+                                    }
+                                }
+                            }
+                        } catch (e) {
+                            console.error('Error parsing cart data:', e);
+                        }
+                    }
+
+                    // Update decrease button
+                    if (currentQty <= 1) {
+                        decreaseBtn.disabled = true;
+                        decreaseBtn.setAttribute('disabled', 'disabled');
+                        decreaseBtn.classList.add('disabled');
+                        decreaseBtn.style.opacity = '0.5';
+                        decreaseBtn.style.cursor = 'not-allowed';
+                        decreaseBtn.style.pointerEvents = 'none';
+                    } else {
+                        decreaseBtn.disabled = false;
+                        decreaseBtn.removeAttribute('disabled');
+                        decreaseBtn.classList.remove('disabled');
+                        decreaseBtn.style.opacity = '1';
+                        decreaseBtn.style.cursor = 'pointer';
+                        decreaseBtn.style.pointerEvents = 'auto';
+                    }
+
+                    // Update increase button
+                    // Disable if: stok is 0 or currentQty >= stok (can't add more)
+                    // Enable if: stok > 0 AND currentQty < stok (can still add)
+                    const shouldDisableIncrease = stok <= 0 || currentQty >= stok;
+
+                    if (shouldDisableIncrease) {
+                        // Disable the button completely
+                        increaseBtn.disabled = true;
+                        increaseBtn.setAttribute('disabled', 'disabled');
+                        increaseBtn.classList.add('disabled');
+                        increaseBtn.style.opacity = '0.5';
+                        increaseBtn.style.cursor = 'not-allowed';
+                        increaseBtn.style.pointerEvents = 'none';
+                        // Add CSS class for additional protection
+                        increaseBtn.setAttribute('aria-disabled', 'true');
+                    } else {
+                        // Enable the button - make sure all disabled states are removed
+                        increaseBtn.disabled = false;
+                        increaseBtn.removeAttribute('disabled');
+                        increaseBtn.classList.remove('disabled');
+                        increaseBtn.removeAttribute('aria-disabled');
+                        increaseBtn.style.opacity = '1';
+                        increaseBtn.style.cursor = 'pointer';
+                        increaseBtn.style.pointerEvents = 'auto';
+                        // Force remove any inline styles that might block clicks
+                        increaseBtn.style.removeProperty('pointer-events');
+                    }
+                });
             }
 
             // Render cart page from localStorage
@@ -127,6 +236,21 @@
                     // Render cart items
                     cartItemsTable.innerHTML = cart.map(item => {
                         const itemTotal = parseInt(item.harga) * parseInt(item.quantity);
+                        const currentQty = parseInt(item.quantity) || 0;
+                        // Get stok - ensure it's a valid number
+                        // Default to a high number if stok is not set, so button is enabled initially
+                        // Will be validated properly in updateCartButtonStates()
+                        let stok = 999999; // Default high value to allow increase
+                        if (item.stok !== undefined && item.stok !== null && item.stok !== '') {
+                            const parsedStok = parseInt(item.stok);
+                            if (!isNaN(parsedStok)) {
+                                stok = parsedStok;
+                            }
+                        }
+                        const isDecreaseDisabled = currentQty <= 1;
+                        // Only disable increase if stok is valid (not default) AND (stok <= 0 OR currentQty >= stok)
+                        // If stok is default (999999), don't disable (will be validated in updateCartButtonStates)
+                        const isIncreaseDisabled = (stok < 999999) && (stok <= 0 || currentQty >= stok);
                         return `
                     <tr class="tf-cart-item">
                         <td class="tf-cart-item_product">
@@ -138,10 +262,10 @@
                                     ${item.nama}
                                 </a>
                                 ${item.jenis_nama ? `
-                                        <div class="variant-box">
-                                            <p class="body-text-3">Jenis: ${item.jenis_nama}</p>
-                                        </div>
-                                        ` : ''}
+                                                                                                                <div class="variant-box">
+                                                                                                                    <p class="body-text-3">Jenis: ${item.jenis_nama}</p>
+                                                                                                                </div>
+                                                                                                                ` : ''}
                             </div>
                         </td>
                         <td data-cart-title="Harga" class="tf-cart-item_price">
@@ -151,13 +275,24 @@
                         </td>
                         <td data-cart-title="Jumlah" class="tf-cart-item_quantity">
                             <div class="wg-quantity">
-                                <span class="btn-quantity btn-decrease" onclick="updateCartQty(${item.id}, ${item.jenis_id || null}, ${item.quantity - 1})">
+                                <button type="button" class="btn-quantity btn-decrease" 
+                                    data-id="${item.id}"
+                                    data-jenis="${item.jenis_id || ''}"
+                                    data-stok="${item.stok || 0}"
+                                    ${isDecreaseDisabled ? 'disabled' : ''}>
                                     <i class="icon-minus"></i>
-                                </span>
-                                <input class="quantity-product" type="text" value="${item.quantity}" readonly>
-                                <span class="btn-quantity btn-increase" onclick="updateCartQty(${item.id}, ${item.jenis_id || null}, ${item.quantity + 1})">
+                                </button>
+                                <input class="quantity-product" type="text" value="${item.quantity}" 
+                                    data-id="${item.id}"
+                                    data-jenis="${item.jenis_id || ''}"
+                                    data-stok="${stok}" readonly>
+                                <button type="button" class="btn-quantity btn-increase" 
+                                    data-id="${item.id}"
+                                    data-jenis="${item.jenis_id || ''}"
+                                    data-stok="${stok}"
+                                    ${isIncreaseDisabled ? 'disabled' : ''}>
                                     <i class="icon-plus"></i>
-                                </span>
+                                </button>
                             </div>
                         </td>
                         <td data-cart-title="Total" class="tf-cart-item_total">
@@ -178,26 +313,331 @@
                     }, 0);
 
                     cartGrandTotal.textContent = `Total: Rp. ${formatPrice(total)}`;
+
+                    // Update button states first
+                    updateCartButtonStates();
+                    // Attach event listeners to buttons after DOM is ready
+                    setTimeout(() => {
+                        attachCartButtonEvents();
+                        // Update button states again after attaching listeners
+                        updateCartButtonStates();
+                    }, 100);
                 }
             }
 
-            function updateCartQty(productId, jenisId, quantity) {
-                if (quantity > 0) {
-                    if (window.cart) {
-                        window.cart.updateQuantity(productId, jenisId, quantity);
-                    } else {
-                        // Update manually if cart not loaded yet
+            // Attach event listeners to cart buttons
+            function attachCartButtonEvents() {
+                // Attach listeners directly to buttons like in product detail
+                const cartTable = document.getElementById('cart-items-table');
+                if (!cartTable) return;
+
+                // Remove old listeners by finding all buttons and re-attaching
+                const increaseButtons = cartTable.querySelectorAll('.btn-increase');
+                const decreaseButtons = cartTable.querySelectorAll('.btn-decrease');
+
+                // Attach to increase buttons
+                increaseButtons.forEach(btn => {
+                    // Remove any existing listeners by cloning
+                    const newBtn = btn.cloneNode(true);
+                    btn.parentNode.replaceChild(newBtn, btn);
+
+                    // Store reference to button for use in handler
+                    const button = newBtn;
+
+                    newBtn.addEventListener('click', function(e) {
+                        // Check disabled state first - like in product detail
+                        // Check multiple ways to ensure disabled state is caught
+                        const computedStyle = window.getComputedStyle(button);
+                        if (button.disabled ||
+                            button.classList.contains('disabled') ||
+                            button.hasAttribute('disabled') ||
+                            computedStyle.pointerEvents === 'none' ||
+                            computedStyle.opacity === '0.5') {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            e.stopImmediatePropagation();
+
+                            const stok = parseInt(button.getAttribute('data-stok'), 10) || 0;
+                            alert('Stok tidak mencukupi. Sisa stok: ' + stok);
+                            return false;
+                        }
+
+                        const productId = parseInt(button.getAttribute('data-id'));
+                        const jenisId = button.getAttribute('data-jenis') ? parseInt(button.getAttribute(
+                            'data-jenis')) : null;
+                        const qtyInput = button.parentElement.querySelector('.quantity-product');
+                        const currentQty = parseInt(qtyInput.value, 10) || 0;
+                        let stok = parseInt(qtyInput.getAttribute('data-stok'), 10) || 0;
+
+                        // Get latest stok from cart data
                         const cartData = localStorage.getItem('ria_shopping_cart');
-                        const cart = cartData ? JSON.parse(cartData) : [];
-                        const itemIndex = cart.findIndex(item =>
+                        if (cartData) {
+                            try {
+                                const cart = JSON.parse(cartData);
+                                const item = cart.find(item =>
+                                    item.id === productId && item.jenis_id === jenisId
+                                );
+                                if (item && item.stok !== undefined && item.stok !== null && item.stok !== '') {
+                                    const cartStok = parseInt(item.stok);
+                                    if (!isNaN(cartStok)) {
+                                        stok = cartStok;
+                                        qtyInput.setAttribute('data-stok', stok);
+                                        button.setAttribute('data-stok', stok);
+                                    }
+                                }
+                            } catch (e) {
+                                console.error('Error parsing cart data:', e);
+                            }
+                        }
+
+                        // Validate stock before allowing increment - like in product detail
+                        if (currentQty >= stok || stok <= 0) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            e.stopImmediatePropagation();
+
+                            const savedValue = qtyInput.value;
+                            alert('Stok tidak mencukupi. Sisa stok: ' + stok);
+
+                            // Restore value if theme handler changed it
+                            qtyInput.value = savedValue;
+                            setTimeout(function() {
+                                if (parseInt(qtyInput.value, 10) > stok) {
+                                    qtyInput.value = stok;
+                                }
+                                updateCartButtonStates();
+                            }, 10);
+
+                            updateCartButtonStates();
+                            return false;
+                        }
+
+                        // Update quantity
+                        const newQty = currentQty + 1;
+                        updateCartQty(productId, jenisId, newQty);
+
+                        // Update button state after increase
+                        setTimeout(function() {
+                            updateCartButtonStates();
+                        }, 50);
+
+                        return false;
+                    }, true); // Use capture phase - runs before other handlers
+                });
+
+                // Attach to decrease buttons
+                decreaseButtons.forEach(btn => {
+                    // Remove any existing listeners by cloning
+                    const newBtn = btn.cloneNode(true);
+                    btn.parentNode.replaceChild(newBtn, btn);
+
+                    newBtn.addEventListener('click', function(e) {
+                        // Check disabled state first
+                        if (this.disabled || this.classList.contains('disabled') || this.hasAttribute(
+                                'disabled')) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            e.stopImmediatePropagation();
+                            return false;
+                        }
+
+                        const productId = parseInt(this.getAttribute('data-id'));
+                        const jenisId = this.getAttribute('data-jenis') ? parseInt(this.getAttribute(
+                            'data-jenis')) : null;
+                        const qtyInput = this.parentElement.querySelector('.quantity-product');
+                        const currentQty = parseInt(qtyInput.value, 10) || 0;
+
+                        if (currentQty <= 1) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            e.stopImmediatePropagation();
+                            return false;
+                        }
+
+                        // Update quantity
+                        const newQty = currentQty - 1;
+                        updateCartQty(productId, jenisId, newQty);
+
+                        // Update button state after decrease
+                        setTimeout(function() {
+                            updateCartButtonStates();
+                        }, 50);
+
+                        return false;
+                    }, true); // Use capture phase
+                });
+            }
+
+            function updateCartQty(productId, jenisId, quantity) {
+                if (quantity <= 0) {
+                    return;
+                }
+
+                // Update quantity immediately in UI first for better UX
+                const cartTable = document.getElementById('cart-items-table');
+                if (cartTable) {
+                    const rows = cartTable.querySelectorAll('.tf-cart-item');
+                    rows.forEach(row => {
+                        const qtyInput = row.querySelector('.quantity-product');
+                        if (!qtyInput) return;
+
+                        const rowProductId = parseInt(qtyInput.getAttribute('data-id'));
+                        const rowJenisId = qtyInput.getAttribute('data-jenis');
+                        const rowJenisIdNum = rowJenisId && rowJenisId !== '' ? parseInt(rowJenisId) : null;
+
+                        if (rowProductId === productId && rowJenisIdNum === jenisId) {
+                            const totalCell = row.querySelector('.tf-cart-item_total .cart-total');
+
+                            // Get harga from cart data or from price cell
+                            let harga = 0;
+                            const cartData = localStorage.getItem('ria_shopping_cart');
+                            if (cartData) {
+                                const cart = JSON.parse(cartData);
+                                const item = cart.find(item =>
+                                    item.id === productId && item.jenis_id === jenisId
+                                );
+                                if (item) {
+                                    harga = parseInt(item.harga);
+                                }
+                            }
+
+                            // Fallback: get from price cell if not found in cart
+                            if (!harga) {
+                                const priceText = row.querySelector('.tf-cart-item_price .cart-price')?.textContent ||
+                                    '';
+                                harga = parseInt(priceText.replace(/[^\d]/g, '')) || 0;
+                            }
+
+                            // Update quantity input immediately
+                            qtyInput.value = quantity;
+                            qtyInput.setAttribute('value', quantity);
+
+                            // Update total immediately
+                            const itemTotal = harga * quantity;
+                            if (totalCell) {
+                                totalCell.textContent = `Rp. ${formatPrice(itemTotal)}`;
+                            }
+
+                            // Update data-stok on button if changed
+                            if (cartData) {
+                                const cart = JSON.parse(cartData);
+                                const item = cart.find(item =>
+                                    item.id === productId && item.jenis_id === jenisId
+                                );
+                                if (item && item.stok) {
+                                    const newStok = parseInt(item.stok) || 0;
+                                    qtyInput.setAttribute('data-stok', newStok);
+                                    const increaseBtn = row.querySelector('.btn-increase');
+                                    const decreaseBtn = row.querySelector('.btn-decrease');
+                                    if (increaseBtn) increaseBtn.setAttribute('data-stok', newStok);
+                                }
+                            }
+
+                            // Update button states immediately - ensure it runs
+                            updateCartButtonStates();
+                            // Also update after a short delay to catch any edge cases
+                            setTimeout(() => {
+                                updateCartButtonStates();
+                            }, 50);
+
+                            // Update grand total
+                            updateGrandTotal();
+                        }
+                    });
+                }
+
+                // Update in localStorage and cart object
+                // First, validate quantity against stock one more time
+                let finalCartData = localStorage.getItem('ria_shopping_cart');
+                if (finalCartData) {
+                    try {
+                        const cart = JSON.parse(finalCartData);
+                        const item = cart.find(item =>
                             item.id === productId && item.jenis_id === jenisId
                         );
-                        if (itemIndex > -1) {
-                            cart[itemIndex].quantity = quantity;
-                            localStorage.setItem('ria_shopping_cart', JSON.stringify(cart));
+                        if (item) {
+                            const itemStok = parseInt(item.stok) || 0;
+                            // Final validation: ensure quantity doesn't exceed stock
+                            if (quantity > itemStok && itemStok > 0) {
+                                alert('Stok tidak mencukupi. Sisa stok: ' + itemStok);
+                                quantity = itemStok;
+                                // Update UI to reflect clamped quantity
+                                const cartTable = document.getElementById('cart-items-table');
+                                if (cartTable) {
+                                    const rows = cartTable.querySelectorAll('.tf-cart-item');
+                                    rows.forEach(row => {
+                                        const qtyInput = row.querySelector('.quantity-product');
+                                        if (!qtyInput) return;
+                                        const rowProductId = parseInt(qtyInput.getAttribute('data-id'));
+                                        const rowJenisId = qtyInput.getAttribute('data-jenis');
+                                        const rowJenisIdNum = rowJenisId && rowJenisId !== '' ? parseInt(rowJenisId) :
+                                            null;
+                                        if (rowProductId === productId && rowJenisIdNum === jenisId) {
+                                            qtyInput.value = quantity;
+                                            qtyInput.setAttribute('value', quantity);
+                                        }
+                                    });
+                                }
+                                updateCartButtonStates();
+                                return; // Don't proceed with update if quantity exceeds stock
+                            }
                         }
+                    } catch (e) {
+                        console.error('Error validating stock:', e);
                     }
-                    renderCartPage();
+                }
+
+                if (window.cart) {
+                    const success = window.cart.updateQuantity(productId, jenisId, quantity);
+                    if (!success) {
+                        // If update failed, re-render to restore correct state
+                        renderCartPage();
+                    } else {
+                        // Ensure button states are updated after successful update
+                        setTimeout(() => {
+                            updateCartButtonStates();
+                        }, 100);
+                    }
+                } else {
+                    // Update manually if cart not loaded yet
+                    finalCartData = localStorage.getItem('ria_shopping_cart');
+                    const cart = finalCartData ? JSON.parse(finalCartData) : [];
+                    const itemIndex = cart.findIndex(item =>
+                        item.id === productId && item.jenis_id === jenisId
+                    );
+                    if (itemIndex > -1) {
+                        const item = cart[itemIndex];
+                        const stok = parseInt(item.stok) || 0;
+
+                        // Validasi stok
+                        if (quantity > stok && stok > 0) {
+                            alert('Stok tidak mencukupi. Sisa stok: ' + stok);
+                            quantity = stok;
+                            // Re-render to fix UI
+                            renderCartPage();
+                            return;
+                        }
+
+                        cart[itemIndex].quantity = quantity;
+                        localStorage.setItem('ria_shopping_cart', JSON.stringify(cart));
+                        // Update button states after manual update
+                        setTimeout(() => {
+                            updateCartButtonStates();
+                        }, 100);
+                    }
+                }
+            }
+
+            // Update grand total without full re-render
+            function updateGrandTotal() {
+                const cartData = localStorage.getItem('ria_shopping_cart');
+                const cart = cartData ? JSON.parse(cartData) : [];
+                const total = cart.reduce((sum, item) => {
+                    return sum + (parseInt(item.harga) * parseInt(item.quantity));
+                }, 0);
+                const cartGrandTotal = document.getElementById('cart-grand-total');
+                if (cartGrandTotal) {
+                    cartGrandTotal.textContent = `Total: Rp. ${formatPrice(total)}`;
                 }
             }
 
