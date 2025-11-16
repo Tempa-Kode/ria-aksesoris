@@ -19,6 +19,9 @@
                             </label>
                             <input type="password" placeholder="masukkan password anda" name="password">
                         </fieldset>
+                        <a href="{{ route('lupa-password') }}" class="link text-end body-text-3">
+                            Lupa password ?
+                        </a>
                     </div>
                     <button type="submit" class="tf-btn w-100 text-white">
                         Login
