@@ -207,12 +207,7 @@
                         </td>
                         <td>
                             @if ($transaksi->itemTransaksi && count($transaksi->itemTransaksi) > 0)
-                                @php
-                                    $jumlahList = $transaksi->itemTransaksi->map(function ($item) {
-                                        return $item->jumlah;
-                                    });
-                                @endphp
-                                {{ $jumlahList->join(", ") }}
+                                {{ $transaksi->itemTransaksi->sum("jumlah") }}
                             @else
                                 -
                             @endif
