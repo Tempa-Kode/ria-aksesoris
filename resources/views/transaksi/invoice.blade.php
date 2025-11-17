@@ -124,7 +124,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th scope="col" class="text-sm">No.</th>
-                                                        <th scope="col" class="text-sm">Item</th>
+                                                        <th scope="col" class="text-sm">Produk</th>
                                                         <th scope="col" class="text-sm">Qty</th>
                                                         <th scope="col" class="text-sm">Harga Satuan</th>
                                                         <th scope="col" class="text-end text-sm">Total</th>
