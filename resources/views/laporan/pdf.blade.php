@@ -171,7 +171,7 @@
             <p>Rupiah</p>
         </div>
     </div>
-    
+
     <div class="section-title">Detail Transaksi</div>
     @if ($transaksis->count() > 0)
         <table class="data-table">
@@ -180,6 +180,8 @@
                     <th style="width: 8%;">No</th>
                     <th style="width: 15%;">Tanggal</th>
                     <th style="width: 20%;">Kode Invoice</th>
+                    <th>Produk</th>
+                    <th>Jumlah</th>
                     <th>Customer</th>
                     <th style="width: 18%;">Total</th>
                     <th style="width: 15%;">Status Kirim</th>
@@ -191,6 +193,30 @@
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $transaksi->tanggal->format("d M Y") }}</td>
                         <td>{{ $transaksi->kode_invoice }}</td>
+                        <td>
+                            @if ($transaksi->itemTransaksi && count($transaksi->itemTransaksi) > 0)
+                                @php
+                                    $produkList = $transaksi->itemTransaksi->map(function ($item) {
+                                        return $item->produk->nama ?? "-";
+                                    });
+                                @endphp
+                                {{ $produkList->join(", ") }}
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td>
+                            @if ($transaksi->itemTransaksi && count($transaksi->itemTransaksi) > 0)
+                                @php
+                                    $jumlahList = $transaksi->itemTransaksi->map(function ($item) {
+                                        return $item->jumlah;
+                                    });
+                                @endphp
+                                {{ $jumlahList->join(", ") }}
+                            @else
+                                -
+                            @endif
+                        </td>
                         <td>{{ $transaksi->nama }}</td>
                         <td>Rp {{ number_format($transaksi->total_bayar, 0, ",", ".") }}</td>
                         <td>{{ $transaksi->status_pengiriman ? "Sudah Dikirim" : "Belum Dikirim" }}</td>

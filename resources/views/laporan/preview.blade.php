@@ -149,6 +149,8 @@
                                         <th>No</th>
                                         <th>Tanggal</th>
                                         <th>Kode Invoice</th>
+                                        <th>Produk</th>
+                                        <th>Jumlah</th>
                                         <th>Customer</th>
                                         <th>Total</th>
                                         <th>Status Pengiriman</th>
@@ -161,6 +163,30 @@
                                             <td>{{ $transaksi->tanggal->format("d M Y") }}</td>
                                             <td><span
                                                     class="text-primary-600 fw-semibold">{{ $transaksi->kode_invoice }}</span>
+                                            </td>
+                                            <td>
+                                                @if ($transaksi->itemTransaksi && count($transaksi->itemTransaksi) > 0)
+                                                    @php
+                                                        $produkList = $transaksi->itemTransaksi->map(function ($item) {
+                                                            return $item->produk->nama ?? "-";
+                                                        });
+                                                    @endphp
+                                                    {{ $produkList->join(", ") }}
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($transaksi->itemTransaksi && count($transaksi->itemTransaksi) > 0)
+                                                    @php
+                                                        $jumlahList = $transaksi->itemTransaksi->map(function ($item) {
+                                                            return $item->jumlah;
+                                                        });
+                                                    @endphp
+                                                    {{ $jumlahList->join(", ") }}
+                                                @else
+                                                    -
+                                                @endif
                                             </td>
                                             <td>{{ $transaksi->nama }}</td>
                                             <td><span class="text-success-600 fw-semibold">Rp
