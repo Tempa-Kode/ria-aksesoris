@@ -148,8 +148,13 @@
             <p>Rupiah</p>
         </div>
         <div class="summary-box">
-            <p>Rata-rata per Transaksi</p>
-            <h3>Rp {{ $totalTransaksi > 0 ? number_format($totalPendapatan / $totalTransaksi, 0, ",", ".") : 0 }}</h3>
+            <p>Total Modal</p>
+            <h3 style="color: #DC2626;">Rp {{ number_format($totalModal, 0, ",", ".") }}</h3>
+            <p>Rupiah</p>
+        </div>
+        <div class="summary-box">
+            <p>Total Keuntungan</p>
+            <h3 style="color: #059669;">Rp {{ number_format($totalKeuntungan, 0, ",", ".") }}</h3>
             <p>Rupiah</p>
         </div>
     </div>
@@ -201,8 +206,16 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="4" style="text-align: right;">TOTAL PENDAPATAN:</td>
-                    <td colspan="2">Rp {{ number_format($totalPendapatan, 0, ",", ".") }}</td>
+                    <td colspan="6" style="text-align: right; font-weight: bold;">TOTAL PENDAPATAN:</td>
+                    <td colspan="2" style="font-weight: bold;">Rp {{ number_format($totalPendapatan, 0, ",", ".") }}</td>
+                </tr>
+                <tr>
+                    <td colspan="6" style="text-align: right; font-weight: bold;">TOTAL MODAL:</td>
+                    <td colspan="2" style="font-weight: bold; color: #DC2626;">Rp {{ number_format($totalModal, 0, ",", ".") }}</td>
+                </tr>
+                <tr>
+                    <td colspan="6" style="text-align: right; font-weight: bold;">TOTAL KEUNTUNGAN:</td>
+                    <td colspan="2" style="font-weight: bold; color: #059669;">Rp {{ number_format($totalKeuntungan, 0, ",", ".") }}</td>
                 </tr>
             </tfoot>
         </table>

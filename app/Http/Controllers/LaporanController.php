@@ -35,6 +35,17 @@ class LaporanController extends Controller
         $totalTransaksi = $transaksis->count();
         $totalPendapatan = $transaksis->sum('total_bayar');
 
+        // Calculate total modal and keuntungan
+        $totalModal = 0;
+        foreach ($transaksis as $transaksi) {
+            foreach ($transaksi->itemTransaksi as $item) {
+                if ($item->produk) {
+                    $totalModal += $item->jumlah * $item->produk->harga_modal;
+                }
+            }
+        }
+        $totalKeuntungan = $totalPendapatan - $totalModal;
+
         // Get top products
         $topProducts = ItemTransaksi::select('produk_id', DB::raw('SUM(jumlah) as total_qty'))
             ->whereHas('invoice', function($query) use ($tanggalAwal, $tanggalAkhir) {
@@ -47,7 +58,7 @@ class LaporanController extends Controller
             ->with('produk')
             ->get();
 
-        return view('laporan.preview', compact('transaksis', 'tanggalAwal', 'tanggalAkhir', 'totalTransaksi', 'totalPendapatan', 'topProducts'));
+        return view('laporan.preview', compact('transaksis', 'tanggalAwal', 'tanggalAkhir', 'totalTransaksi', 'totalPendapatan', 'topProducts', 'totalModal', 'totalKeuntungan'));
     }
 
     public function print(Request $request)
@@ -66,7 +77,16 @@ class LaporanController extends Controller
         $totalPendapatan = $transaksis->sum('total_bayar');
 
         // Hitung total keuntungan berdasarkan modal dari masing masing produk dan juga total pendapatan - modal = keuntungan
-        
+        $totalModal = 0;
+        foreach ($transaksis as $transaksi) {
+            foreach ($transaksi->itemTransaksi as $item) {
+                if ($item->produk) {
+                    $totalModal += $item->jumlah * $item->produk->harga_modal;
+                }
+            }
+        }
+        $totalKeuntungan = $totalPendapatan - $totalModal;
+
 
         $topProducts = ItemTransaksi::select('produk_id', DB::raw('SUM(jumlah) as total_qty'))
             ->whereHas('invoice', function($query) use ($tanggalAwal, $tanggalAkhir) {
@@ -79,7 +99,7 @@ class LaporanController extends Controller
             ->with('produk')
             ->get();
 
-        return view('laporan.print', compact('transaksis', 'tanggalAwal', 'tanggalAkhir', 'totalTransaksi', 'totalPendapatan', 'topProducts'));
+        return view('laporan.print', compact('transaksis', 'tanggalAwal', 'tanggalAkhir', 'totalTransaksi', 'totalPendapatan', 'topProducts', 'totalModal', 'totalKeuntungan'));
     }
 
     public function downloadPdf(Request $request)
@@ -96,6 +116,17 @@ class LaporanController extends Controller
         $totalTransaksi = $transaksis->count();
         $totalPendapatan = $transaksis->sum('total_bayar');
 
+        // Calculate total modal and keuntungan
+        $totalModal = 0;
+        foreach ($transaksis as $transaksi) {
+            foreach ($transaksi->itemTransaksi as $item) {
+                if ($item->produk) {
+                    $totalModal += $item->jumlah * $item->produk->harga_modal;
+                }
+            }
+        }
+        $totalKeuntungan = $totalPendapatan - $totalModal;
+
         $topProducts = ItemTransaksi::select('produk_id', DB::raw('SUM(jumlah) as total_qty'))
             ->whereHas('invoice', function($query) use ($tanggalAwal, $tanggalAkhir) {
                 $query->whereBetween('tanggal', [$tanggalAwal, $tanggalAkhir])
@@ -107,6 +138,6 @@ class LaporanController extends Controller
             ->with('produk')
             ->get();
 
-        return view('laporan.pdf', compact('transaksis', 'tanggalAwal', 'tanggalAkhir', 'totalTransaksi', 'totalPendapatan', 'topProducts'));
+        return view('laporan.pdf', compact('transaksis', 'tanggalAwal', 'tanggalAkhir', 'totalTransaksi', 'totalPendapatan', 'topProducts', 'totalModal', 'totalKeuntungan'));
     }
 }

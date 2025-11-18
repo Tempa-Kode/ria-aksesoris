@@ -42,7 +42,7 @@
                             <h6 class="text-md fw-semibold mb-1">Periode: {{ date("d M Y", strtotime($tanggalAwal)) }} -
                                 {{ date("d M Y", strtotime($tanggalAkhir)) }}</h6>
                             <p class="text-sm text-secondary-light mb-0">Total: {{ $totalTransaksi }} Transaksi |
-                                Pendapatan: Rp {{ number_format($totalPendapatan, 0, ",", ".") }}</p>
+                                Pendapatan: Rp {{ number_format($totalPendapatan, 0, ",", ".") }} | Modal: Rp {{ number_format($totalModal, 0, ",", ".") }} | Keuntungan: Rp {{ number_format($totalKeuntungan, 0, ",", ".") }}</p>
                         </div>
                         <div class="d-flex gap-2">
                             <a href="{{ route("laporan.index") }}"
@@ -77,7 +77,7 @@
 
             <!-- Summary Cards -->
             <div class="row gy-4 mb-24">
-                <div class="col-xxl-4 col-sm-6">
+                <div class="col-lg-3 col-sm-6">
                     <div class="card px-24 py-16 shadow-none radius-8 border h-100 bg-gradient-start-1">
                         <div class="card-body p-0">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
@@ -95,7 +95,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xxl-4 col-sm-6">
+                <div class="col-lg-3 col-sm-6">
                     <div class="card px-24 py-16 shadow-none radius-8 border h-100 bg-gradient-start-2">
                         <div class="card-body p-0">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
@@ -113,21 +113,37 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xxl-4 col-sm-6">
-                    <div class="card px-24 py-16 shadow-none radius-8 border h-100 bg-gradient-start-3">
+                <div class="col-lg-3 col-sm-6">
+                    <div class="card px-24 py-16 shadow-none radius-8 border h-100 bg-gradient-start-4">
                         <div class="card-body p-0">
                             <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
                                 <div>
-                                    <span class="mb-2 fw-medium text-secondary-light text-md">Rata-rata per
-                                        Transaksi</span>
-                                    <h6 class="fw-semibold mb-1 text-warning-600">Rp
-                                        {{ $totalTransaksi > 0 ? number_format($totalPendapatan / $totalTransaksi, 0, ",", ".") : 0 }}
-                                    </h6>
-                                    <p class="text-sm mb-0 text-secondary-light">Average Order Value</p>
+                                    <span class="mb-2 fw-medium text-secondary-light text-md">Total Modal</span>
+                                    <h6 class="fw-semibold mb-1 text-danger-600">Rp
+                                        {{ number_format($totalModal, 0, ",", ".") }}</h6>
+                                    <p class="text-sm mb-0 text-secondary-light">Dari Transaksi Diterima</p>
                                 </div>
                                 <div
-                                    class="w-64-px h-64-px radius-16 bg-warning-600 d-flex justify-content-center align-items-center">
-                                    <iconify-icon icon="solar:chart-outline" class="text-white text-32"></iconify-icon>
+                                    class="w-64-px h-64-px radius-16 bg-danger-600 d-flex justify-content-center align-items-center">
+                                    <iconify-icon icon="solar:archive-minimalistic-bold" class="text-white text-32"></iconify-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-sm-6">
+                    <div class="card px-24 py-16 shadow-none radius-8 border h-100 bg-gradient-start-5">
+                        <div class="card-body p-0">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-1">
+                                <div>
+                                    <span class="mb-2 fw-medium text-secondary-light text-md">Total Keuntungan</span>
+                                    <h6 class="fw-semibold mb-1 text-info-600">Rp
+                                        {{ number_format($totalKeuntungan, 0, ",", ".") }}</h6>
+                                    <p class="text-sm mb-0 text-secondary-light">Dari Transaksi Diterima</p>
+                                </div>
+                                <div
+                                    class="w-64-px h-64-px radius-16 bg-info-600 d-flex justify-content-center align-items-center">
+                                    <iconify-icon icon="solar:graph-up-bold" class="text-white text-32"></iconify-icon>
                                 </div>
                             </div>
                         </div>
@@ -199,9 +215,19 @@
                                         </tr>
                                     @endforeach
                                     <tr class="bg-base">
-                                        <td colspan="4" class="text-end fw-bold">TOTAL PENDAPATAN:</td>
+                                        <td colspan="6" class="text-end fw-bold">TOTAL PENDAPATAN:</td>
                                         <td colspan="2"><span class="text-success-600 fw-bold text-lg">Rp
                                                 {{ number_format($totalPendapatan, 0, ",", ".") }}</span></td>
+                                    </tr>
+                                    <tr class="bg-base">
+                                        <td colspan="6" class="text-end fw-bold">TOTAL MODAL:</td>
+                                        <td colspan="2"><span class="text-danger-600 fw-bold text-lg">Rp
+                                                {{ number_format($totalModal, 0, ",", ".") }}</span></td>
+                                    </tr>
+                                    <tr class="bg-base">
+                                        <td colspan="6" class="text-end fw-bold">TOTAL KEUNTUNGAN:</td>
+                                        <td colspan="2"><span class="text-info-600 fw-bold text-lg">Rp
+                                                {{ number_format($totalKeuntungan, 0, ",", ".") }}</span></td>
                                     </tr>
                                 </tbody>
                             </table>
