@@ -165,9 +165,9 @@
                                         <th>No</th>
                                         <th>Tanggal</th>
                                         <th>Kode Invoice</th>
+                                        <th>Customer</th>
                                         <th>Produk</th>
                                         <th>Jumlah</th>
-                                        <th>Customer</th>
                                         <th>Total</th>
                                         <th>Status Pengiriman</th>
                                     </tr>
@@ -180,6 +180,7 @@
                                             <td><span
                                                     class="text-primary-600 fw-semibold">{{ $transaksi->kode_invoice }}</span>
                                             </td>
+                                            <td>{{ $transaksi->nama }}</td>
                                             <td>
                                                 @if ($transaksi->itemTransaksi && count($transaksi->itemTransaksi) > 0)
                                                     @php
@@ -199,7 +200,6 @@
                                                     -
                                                 @endif
                                             </td>
-                                            <td>{{ $transaksi->nama }}</td>
                                             <td><span class="text-success-600 fw-semibold">Rp
                                                     {{ number_format($transaksi->total_bayar, 0, ",", ".") }}</span>
                                             </td>

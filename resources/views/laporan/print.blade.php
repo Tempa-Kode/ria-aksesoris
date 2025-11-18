@@ -166,9 +166,9 @@
                     <th style="width: 8%;">No</th>
                     <th style="width: 15%;">Tanggal</th>
                     <th style="width: 20%;">Kode Invoice</th>
+                    <th>Customer</th>
                     <th>Produk</th>
                     <th>Jumlah</th>
-                    <th>Customer</th>
                     <th style="width: 18%;">Total</th>
                     <th style="width: 15%;">Status Kirim</th>
                 </tr>
@@ -179,6 +179,7 @@
                         <td>{{ $index + 1 }}</td>
                         <td>{{ $transaksi->tanggal->format("d M Y") }}</td>
                         <td>{{ $transaksi->kode_invoice }}</td>
+                        <td>{{ $transaksi->nama }}</td>
                         <td>
                             @if ($transaksi->itemTransaksi && count($transaksi->itemTransaksi) > 0)
                                 @php
@@ -198,7 +199,6 @@
                                 -
                             @endif
                         </td>
-                        <td>{{ $transaksi->nama }}</td>
                         <td>Rp {{ number_format($transaksi->total_bayar, 0, ",", ".") }}</td>
                         <td>{{ $transaksi->status_pengiriman ? "Sudah Dikirim" : "Belum Dikirim" }}</td>
                     </tr>
