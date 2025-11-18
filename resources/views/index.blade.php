@@ -136,10 +136,10 @@
             </div>
             <div class="meta-filter-shop"
                 style="{{ request()->hasAny(["kategori", "sort", "show", "search"]) ? "" : "display: none;" }}">
-                <div id="product-count-grid" class="count-text">
+                {{-- <div id="product-count-grid" class="count-text">
                     Showing {{ $produk->firstItem() ?? 0 }} - {{ $produk->lastItem() ?? 0 }} of {{ $produk->total() }}
                     products
-                </div>
+                </div> --}}
                 <div id="applied-filters">
                     @if (request("search"))
                         <span class="filter-tag">
@@ -285,11 +285,16 @@
                         </div>
                     @endforelse
 
-                    <!-- Navigation -->
+                    {{-- <!-- Navigation -->
                     @if ($produk->hasPages())
                         {{ $produk->links() }}
-                    @endif
+                    @endif --}}
                 </div>
+            </div>
+            <div class="d-flex justify-content-center">
+                 @if ($produk->hasPages())
+                    {{ $produk->links() }}
+                @endif 
             </div>
         </div>
     </div>
