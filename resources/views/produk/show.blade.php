@@ -51,6 +51,11 @@
                             <p class="mb-0">{{ $produk->kategori->nama ?? "-" }}</p>
                         </div>
                         <div class="col-md-4 mb-3">
+                            <label class="fw-semibold text-secondary-light mb-2">Harga Modal:</label>
+                            <p class="mb-0 text-success-600 fw-semibold">Rp
+                                {{ number_format($produk->harga_modal, 0, ",", ".") }}</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
                             <label class="fw-semibold text-secondary-light mb-2">Harga:</label>
                             <p class="mb-0 text-success-600 fw-semibold">Rp
                                 {{ number_format($produk->harga, 0, ",", ".") }}</p>

@@ -61,8 +61,12 @@ class LaporanController extends Controller
             ->orderBy('tanggal', 'asc')
             ->get();
 
+
         $totalTransaksi = $transaksis->count();
         $totalPendapatan = $transaksis->sum('total_bayar');
+
+        // Hitung total keuntungan berdasarkan modal dari masing masing produk dan juga total pendapatan - modal = keuntungan
+        
 
         $topProducts = ItemTransaksi::select('produk_id', DB::raw('SUM(jumlah) as total_qty'))
             ->whereHas('invoice', function($query) use ($tanggalAwal, $tanggalAkhir) {

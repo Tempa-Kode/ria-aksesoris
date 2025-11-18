@@ -100,6 +100,21 @@
                                 <div class="mb-20">
                                     <label for="harga"
                                         class="form-label fw-semibold text-primary-light text-sm mb-8">
+                                        Harga Modal <span class="text-danger-600">*</span>
+                                    </label>
+                                    <input type="number"
+                                        class="form-control radius-8 @error("harga_modal") is-invalid @enderror"
+                                        id="harga_modal" name="harga_modal" value="{{ old("harga_modal", $produk->harga_modal ?? 0) }}"
+                                        placeholder="Masukkan harga" min="0" step="0.01">
+                                    @error("harga_modal")
+                                        <div class="text-danger-600 mt-2">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="mb-20">
+                                    <label for="harga"
+                                        class="form-label fw-semibold text-primary-light text-sm mb-8">
                                         Harga <span class="text-danger-600">*</span>
                                     </label>
                                     <input type="number"

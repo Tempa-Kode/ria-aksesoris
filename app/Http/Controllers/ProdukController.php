@@ -39,6 +39,7 @@ class ProdukController extends Controller
         $validated = $request->validate([
             'kategori_id' => 'required|exists:kategori,id_kategori',
             'nama' => 'required|string|max:255',
+            'harga_modal' => 'required|numeric|min:0',
             'harga' => 'required|numeric|min:0',
             'keterangan' => 'nullable|string',
             'jumlah_produk' => 'nullable|integer|min:0',
@@ -56,6 +57,7 @@ class ProdukController extends Controller
             $produkData = [
                 'kategori_id' => $validated['kategori_id'],
                 'nama' => $validated['nama'],
+                'harga_modal' => $validated['harga_modal'],
                 'harga' => $validated['harga'],
                 'keterangan' => $validated['keterangan'] ?? null,
                 'jumlah_produk' => $validated['jumlah_produk'] ?? null,
@@ -159,6 +161,7 @@ class ProdukController extends Controller
         $validated = $request->validate([
             'kategori_id' => 'required|exists:kategori,id_kategori',
             'nama' => 'required|string|max:255',
+            'harga_modal' => 'required|numeric|min:0',
             'harga' => 'required|numeric|min:0',
             'keterangan' => 'nullable|string',
             'jumlah_produk' => 'nullable|integer|min:0',
@@ -186,6 +189,7 @@ class ProdukController extends Controller
             $updateData = [
                 'kategori_id' => $validated['kategori_id'],
                 'nama' => $validated['nama'],
+                'harga_modal' => $validated['harga_modal'],
                 'harga' => $validated['harga'],
                 'keterangan' => $validated['keterangan'] ?? null,
             ];
@@ -199,14 +203,14 @@ class ProdukController extends Controller
                     }
                     $updateData["gambar_{$i}"] = null;
                 }
-                
+
                 // Upload gambar baru jika ada
                 if ($request->hasFile("gambar_{$i}")) {
                     // Hapus gambar lama jika ada
                     if ($produk->{"gambar_{$i}"} && file_exists(public_path($produk->{"gambar_{$i}"}))) {
                         unlink(public_path($produk->{"gambar_{$i}"}));
                     }
-                    
+
                     $gambar = $request->file("gambar_{$i}");
                     $filename = time() . "_{$i}_" . uniqid() . '.' . $gambar->getClientOriginalExtension();
                     $gambar->move(public_path('uploads/produk'), $filename);
