@@ -8,6 +8,7 @@ use App\Models\JenisProduk;
 use App\Models\RiwayatStokProduk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ProdukController extends Controller
 {
@@ -20,6 +21,13 @@ class ProdukController extends Controller
             ->latest()
             ->get();
         return view('produk.index', compact('produks'));
+    }
+
+    public function pdf()
+    {
+        $produks = Produk::with(['kategori', 'jenisProduk'])->get();
+        $pdf = Pdf::loadView('produk.pdf', compact('produks'));
+        return $pdf->stream('laporan-produk.pdf');
     }
 
     /**

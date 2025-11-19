@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [App\Http\Controllers\ProdukController::class, 'index'])->name('produk.index');
         Route::get('/tambah', [App\Http\Controllers\ProdukController::class, 'create'])->name('produk.create');
         Route::post('/', [App\Http\Controllers\ProdukController::class, 'store'])->name('produk.store');
+        Route::get('/pdf', [App\Http\Controllers\ProdukController::class, 'pdf'])->name('produk.pdf');
 
         // Product Detail Routes
         Route::get('/detail/{id}', [App\Http\Controllers\ProdukDetailController::class, 'show'])->name('produk.detail');
