@@ -112,7 +112,12 @@
                                     class="text-danger-600 me-2"></iconify-icon>
                                 Peringatan Stok Produk (≤ 5 Unit)
                             </h6>
-                            <span class="badge bg-danger-100 text-danger-600">{{ $stokProduk->count() }} Item</span>
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-danger-100 text-danger-600 me-3">{{ $stokProduk->count() }} Item</span>
+                                <a href="{{ route('admin.stok-rendah.pdf') }}" class="btn btn-primary btn-sm">
+                                    Unduh PDF
+                                </a>
+                            </div>
                         </div>
                         <div class="card-body p-24">
                             @if ($stokProduk->count() > 0)

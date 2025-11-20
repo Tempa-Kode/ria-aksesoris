@@ -6,6 +6,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+use App\Models\Produk;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 class AdminController extends Controller
 {
     /**
@@ -129,4 +132,47 @@ class AdminController extends Controller
 
         return redirect()->route('admin.index')->with('success', 'Data admin berhasil dihapus!');
     }
+
+    public function downloadStokRendahPdf()
+    {
+        // 1. Ambil stok dari produk utama yang <= 5
+        $produkUtama = Produk::where('jumlah_produk', '<=', 5)
+            ->get()
+            ->map(function($produk) {
+                return [
+                    'nama_produk' => $produk->nama,
+                    'nama_jenis' => 'Produk Utama', // Produk utama tidak punya jenis
+                    'stok' => $produk->jumlah_produk
+                ];
+            });
+
+        // 2. Ambil stok dari jenis produk yang <= 5
+        $jenisProdukRendah = Produk::with(['jenisProduk' => function($query) {
+            $query->where('jumlah_produk', '<=', 5)
+                ->orderBy('jumlah_produk', 'asc');
+        }])
+            ->get()
+            ->flatMap(function($produk) {
+                return $produk->jenisProduk->map(function($jenis) use ($produk) {
+                    return [
+                        'nama_produk' => $produk->nama,
+                        'nama_jenis' => $jenis->nama,
+                        'stok' => $jenis->jumlah_produk
+                    ];
+                });
+            });
+
+        // 3. Gabungkan dan sort berdasarkan stok
+        $stokProduk = $produkUtama->concat($jenisProdukRendah)
+            ->sortBy('stok')
+            ->values();
+
+        $pdf = Pdf::loadView('laporan.stok-rendah-pdf', [
+            'stokProduk' => $stokProduk,
+            'tanggal' => date('d-m-Y')
+        ]);
+
+        return $pdf->stream('laporan-stok-rendah-' . date('Y-m-d') . '.pdf');
+    }
 }
+

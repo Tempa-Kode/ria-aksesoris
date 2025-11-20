@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::put('profile/password', [App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('profile.password.update');
 
     Route::resource('admin', App\Http\Controllers\AdminController::class);
+    Route::get('admin/stok-rendah/pdf', [App\Http\Controllers\AdminController::class, 'downloadStokRendahPdf'])->name('admin.stok-rendah.pdf');
     Route::resource('karyawan', App\Http\Controllers\KaryawanController::class);
     Route::resource('customer', App\Http\Controllers\CustomerController::class);
     Route::resource('kategori', App\Http\Controllers\KategoriController::class);
