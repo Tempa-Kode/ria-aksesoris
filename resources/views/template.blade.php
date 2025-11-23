@@ -189,6 +189,66 @@
     {{-- @include("partials.shopping-cart") --}}
     <!-- /Shopping Cart -->
 
+    <!-- Mobile Menu -->
+    <div class="offcanvas offcanvas-start canvas-mb" id="mobileMenu">
+        <span class="icon-close btn-close-mb link" data-bs-dismiss="offcanvas"></span>
+        <div class="logo-site">
+            <a href="{{ route("home") }}">
+                <img src="{{ asset("images/logo/logo.svg") }}" alt="">
+            </a>
+        </div>
+        <div class="mb-canvas-content">
+            <div class="mb-body">
+                <div class="flat-animate-tab">
+                    <div class="flat-title-tab-nav-mobile">
+                        <ul class="menu-tab-line" role="tablist">
+                            <li class="nav-tab-item" role="presentation">
+                                <a href="#main-menu" class="tab-link link fw-semibold active"
+                                    data-bs-toggle="tab">Menu</a>
+                            </li>
+                            <li class="br-line type-vertical bg-line h23"></li>
+                            <li class="nav-tab-item" role="presentation">
+                                <a href="#category" class="tab-link link fw-semibold" data-bs-toggle="tab">Kategori</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-content">
+                        <div class="tab-pane active show" id="main-menu" role="tabpanel">
+                            <div class="mb-content-top">
+                                <form class="form-search">
+                                    <fieldset>
+                                        <input class="" type="text" placeholder="Search for anything"
+                                            name="text" tabindex="2" value="" aria-required="true"
+                                            required="">
+                                    </fieldset>
+                                    <button type="submit" class="button-submit">
+                                        <i class="icon-search"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="category" role="tabpanel">
+                            <div class="mb-content-top">
+                                <ul class="nav-ul-mb">
+                                    @forelse ($kategori as $item)
+                                        <li class="nav-mb-item">
+                                            <a href="{{ route("home", ["kategori" => $item->id_kategori] + request()->except("kategori")) }}" class="mb-menu-link"><span>{{ $item->nama }}</span></a>
+                                        </li>
+                                    @empty
+                                        <li class="nav-mb-item">
+                                            <a href="#" class="mb-menu-link"><span>Kategori Kosong</span></a>
+                                        </li>
+                                    @endforelse
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Mobile Menu -->
+
     <!-- Javascript -->
     <script src="{{ asset("home/js/bootstrap.min.js") }}"></script>
     <script src="{{ asset("home/js/jquery.min.js") }}"></script>

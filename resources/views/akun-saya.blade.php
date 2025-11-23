@@ -51,4 +51,23 @@
         </div>
     </section>
     <!-- /My Account -->
+
+     <!-- Button Sidebar Accound -->
+    <div class="btn-sidebar-mb d-lg-none left">
+        <button data-bs-toggle="offcanvas" data-bs-target="#mbSidebar">
+            <i class="icon icon-sidebar"></i>
+        </button>
+    </div>
+    <!-- /Button Sidebar Accound -->
+    <!-- Sidebar Account-->
+    <div class="offcanvas offcanvas-start canvas-sidebar canvas-sidebar-account" id="mbSidebar">
+        <div class="canvas-wrapper">
+            <div class="canvas-header">
+                <h5 class="fw-semibold">SIDEBAR ACCOUNT</h5>
+                <span class="icon-close link icon-close-popup" data-bs-dismiss="offcanvas"></span>
+            </div>
+            <div class="canvas-body sidebar-mobile-append my-account-nav"></div>
+        </div>
+    </div>
+    <!-- /Sidebar Account -->
 @endsection
