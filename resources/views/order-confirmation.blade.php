@@ -194,6 +194,14 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
+                                        <td colspan="3" class="text-end"><strong>Diskon:</strong></td>
+                                        <td class="text-end">
+                                            <strong class="text-primary">
+                                                Rp. {{ number_format($invoice->diskon, 0, ",", ".") }} (20%)
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td colspan="3" class="text-end"><strong>Total:</strong></td>
                                         <td class="text-end">
                                             <strong class="text-primary fs-5">

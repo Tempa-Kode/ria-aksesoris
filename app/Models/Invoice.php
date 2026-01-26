@@ -18,6 +18,7 @@ class Invoice extends Model
         'no_hp',
         'alamat',
         'total_bayar',
+        'diskon',
         'status_pembayaran',
         'status_pengiriman',
         'resi',

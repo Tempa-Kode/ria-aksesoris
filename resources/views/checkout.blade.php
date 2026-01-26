@@ -136,8 +136,8 @@
                             <!-- Items will be dynamically inserted -->
                         </ul>
                         <ul class="sec-total-price">
-                            {{-- <li><span class="body-text-3">Subtotal</span><span class="body-text-3"
-                                    id="checkout-subtotal">Rp. 0</span></li> --}}
+                            <li><span class="body-text-3">Diskon</span><span class="body-text-3"
+                                    id="checkout-diskon">Rp. 0</span></li>
                             <li><span class="body-md-2 fw-semibold">Total</span><span
                                     class="body-md-2 fw-semibold text-primary" id="checkout-total">Rp. 0</span></li>
                         </ul>
@@ -163,7 +163,7 @@
                 console.table(cart);
 
                 const checkoutSummary = document.getElementById('checkout-summary');
-                // const checkoutSubtotal = document.getElementById('checkout-subtotal');
+                const checkoutDiskon = document.getElementById('checkout-diskon');
                 const checkoutTotal = document.getElementById('checkout-total');
 
                 if (cart.length === 0) {
@@ -200,8 +200,12 @@
                     return sum + (parseInt(item.harga) * parseInt(item.quantity));
                 }, 0);
 
-                // checkoutSubtotal.textContent = `Rp. ${formatPrice(total)}`;
-                checkoutTotal.textContent = `Rp. ${formatPrice(total)}`;
+                let discount = 0.2; // contoh diskon 20%
+
+                let priceAfterDiscount = total - (total * discount);
+
+                checkoutDiskon.textContent = `Rp. ${formatPrice(total * discount)} (20%)`;
+                checkoutTotal.textContent = `Rp. ${formatPrice(priceAfterDiscount)}`;
             }
 
             // Process checkout

@@ -173,8 +173,20 @@
                                                             <td class="pe-64 border-bottom pb-4">Subtotal:</td>
                                                             <td class="pe-16 border-bottom pb-4 text-end">
                                                                 <span class="text-primary-light fw-semibold">
+                                                                    {{-- buatkan agar menampilkan dan menghitung semua subtotal dari item transaksi --}}
                                                                     Rp
-                                                                    {{ number_format($transaksi->total_bayar, 0, ",", ".") }}
+                                                                    {{ number_format($transaksi->itemTransaksi->sum(function($item) {
+                                                                        return $item->produk->harga * $item->jumlah;
+                                                                    }), 0, ",", ".") }}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="pe-64 border-bottom pb-4">Diskon:</td>
+                                                            <td class="pe-16 border-bottom pb-4 text-end">
+                                                                <span class="text-danger-600 fw-semibold">
+                                                                    Rp
+                                                                    {{ number_format($transaksi->diskon, 0, ",", ".") }} (20%)
                                                                 </span>
                                                             </td>
                                                         </tr>

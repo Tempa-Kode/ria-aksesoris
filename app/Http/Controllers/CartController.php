@@ -66,6 +66,10 @@ class CartController extends Controller
             // Generate invoice code
             $kodeInvoice = 'INV-' . date('Ymd') . '-' . strtoupper(Str::random(6));
 
+            // Calculate discount 20% for any purchase
+            $discount = $totalBayar * 0.20;
+            $totalBayar -= $discount;
+
             // Handle bukti transfer upload
             $buktiPembayaran = null;
             if ($request->hasFile('bukti_transfer')) {
@@ -94,6 +98,7 @@ class CartController extends Controller
                 'no_hp' => $validated['no_hp'],
                 'alamat' => $validated['alamat'],
                 'total_bayar' => $totalBayar,
+                'diskon' => $discount,
                 'status_pembayaran' => $buktiPembayaran ? 'pending' : 'pending',
                 'status_pengiriman' => false,
                 'bukti_pembayaran' => $buktiPembayaran,

@@ -143,6 +143,11 @@
                                             </tr>
                                         @endforeach
                                         <tr class="bg-base">
+                                            <td colspan="3" class="text-end fw-bold">Diskon:</td>
+                                            <td class="fw-bold text-danger-600">Rp
+                                                {{ number_format($transaksi->diskon, 0, ",", ".") }} (20%)</td>
+                                        </tr>
+                                        <tr class="bg-base">
                                             <td colspan="3" class="text-end fw-bold">TOTAL:</td>
                                             <td class="fw-bold text-success-600">Rp
                                                 {{ number_format($transaksi->total_bayar, 0, ",", ".") }}</td>
