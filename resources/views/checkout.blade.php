@@ -136,8 +136,8 @@
                             <!-- Items will be dynamically inserted -->
                         </ul>
                         <ul class="sec-total-price">
-                            <li><span class="body-text-3">Subtotal</span><span class="body-text-3"
-                                    id="checkout-subtotal">Rp. 0</span></li>
+                            {{-- <li><span class="body-text-3">Subtotal</span><span class="body-text-3"
+                                    id="checkout-subtotal">Rp. 0</span></li> --}}
                             <li><span class="body-md-2 fw-semibold">Total</span><span
                                     class="body-md-2 fw-semibold text-primary" id="checkout-total">Rp. 0</span></li>
                         </ul>
@@ -160,9 +160,10 @@
                 // Get cart from localStorage directly
                 const cartData = localStorage.getItem('ria_shopping_cart');
                 const cart = cartData ? JSON.parse(cartData) : [];
+                console.table(cart);
 
                 const checkoutSummary = document.getElementById('checkout-summary');
-                const checkoutSubtotal = document.getElementById('checkout-subtotal');
+                // const checkoutSubtotal = document.getElementById('checkout-subtotal');
                 const checkoutTotal = document.getElementById('checkout-total');
 
                 if (cart.length === 0) {
@@ -174,22 +175,24 @@
                 checkoutSummary.innerHTML = cart.map(item => {
                     const itemTotal = parseInt(item.harga) * parseInt(item.quantity);
                     return `
-                <li class="item-product">
-                    <a href="#" class="img-product">
-                        <img src="${item.gambar}" alt="${item.nama}">
-                    </a>
-                    <div class="content-box">
-                        <a href="#" class="link-secondary body-md-2 fw-semibold">
-                            ${item.nama}
-                        </a>
-                        <p class="price-quantity price-text fw-semibold">
-                            Rp. ${formatPrice(itemTotal)}
-                            <span class="body-md-2 text-main-2 fw-normal">X${item.quantity}</span>
-                        </p>
-                        ${item.jenis_nama ? `<p class="body-md-2 text-main-2">${item.jenis_nama}</p>` : ''}
-                    </div>
-                </li>
-            `;
+                        <li class="item-product">
+                            <a href="#" class="img-product">
+                                <img src="${item.gambar}" alt="${item.nama}">
+                            </a>
+                            <div class="content-box">
+                                <a href="#" class="link-secondary body-md-2 fw-semibold">
+                                    ${item.nama}
+                                </a>
+                                <p class="link-primary body-md-2">Rp. ${formatPrice(parseInt(item.harga))}
+                                    <span class="body-md-2 text-main-2 fw-normal">X${item.quantity}</span>
+                                </p>
+                                <p class="price-quantity price-text fw-semibold">
+                                    Rp. ${formatPrice(itemTotal)}
+                                </p>
+                                ${item.jenis_nama ? `<p class="body-md-2 text-main-2">${item.jenis_nama}</p>` : ''}
+                            </div>
+                        </li>
+                    `;
                 }).join('');
 
                 // Calculate and update totals
@@ -197,7 +200,7 @@
                     return sum + (parseInt(item.harga) * parseInt(item.quantity));
                 }, 0);
 
-                checkoutSubtotal.textContent = `Rp. ${formatPrice(total)}`;
+                // checkoutSubtotal.textContent = `Rp. ${formatPrice(total)}`;
                 checkoutTotal.textContent = `Rp. ${formatPrice(total)}`;
             }
 
